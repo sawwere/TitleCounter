@@ -7,7 +7,7 @@
     <ProjectGuid>{C7636C16-454D-4CBF-B6C6-DDDCDA6EE780}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>hltb</RootNamespace>
-    <AssemblyName>hltb</AssemblyName>
+    <AssemblyName>TitleCounter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -100,6 +100,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

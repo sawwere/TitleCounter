@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 namespace hltb
 {
+    public enum mode { GAMES, FILMS, TVSERIES };
     public partial class Mainform : Form
     {
         Panel list_panel = new Panel();
@@ -21,8 +22,9 @@ namespace hltb
         Game cur_game;
         Film cur_film;
         TVSeries cur_tvseries;
+        mode currentMode = mode.GAMES;
 
-        string mode = "games";
+        
         //"F:/my_programs/python/HowLongToBeat" +
         //Directory.GetCurrentDirectory()
         //
@@ -56,21 +58,21 @@ namespace hltb
         void UpdateLabel2()
         {
             double total = 1, cmpltd = 1, tmcmpltd = 1, tmtotal = 1;
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     total = games.Count() + 0.0;
                     cmpltd = games.Where(x => (x.status == "completed") || (x.status == "retired")).Count();
                     tmcmpltd = games.Where(x => (x.status == "completed") || (x.status == "retired")).Select(x => x.time).Sum();
                     tmtotal = games.Select(x => x.time).Sum();
                     break;
-                case "films":
+                case mode.FILMS:
                     total = films.Count() + 0.0;
                     cmpltd = films.Where(x => (x.status == "completed") || (x.status == "retired")).Count();
                     tmcmpltd = films.Where(x => (x.status == "completed") || (x.status == "retired")).Select(x => x.time).Sum();
                     tmtotal = films.Select(x => x.time).Sum();
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     total = tvseries.Count() + 0.0;
                     cmpltd = tvseries.Where(x => (x.status == "completed") || (x.status == "retired")).Count();
                     break;
@@ -170,7 +172,7 @@ namespace hltb
             }
             else
             {
-                string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + mode;
+                string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + currentMode.ToString();
                 Process p = Process.Start(new ProcessStartInfo
                 {
                     //"F:/programs/Python" 
@@ -206,15 +208,15 @@ namespace hltb
                     namebox.Text = "";
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
-                    switch (mode)
+                    switch (currentMode)
                     {
-                        case "games":
+                        case mode.GAMES:
                             games = GetGames();
                             break;
-                        case "films":
+                        case mode.FILMS:
                             films = GetFilms();
                             break;
-                        case "tvseries":
+                        case mode.TVSERIES:
                             tvseries = GetTVSeries();
                             break;
                     }
@@ -227,15 +229,15 @@ namespace hltb
         {
             var combobox = (ComboBox)sender;
             var s = (int)combobox.SelectedItem;
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     cur_game.UpdateScore(s);
                     break;
-                case "films":
+                case mode.FILMS:
                     cur_film.UpdateScore(s);
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     cur_tvseries.UpdateScore(s);
                     break;
             }
@@ -244,15 +246,15 @@ namespace hltb
         {
             var combobox = (ComboBox)sender;
             var s = combobox.SelectedItem.ToString();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     cur_game.UpdateStatus(s);
                     break;
-                case "films":
+                case mode.FILMS:
                     cur_film.UpdateStatus(s);
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     cur_tvseries.UpdateStatus(s);
                     break;
             }
@@ -292,15 +294,15 @@ namespace hltb
 
         private void CopyButtonOnClick(object sender, EventArgs eventArgs)
         {
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     Clipboard.SetText(cur_game.name);
                     break;
-                case "films":
+                case mode.FILMS:
                     Clipboard.SetText(cur_film.name);
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     Clipboard.SetText(cur_tvseries.name);
                     break;
             }
@@ -308,20 +310,20 @@ namespace hltb
         private void deleteButtonClick(object sender, EventArgs eventArgs)
         {
             content_panel.Controls.Clear();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
 
                     games.Remove(cur_game);
                     cur_game = new Game();
                     SaveGames();
                     break;
-                case "films":
+                case mode.FILMS:
                     films.Remove(cur_film);
                     cur_film = new Film();
                     SaveFilms();
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     tvseries.Remove(cur_tvseries);
                     cur_tvseries = new TVSeries();
                     SaveTVSeries();
@@ -356,17 +358,17 @@ namespace hltb
         public string GetTime<T>(T t) where T : Title
         {
             string res = "";
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     res = t.time.ToString();
                     break;
-                case "films":
+                case mode.FILMS:
                     var h = (int)t.time / 60;
                     var m = (int)t.time % 60;
                     res = $"                {h}h {m}m";
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     h = (int)t.time / 60;
                     m = (int)t.time % 60;
                     res = $"                {h}h {m}m";
@@ -398,19 +400,19 @@ namespace hltb
             content_panel.Controls.Add(pb);
 
             Title cur_title = new Title();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     pb.Image = new Bitmap(path + "//images//game//" + s + ".jpg");
                     cur_game = games.Find(x => x.name == button.Text);
                     cur_title = cur_game as Title;
                     break;
-                case "films":
+                case mode.FILMS:
                     pb.Image = new Bitmap(path + "//images//film//" + s + ".jpg");
                     cur_film = films.Find(x => x.name == button.Text);
                     cur_title = cur_film as Title;
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     pb.Image = new Bitmap(path + "//images//tvseries//" + s + ".jpg");
                     cur_tvseries = tvseries.Find(x => x.name == button.Text);
                     cur_title = cur_tvseries as Title;
@@ -424,9 +426,9 @@ namespace hltb
             nameLabel.Width = 200;
             content_panel.Controls.Add(nameLabel);
             // Get rus name for Films, TvSeries
-            switch (mode)
+            switch (currentMode)
             {
-                case "films":
+                case mode.FILMS:
                     {
                         if (nameLabel.Text.Length < 20)
                             nameLabel.Text += "  ||  " + GetOrigTitle(cur_film);
@@ -437,7 +439,7 @@ namespace hltb
                         }
                         break;
                     }
-                case "tvseries":
+                case mode.TVSERIES:
                     if (nameLabel.Text.Length < 20)
                         nameLabel.Text += "  ||  " + GetOrigTitle(cur_tvseries);
                     else
@@ -460,9 +462,9 @@ namespace hltb
             timeLabel.Width = 75;
             content_panel.Controls.Add(timeLabel);
 
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     TextBox time_c = new TextBox();
                     time_c.Text = GetTime(cur_game);
                     time_c.Width = 75;
@@ -471,11 +473,11 @@ namespace hltb
                     time_c.TextChanged += TimeCTextChanged;
                     content_panel.Controls.Add(time_c);
                     break;
-                case "films":
+                case mode.FILMS:
                     timeLabel.Width = 200;
                     timeLabel.Text += GetTime(cur_film);
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     timeLabel.Width = 200;
                     timeLabel.Text += GetTime(cur_tvseries);
                     break;
@@ -524,17 +526,17 @@ namespace hltb
             deleteButton.Location = new Point(statusLabel.Left, statusLabel.Top + 120);
             deleteButton.Click += deleteButtonClick;
             content_panel.Controls.Add(deleteButton);
-            if (mode != "games")
+            if (currentMode != mode.GAMES)
             {
                 Label genresLabel = new Label();
                 genresLabel.Location = new Point(nameLabel.Left, status_c.Top + 25);
                 string str = "";
-                switch (mode)
+                switch (currentMode)
                 {
-                    case "films":
+                    case mode.FILMS:
                         str = BuildStingGenres(cur_film);
                         break;
-                    case "tvseries":
+                    case mode.TVSERIES:
                         str = BuildStingGenres(cur_tvseries);
                         break;
                 }
@@ -543,9 +545,9 @@ namespace hltb
                 genresLabel.Text = str.ToString();
                 content_panel.Controls.Add(genresLabel);
 
-                switch (mode)
+                switch (currentMode)
                 {
-                    case "tvseries":
+                    case mode.TVSERIES:
                         Label seasonsLabel = new Label();
                         seasonsLabel.Text = "Select Season:";
                         seasonsLabel.Width = 80;
@@ -603,17 +605,17 @@ namespace hltb
         {
             YearSortBox.Items.Clear();
             var set = new SortedSet<int>();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     foreach (var g in games)
                         set.Add(g.year);
                     break;
-                case "films":
+                case mode.FILMS:
                     foreach (var f in films)
                         set.Add(f.year);
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     foreach (var t in tvseries)
                         set.Add(t.year);
                     break;
@@ -632,14 +634,14 @@ namespace hltb
         {
             GenreSortBox.Items.Clear();
             var set = new SortedSet<string>();
-            switch (mode)
+            switch (currentMode)
             {
-                case "films":
+                case mode.FILMS:
                     foreach (var f in films)
                         foreach (var g in f.genres)
                             set.Add(g);
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     foreach (var t in tvseries)
                         foreach (var g in t.genres)
                             set.Add(g);
@@ -724,15 +726,15 @@ namespace hltb
         private void YearSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_year = YearSortBox.SelectedItem.ToString();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     AddButtons(games.Where(x => x.year.ToString() == cur_year).ToList());
                     break;
-                case "films":
+                case mode.FILMS:
                     AddButtons(films.Where(x => x.year.ToString() == cur_year).ToList());
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     AddButtons(tvseries.Where(x => x.year.ToString() == cur_year).ToList());
                     break;
             }
@@ -741,15 +743,15 @@ namespace hltb
         private void ScoreSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_score = ScoreSortBox.SelectedItem.ToString();// System.DateTime.Now.Year.ToString();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     AddButtons(games.Where(x => x.score.ToString() == cur_score).ToList());
                     break;
-                case "films":
+                case mode.FILMS:
                     AddButtons(films.Where(x => x.score.ToString() == cur_score).ToList());
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     AddButtons(tvseries.Where(x => x.score.ToString() == cur_score).ToList());
                     break;
             }
@@ -757,12 +759,12 @@ namespace hltb
         private void GenreSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_genre = GenreSortBox.SelectedItem.ToString();// System.DateTime.Now.Year.ToString();
-            switch (mode)
+            switch (currentMode)
             {
-                case "films":
+                case mode.FILMS:
                     AddButtons(films.Where(x => x.genres.Any(y => y == cur_genre)).ToList());
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     AddButtons(tvseries.Where(x => x.genres.Any(y => y == cur_genre)).ToList());
                     break;
             }
@@ -770,15 +772,15 @@ namespace hltb
         private void StatusSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
-            switch (mode)
+            switch (currentMode)
             {
-                case "games":
+                case mode.GAMES:
                     AddButtons(games.Where(x => x.status == cur_status).ToList());
                     break;
-                case "films":
+                case mode.FILMS:
                     AddButtons(films.Where(x => x.status == cur_status).ToList());
                     break;
-                case "tvseries":
+                case mode.TVSERIES:
                     AddButtons(tvseries.Where(x => x.status == cur_status).ToList());
                     break;
             }
@@ -787,7 +789,7 @@ namespace hltb
         {
 
             string nmode = ModeBox.SelectedItem.ToString().ToLower();
-            if (nmode == mode)
+            if (nmode == currentMode.ToString())
                 return;
             Console.WriteLine(nmode);
             list_panel.Controls.Clear();
@@ -799,21 +801,24 @@ namespace hltb
                     ByScoreButton.Visible = true;
                     ByGenreButton.Visible = false;
                     ByStatusButton.Visible = true;
+                    currentMode = mode.GAMES;
                     break;
                 case "films":
                     ByYearButton.Visible = true;
                     ByScoreButton.Visible = true;
                     ByGenreButton.Visible = true;
                     ByStatusButton.Visible = true;
+                    currentMode = mode.FILMS;
                     break;
                 case "tvseries":
                     ByYearButton.Visible = true;
                     ByScoreButton.Visible = true;
                     ByGenreButton.Visible = true;
                     ByStatusButton.Visible = true;
+                    currentMode = mode.TVSERIES;
                     break;
             }
-            mode = nmode;
+            
             ByYearButton_Click(sender, e);
 
             UpdateLabel2();
