@@ -51,6 +51,8 @@ namespace hltb
             this.GenreSortBox = new System.Windows.Forms.ComboBox();
             this.StatusSortBox = new System.Windows.Forms.ComboBox();
             this.currentTitlePanel = new System.Windows.Forms.Panel();
+            this.ByNameButton = new System.Windows.Forms.Button();
+            this.NameSortBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // addgame
@@ -133,7 +135,7 @@ namespace hltb
             // 
             this.statisticsLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.statisticsLabel.AutoSize = true;
-            this.statisticsLabel.Location = new System.Drawing.Point(745, 647);
+            this.statisticsLabel.Location = new System.Drawing.Point(736, 647);
             this.statisticsLabel.Name = "statisticsLabel";
             this.statisticsLabel.Size = new System.Drawing.Size(35, 13);
             this.statisticsLabel.TabIndex = 16;
@@ -434,7 +436,7 @@ namespace hltb
             // ByGenreButton
             // 
             this.ByGenreButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.ByGenreButton.Location = new System.Drawing.Point(366, 72);
+            this.ByGenreButton.Location = new System.Drawing.Point(634, 72);
             this.ByGenreButton.Name = "ByGenreButton";
             this.ByGenreButton.Size = new System.Drawing.Size(135, 27);
             this.ByGenreButton.TabIndex = 25;
@@ -471,7 +473,7 @@ namespace hltb
             // 
             this.GenreSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.GenreSortBox.FormattingEnabled = true;
-            this.GenreSortBox.Location = new System.Drawing.Point(366, 105);
+            this.GenreSortBox.Location = new System.Drawing.Point(634, 104);
             this.GenreSortBox.Name = "GenreSortBox";
             this.GenreSortBox.Size = new System.Drawing.Size(135, 24);
             this.GenreSortBox.TabIndex = 27;
@@ -502,12 +504,39 @@ namespace hltb
             this.currentTitlePanel.Size = new System.Drawing.Size(300, 600);
             this.currentTitlePanel.TabIndex = 29;
             // 
+            // ByNameButton
+            // 
+            this.ByNameButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.ByNameButton.Location = new System.Drawing.Point(366, 72);
+            this.ByNameButton.Name = "ByNameButton";
+            this.ByNameButton.Size = new System.Drawing.Size(135, 27);
+            this.ByNameButton.TabIndex = 30;
+            this.ByNameButton.Text = "By Name";
+            this.ByNameButton.UseVisualStyleBackColor = true;
+            // 
+            // NameSortBox
+            // 
+            this.NameSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.NameSortBox.FormattingEnabled = true;
+            this.NameSortBox.Items.AddRange(new object[] {
+            "Increasing",
+            "Descending"});
+            this.NameSortBox.Location = new System.Drawing.Point(366, 104);
+            this.NameSortBox.Name = "NameSortBox";
+            this.NameSortBox.Size = new System.Drawing.Size(135, 24);
+            this.NameSortBox.TabIndex = 31;
+            this.NameSortBox.Text = "Name starts with";
+            this.NameSortBox.Visible = false;
+            this.NameSortBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1401, 561);
+            this.ClientSize = new System.Drawing.Size(1384, 561);
+            this.Controls.Add(this.NameSortBox);
+            this.Controls.Add(this.ByNameButton);
             this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.StatusSortBox);
             this.Controls.Add(this.GenreSortBox);
@@ -559,6 +588,8 @@ namespace hltb
         private System.Windows.Forms.ComboBox GenreSortBox;
         private System.Windows.Forms.ComboBox StatusSortBox;
         private System.Windows.Forms.Panel currentTitlePanel;
+        private System.Windows.Forms.Button ByNameButton;
+        private System.Windows.Forms.ComboBox NameSortBox;
     }
 }
 
