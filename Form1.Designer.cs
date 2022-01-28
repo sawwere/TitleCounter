@@ -38,7 +38,7 @@ namespace hltb
             this.YearSortBox = new System.Windows.Forms.ComboBox();
             this.ByYearButton = new System.Windows.Forms.Button();
             this.ByScoreButton = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.statisticsLabel = new System.Windows.Forms.Label();
             this.ByStatusButton = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.scorebox = new System.Windows.Forms.ComboBox();
@@ -50,6 +50,7 @@ namespace hltb
             this.ScoreSortBox = new System.Windows.Forms.ComboBox();
             this.GenreSortBox = new System.Windows.Forms.ComboBox();
             this.StatusSortBox = new System.Windows.Forms.ComboBox();
+            this.currentTitlePanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // addgame
@@ -128,15 +129,15 @@ namespace hltb
             this.ByScoreButton.UseVisualStyleBackColor = true;
             this.ByScoreButton.Click += new System.EventHandler(this.ByScoreButton_Click);
             // 
-            // label2
+            // statisticsLabel
             // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(754, 519);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "label2";
+            this.statisticsLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.statisticsLabel.AutoSize = true;
+            this.statisticsLabel.Location = new System.Drawing.Point(745, 647);
+            this.statisticsLabel.Name = "statisticsLabel";
+            this.statisticsLabel.Size = new System.Drawing.Size(35, 13);
+            this.statisticsLabel.TabIndex = 16;
+            this.statisticsLabel.Text = "label2";
             // 
             // ByStatusButton
             // 
@@ -424,7 +425,7 @@ namespace hltb
             "Games",
             "Films",
             "TvSeries"});
-            this.ModeBox.Location = new System.Drawing.Point(12, 26);
+            this.ModeBox.Location = new System.Drawing.Point(12, 90);
             this.ModeBox.Name = "ModeBox";
             this.ModeBox.Size = new System.Drawing.Size(66, 52);
             this.ModeBox.TabIndex = 23;
@@ -494,12 +495,20 @@ namespace hltb
             this.StatusSortBox.Visible = false;
             this.StatusSortBox.SelectedValueChanged += new System.EventHandler(this.StatusSortBox_SelectedValueChanged);
             // 
+            // currentTitlePanel
+            // 
+            this.currentTitlePanel.Location = new System.Drawing.Point(1000, 25);
+            this.currentTitlePanel.Name = "currentTitlePanel";
+            this.currentTitlePanel.Size = new System.Drawing.Size(300, 600);
+            this.currentTitlePanel.TabIndex = 29;
+            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1384, 561);
+            this.ClientSize = new System.Drawing.Size(1401, 561);
+            this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.StatusSortBox);
             this.Controls.Add(this.GenreSortBox);
             this.Controls.Add(this.ScoreSortBox);
@@ -510,7 +519,7 @@ namespace hltb
             this.Controls.Add(this.label3);
             this.Controls.Add(this.scorebox);
             this.Controls.Add(this.ByStatusButton);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.statisticsLabel);
             this.Controls.Add(this.ByScoreButton);
             this.Controls.Add(this.ByYearButton);
             this.Controls.Add(this.YearSortBox);
@@ -537,7 +546,7 @@ namespace hltb
         private System.Windows.Forms.ComboBox YearSortBox;
         private System.Windows.Forms.Button ByYearButton;
         private System.Windows.Forms.Button ByScoreButton;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label statisticsLabel;
         private System.Windows.Forms.Button ByStatusButton;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ComboBox scorebox;
@@ -549,6 +558,7 @@ namespace hltb
         private System.Windows.Forms.ComboBox ScoreSortBox;
         private System.Windows.Forms.ComboBox GenreSortBox;
         private System.Windows.Forms.ComboBox StatusSortBox;
+        private System.Windows.Forms.Panel currentTitlePanel;
     }
 }
 

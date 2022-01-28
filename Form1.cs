@@ -15,7 +15,6 @@ namespace hltb
     public partial class Mainform : Form
     {
         Panel list_panel = new Panel();
-        Panel content_panel = new Panel();
         List<Game> games = GetGames();
         List<Film> films = GetFilms();
         List<TVSeries> tvseries = GetTVSeries();
@@ -55,7 +54,7 @@ namespace hltb
             var tvseries = JsonConvert.DeserializeObject<List<TVSeries>>(json_string);
             return tvseries;
         }
-        void UpdateLabel2()
+        void UpdateStatisticsLabel()
         {
             double total = 1, cmpltd = 1, tmcmpltd = 1, tmtotal = 1;
             switch (currentMode)
@@ -78,7 +77,7 @@ namespace hltb
                     break;
             }
 
-            label2.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
+            statisticsLabel.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
                 + $"Time : {tmcmpltd} / {tmtotal} ({(tmcmpltd / tmtotal * 100):F2}%)";
         }
         void SaveGames()
@@ -145,7 +144,7 @@ namespace hltb
         private void MainForm_Load(object sender, EventArgs e)
         {
             ResetYears();
-            UpdateLabel2();
+            UpdateStatisticsLabel();
 
             ModeBox.SelectedItem = ModeBox.Items[0];
 
@@ -223,7 +222,7 @@ namespace hltb
                 }
             }
             operationLabel.Text = status.ToString();
-            UpdateLabel2();
+            UpdateStatisticsLabel();
         }
         private void ScoreCSelectedIndexChanged(object sender, EventArgs eventArgs)
         {
@@ -263,13 +262,13 @@ namespace hltb
         {
             var combobox = (ComboBox)sender;
             var s = combobox.SelectedItem.ToString();
-            content_panel.Controls.RemoveByKey("episodesLabel");
+            currentTitlePanel.Controls.RemoveByKey("episodesLabel");
             Label episodesLabel = new Label();
             episodesLabel.Name = "episodesLabel";
             episodesLabel.Text = $"Episodes count: {cur_tvseries.seasons[int.Parse(combobox.SelectedItem.ToString())]}";
             episodesLabel.Width = 125;
             episodesLabel.Location = new Point(combobox.Left + combobox.Width, combobox.Top);
-            content_panel.Controls.Add(episodesLabel);
+            currentTitlePanel.Controls.Add(episodesLabel);
         }
         private void TimeCKeyPress(object sender, KeyPressEventArgs e)
         {
@@ -309,7 +308,7 @@ namespace hltb
         }
         private void deleteButtonClick(object sender, EventArgs eventArgs)
         {
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
             switch (currentMode)
             {
                 case mode.GAMES:
@@ -329,7 +328,7 @@ namespace hltb
                     SaveTVSeries();
                     break;
             }
-            UpdateLabel2();
+            UpdateStatisticsLabel();
         }
         public string BuildStingGenres<T>(T m) where T : Film
         {
@@ -378,13 +377,9 @@ namespace hltb
         }
         private void ButtonOnClick(object sender, EventArgs eventArgs)
         {
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
 
             var button = (Button)sender;
-
-            content_panel.Location = new Point(1000, 25);
-            content_panel.Width = 300;
-            content_panel.Height = 600;
 
             PictureBox pb = new PictureBox();
             pb.Location = new Point(0, 0);
@@ -397,7 +392,7 @@ namespace hltb
                 s.Append(ss.ToString());
             }
             pb.SizeMode = PictureBoxSizeMode.StretchImage;
-            content_panel.Controls.Add(pb);
+            currentTitlePanel.Controls.Add(pb);
 
             Title cur_title = new Title();
             switch (currentMode)
@@ -424,7 +419,7 @@ namespace hltb
             nameLabel.Text = "Title name: " + cur_title.name;
             nameLabel.Location = new Point(0, 275);
             nameLabel.Width = 200;
-            content_panel.Controls.Add(nameLabel);
+            currentTitlePanel.Controls.Add(nameLabel);
             // Get rus name for Films, TvSeries
             switch (currentMode)
             {
@@ -454,13 +449,13 @@ namespace hltb
             copyButton.Text = "Copy";
             copyButton.Location = new Point(nameLabel.Right + 25, nameLabel.Top);
             copyButton.Click += CopyButtonOnClick;
-            content_panel.Controls.Add(copyButton);
+            currentTitlePanel.Controls.Add(copyButton);
 
             Label timeLabel = new Label();
             timeLabel.Text = "Time: ";
             timeLabel.Location = new Point(nameLabel.Left, nameLabel.Bottom + 5);
             timeLabel.Width = 75;
-            content_panel.Controls.Add(timeLabel);
+            currentTitlePanel.Controls.Add(timeLabel);
 
             switch (currentMode)
             {
@@ -471,7 +466,7 @@ namespace hltb
                     time_c.Location = new Point(timeLabel.Left + 80, timeLabel.Top);
                     time_c.KeyPress += TimeCKeyPress;
                     time_c.TextChanged += TimeCTextChanged;
-                    content_panel.Controls.Add(time_c);
+                    currentTitlePanel.Controls.Add(time_c);
                     break;
                 case mode.FILMS:
                     timeLabel.Width = 200;
@@ -487,19 +482,19 @@ namespace hltb
             yearLabel.Text = $"Year:                 {cur_title.year}";
             yearLabel.Location = new Point(nameLabel.Left, timeLabel.Top + 25);
             yearLabel.Width = 200;
-            content_panel.Controls.Add(yearLabel);
+            currentTitlePanel.Controls.Add(yearLabel);
 
             Label scoreLabel = new Label();
             scoreLabel.Text = "Score:";
             scoreLabel.Location = new Point(nameLabel.Left, yearLabel.Top + 25);
             scoreLabel.Width = 75;
-            content_panel.Controls.Add(scoreLabel);
+            currentTitlePanel.Controls.Add(scoreLabel);
 
             Label statusLabel = new Label();
             statusLabel.Text = "Status:";
             statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Top + 25); ;
             statusLabel.Width = 75;
-            content_panel.Controls.Add(statusLabel);
+            currentTitlePanel.Controls.Add(statusLabel);
 
             ComboBox score_c = new ComboBox();
             score_c.Text = cur_title.score.ToString();
@@ -507,7 +502,7 @@ namespace hltb
             score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             score_c.SelectedIndexChanged += ScoreCSelectedIndexChanged;
             score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
-            content_panel.Controls.Add(score_c);
+            currentTitlePanel.Controls.Add(score_c);
 
             ComboBox status_c = new ComboBox();
             status_c.Text = cur_title.status.ToString();
@@ -518,14 +513,14 @@ namespace hltb
             "retired"});
             status_c.SelectedIndexChanged += StatusCSelectedIndexChanged;
             status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
-            content_panel.Controls.Add(status_c);
+            currentTitlePanel.Controls.Add(status_c);
 
             Button deleteButton = new Button();
             deleteButton.Text = "Delete this title";
             deleteButton.Width = 125;
             deleteButton.Location = new Point(statusLabel.Left, statusLabel.Top + 120);
             deleteButton.Click += deleteButtonClick;
-            content_panel.Controls.Add(deleteButton);
+            currentTitlePanel.Controls.Add(deleteButton);
             if (currentMode != mode.GAMES)
             {
                 Label genresLabel = new Label();
@@ -543,7 +538,7 @@ namespace hltb
                 genresLabel.Width = 225;
                 genresLabel.Height += 9 * (str.Length / 40);
                 genresLabel.Text = str.ToString();
-                content_panel.Controls.Add(genresLabel);
+                currentTitlePanel.Controls.Add(genresLabel);
 
                 switch (currentMode)
                 {
@@ -552,7 +547,7 @@ namespace hltb
                         seasonsLabel.Text = "Select Season:";
                         seasonsLabel.Width = 80;
                         seasonsLabel.Location = new Point(nameLabel.Left, genresLabel.Bottom + 3);
-                        content_panel.Controls.Add(seasonsLabel);
+                        currentTitlePanel.Controls.Add(seasonsLabel);
 
                         ComboBox seasons_c = new ComboBox();
                         seasons_c.Location = new Point(seasonsLabel.Left + seasonsLabel.Width, seasonsLabel.Top);
@@ -566,11 +561,11 @@ namespace hltb
                         }
                         seasons_c.Items.AddRange(a);
                         seasons_c.SelectedIndexChanged += SeasonsCSelectedIndexChanged;
-                        content_panel.Controls.Add(seasons_c);
+                        currentTitlePanel.Controls.Add(seasons_c);
                         break;
                 }
             }
-            this.Controls.Add(content_panel);
+            this.Controls.Add(currentTitlePanel);
         }
         public void AddButtons<T>(List<T> titles, int y = 0) where T : Title
         {
@@ -675,7 +670,7 @@ namespace hltb
             YearSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
             YearSortBox_SelectedValueChanged(sender, e);
         }
 
@@ -689,7 +684,7 @@ namespace hltb
             ScoreSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
             ScoreSortBox_SelectedValueChanged(sender, e);
         }
         private void ByGenreButton_Click(object sender, EventArgs e)
@@ -704,7 +699,7 @@ namespace hltb
             GenreSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
             GenreSortBox_SelectedValueChanged(sender, e);
         }
         private void ByStatusButton_Click(object sender, EventArgs e)
@@ -719,7 +714,7 @@ namespace hltb
             StatusSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
             StatusSortBox_SelectedValueChanged(sender, e);
         }
 
@@ -793,7 +788,7 @@ namespace hltb
                 return;
             Console.WriteLine(nmode);
             list_panel.Controls.Clear();
-            content_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
             switch (nmode)
             {
                 case "games":
@@ -821,7 +816,7 @@ namespace hltb
             
             ByYearButton_Click(sender, e);
 
-            UpdateLabel2();
+            UpdateStatisticsLabel();
         }
 
     }
