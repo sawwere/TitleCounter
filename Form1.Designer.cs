@@ -133,9 +133,8 @@ namespace hltb
             // 
             // statisticsLabel
             // 
-            this.statisticsLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.statisticsLabel.AutoSize = true;
-            this.statisticsLabel.Location = new System.Drawing.Point(736, 647);
+            this.statisticsLabel.Location = new System.Drawing.Point(727, 500);
             this.statisticsLabel.Name = "statisticsLabel";
             this.statisticsLabel.Size = new System.Drawing.Size(35, 13);
             this.statisticsLabel.TabIndex = 16;
