@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using System.Windows.Forms;
+
+using static hltb.DataFiles;
 
 namespace hltb
 {
@@ -21,40 +21,12 @@ namespace hltb
 
         mode currentMode = mode.GAMES;
 
-        
-        //"F:/my_programs/python/HowLongToBeat" +
-        //Directory.GetCurrentDirectory()
-        //
-        static string path = Directory.GetCurrentDirectory();
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            SaveGames();
-            SaveFilms();
-            SaveTVSeries();
-        }
-
-        static List<Title> GetGames()
-        {
-            string json_string = File.ReadAllText(path + "/data/game_sheet.json");
-            var games = JsonConvert.DeserializeObject<List<Game>>(json_string);
-            List<Title> res = games.Select(x => x as Title).ToList();
-
-            return res;
-        }
-        static List<Title> GetFilms()
-        {
-            string json_string = File.ReadAllText(path + "/data/film_sheet.json");
-            var films = JsonConvert.DeserializeObject<List<Film>>(json_string);
-            List<Title> res = films.Select(x => x as Title).ToList();
-            return res;
-        }
-        static List<Title> GetTVSeries()
-        {
-            string json_string = File.ReadAllText(path + "/data/tvseries_sheet.json");
-            var tvseries = JsonConvert.DeserializeObject<List<TVSeries>>(json_string);
-            List<Title> res = tvseries.Select(x => x as Title).ToList();
-            return res;
+            SaveGames(titles[mode.GAMES]);
+            SaveFilms(titles[mode.FILMS]);
+            SaveTVSeries(titles[mode.TVSERIES]);
         }
 
         void UpdateStatisticsLabel()
@@ -67,24 +39,6 @@ namespace hltb
 
             statisticsLabel.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
                 + $"Time : {tmcmpltd} / {tmtotal} ({(tmcmpltd / tmtotal * 100):F2}%)";
-        }
-        void SaveGames()
-        {
-            string file_name = path + "/game_sheet.json";
-            string jstring = JsonConvert.SerializeObject(titles[mode.GAMES], Formatting.Indented);
-            File.WriteAllText(file_name, jstring);
-        }
-        void SaveFilms()
-        {
-            string file_name = path + "/film_sheet.json";
-            string jstring = JsonConvert.SerializeObject(titles[mode.FILMS], Formatting.Indented);
-            File.WriteAllText(file_name, jstring);
-        }
-        void SaveTVSeries()
-        {
-            string file_name = path + "/tvseries_sheet.json";
-            string jstring = JsonConvert.SerializeObject(titles[mode.TVSERIES], Formatting.Indented);
-            File.WriteAllText(file_name, jstring);
         }
 
         Color GetColor(int score)
@@ -129,9 +83,13 @@ namespace hltb
         {
             InitializeComponent();
         }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
+            CheckDataFiles();
+
             titles = new Dictionary<mode, List<Title>>(3);
+
             titles[mode.GAMES] = GetGames();
             titles[mode.FILMS] = GetFilms();
             titles[mode.TVSERIES] = GetTVSeries();
@@ -155,7 +113,7 @@ namespace hltb
         {
             e.Handled = true;
         }
-        //update
+        
         private void addtitle_MouseDown(object sender, MouseEventArgs e)
         {
             StringBuilder status = new StringBuilder();
@@ -174,8 +132,6 @@ namespace hltb
                 }
                 Process p = Process.Start(new ProcessStartInfo
                 {
-                    //"F:/programs/Python" 
-                    //"F:/my_programs/python/HowLongToBeat"
                     FileName = "F:/programs/Python/python.exe",
                     Arguments = pathToFind + "/python_part/find.py \"" + title + "\"",
                     UseShellExecute = false,
@@ -284,13 +240,13 @@ namespace hltb
             {
                 case mode.GAMES:
 
-                    SaveGames();
+                    SaveGames(titles[mode.GAMES]);
                     break;
                 case mode.FILMS:
-                    SaveFilms();
+                    SaveFilms(titles[mode.FILMS]);
                     break;
                 case mode.TVSERIES:
-                    SaveTVSeries();
+                    SaveTVSeries(titles[mode.TVSERIES]);
                     break;
             }
             UpdateStatisticsLabel();
@@ -361,7 +317,7 @@ namespace hltb
             pb.SizeMode = PictureBoxSizeMode.StretchImage;
             currentTitlePanel.Controls.Add(pb);
 
-            pb.Image = new Bitmap(path + "//data//images//" + currentMode.ToString().ToLower() + "//" + s + ".jpg");
+            pb.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "//" + s + ".jpg");
             cur_title = titles[currentMode].Find(x => x.name == button.Text);
 
             Label nameLabel = new Label();
@@ -641,12 +597,12 @@ namespace hltb
         }
         private void ScoreSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            string cur_score = ScoreSortBox.SelectedItem.ToString();// System.DateTime.Now.Year.ToString();
+            string cur_score = ScoreSortBox.SelectedItem.ToString();
             AddButtons(titles[currentMode].Where(x => x.score.ToString() == cur_score).ToList());
         }
         private void GenreSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            string cur_genre = GenreSortBox.SelectedItem.ToString();// System.DateTime.Now.Year.ToString();
+            string cur_genre = GenreSortBox.SelectedItem.ToString();
             AddButtons(titles[currentMode].Where(x => (x as Film).genres.Any(y => y == cur_genre)).ToList());
         }
         private void StatusSortBox_SelectedValueChanged(object sender, EventArgs e)
