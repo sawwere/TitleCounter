@@ -8,14 +8,24 @@ namespace hltb
 {
     public class TVSeries : Film
     {
-        public Dictionary<int, int> seasons { get; set; }
-        new public void print()
+        private Dictionary<int, int> seasons;
+
+        public override double Time
         {
-            Console.WriteLine(name, rus_name, image_url,
-                link, time, score, year, status);
-            foreach (var g in genres)
-                Console.WriteLine(g);
-            foreach (var s in seasons)
+            get { return Seasons.Select(p => p.Key * p.Value).Sum() * base.Time; }
+            set { base.Time = value; }
+        }
+
+        public Dictionary<int, int> Seasons 
+        {
+            get { return seasons; }
+            set { seasons = value; }
+        }
+
+        public override void print() 
+        {
+            base.print();
+            foreach (var s in Seasons)
                 Console.WriteLine(s.Key.ToString(), s.Value);
             return;
         }

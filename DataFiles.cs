@@ -58,7 +58,7 @@ namespace hltb
             Directory.CreateDirectory(path + "\\data\\images");
             foreach (mode m in Enum.GetValues(typeof(mode)))
             {
-                Directory.CreateDirectory(path + "\\data//images\\" + m.ToString().ToLower());
+                Directory.CreateDirectory(path + "\\data\\images\\" + m.ToString().ToLower());
                 using (var fs = new FileStream(path + "\\data\\" + m.ToString().ToLower() + "_sheet.json", FileMode.OpenOrCreate)) ;
             }
         }

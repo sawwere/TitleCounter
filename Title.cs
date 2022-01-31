@@ -4,36 +4,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace hltb
 {
     public class Title
     {
-        public string name { get; set; }
-        public string image_url { get; set; }
-        public string link { get; set; }
-        public double time { get; set; }
-        public int score { get; set; }
-        public int year { get; set; }
-        public string status { get; set; }
+        private string name;
+        private string image_url;
+        private string link;
+        private double time;
+        private int score;
+        private int year;
+        private string status;
 
-        public void UpdateYear(int year)
+        public virtual string Name
         {
-            this.year = year;
+            get { return name; }
+            set { name = value;  }
+        }
+        public virtual string Image_Url
+        {
+            get { return image_url; }
+            set { image_url = value; }
+        }
+        public virtual string Link
+        {
+            get { return link; }
+            set { link = value; }
+        }
+        public virtual double Time
+        {
+            get { return time; }
+            set { time = value; }
+        }
+        public virtual int Score
+        {
+            get { return score; }
+            set { score = value; }
         }
 
-        public void UpdateScore(int score)
+        public virtual int Year
         {
-            this.score = score;
+            get { return year; }
+            set { year = value; }
         }
-
-        public void UpdateStatus(string status)
+        public virtual string Status
         {
-            this.status = status;
-        }
-
-        public void UpdateTime(double time)
-        {
-            this.time = time;
-        }
+            get { return status; }
+            set { status = value; }
+        }        
     }
 }

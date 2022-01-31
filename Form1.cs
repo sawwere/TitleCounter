@@ -33,9 +33,9 @@ namespace hltb
         {
             double total = 1, cmpltd = 1, tmcmpltd = 1, tmtotal = 1;
             total = titles[currentMode].Count() + 0.0;
-            cmpltd = titles[currentMode].Where(x => (x.status == "completed") || (x.status == "retired")).Count();
-            tmcmpltd = titles[currentMode].Where(x => (x.status == "completed") || (x.status == "retired")).Select(x => x.time).Sum();
-            tmtotal = titles[currentMode].Select(x => x.time).Sum();
+            cmpltd = titles[currentMode].Where(x => (x.Status == "completed") || (x.Status == "retired")).Count();
+            tmcmpltd = titles[currentMode].Where(x => (x.Status == "completed") || (x.Status == "retired")).Select(x => x.Time).Sum();
+            tmtotal = titles[currentMode].Select(x => x.Time).Sum();
 
             statisticsLabel.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
                 + $"Time : {tmcmpltd} / {tmtotal} ({(tmcmpltd / tmtotal * 100):F2}%)";
@@ -185,13 +185,13 @@ namespace hltb
         {
             var combobox = (ComboBox)sender;
             var s = (int)combobox.SelectedItem;
-            cur_title.UpdateScore(s);
+            cur_title.Score = s;
         }
         private void StatusCSelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             var combobox = (ComboBox)sender;
             var s = combobox.SelectedItem.ToString();
-            cur_title.UpdateStatus(s);
+            cur_title.Status = s;
         }
         
         private void SeasonsCSelectedIndexChanged(object sender, EventArgs eventArgs)
@@ -201,7 +201,7 @@ namespace hltb
             currentTitlePanel.Controls.RemoveByKey("episodesLabel");
             Label episodesLabel = new Label();
             episodesLabel.Name = "episodesLabel";
-            episodesLabel.Text = $"Episodes count: {(cur_title as TVSeries).seasons[int.Parse(combobox.SelectedItem.ToString())]}";
+            episodesLabel.Text = $"Episodes count: {(cur_title as TVSeries).Seasons[int.Parse(combobox.SelectedItem.ToString())]}";
             episodesLabel.Width = 125;
             episodesLabel.Location = new Point(combobox.Left + combobox.Width, combobox.Top);
             currentTitlePanel.Controls.Add(episodesLabel);
@@ -223,12 +223,12 @@ namespace hltb
                 textbox.Text = "0,0";
             }
             var s = double.Parse(textbox.Text);
-            cur_title.UpdateTime(s);
+            cur_title.Time = s;
         }
         
         private void CopyButtonOnClick(object sender, EventArgs eventArgs)
         {
-            Clipboard.SetText(cur_title.name);
+            Clipboard.SetText(cur_title.Name);
         }
         //TODO Erase deleted title's image
         private void deleteButtonClick(object sender, EventArgs eventArgs)
@@ -257,7 +257,7 @@ namespace hltb
             StringBuilder str = new StringBuilder();
             str.Append("Genres:");
             int len = str.Length;
-            foreach (var gen in m.genres)
+            foreach (var gen in m.Genres)
             {
                 if ((len + gen.Length + 2) / 40 < 1)
                 {
@@ -272,26 +272,23 @@ namespace hltb
             }
             return str.ToString();
         }
-        public string GetOrigTitle<T>(T m) where T : Film
-        {
-            return m.rus_name;
-        }
+
         public string GetTime<T>(T t) where T : Title
         {
             string res = "";
             switch (currentMode)
             {
                 case mode.GAMES:
-                    res = t.time.ToString();
+                    res = t.Time.ToString();
                     break;
                 case mode.FILMS:
-                    var h = (int)t.time / 60;
-                    var m = (int)t.time % 60;
+                    var h = (int)t.Time / 60;
+                    var m = (int)t.Time % 60;
                     res = $"                {h}h {m}m";
                     break;
                 case mode.TVSERIES:
-                    h = (int)t.time / 60;
-                    m = (int)t.time % 60;
+                    h = (int)t.Time / 60;
+                    m = (int)t.Time % 60;
                     res = $"                {h}h {m}m";
                     break;
             }
@@ -317,11 +314,11 @@ namespace hltb
             pb.SizeMode = PictureBoxSizeMode.StretchImage;
             currentTitlePanel.Controls.Add(pb);
 
-            pb.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "//" + s + ".jpg");
-            cur_title = titles[currentMode].Find(x => x.name == button.Text);
+            pb.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + s + ".jpg");
+            cur_title = titles[currentMode].Find(x => x.Name == button.Text);
 
             Label nameLabel = new Label();
-            nameLabel.Text = "Title name: " + cur_title.name;
+            nameLabel.Text = "Title name: " + cur_title.Name;
             nameLabel.Location = new Point(0, 275);
             nameLabel.Width = 200;
             currentTitlePanel.Controls.Add(nameLabel);
@@ -331,20 +328,20 @@ namespace hltb
                 case mode.FILMS:
                     {
                         if (nameLabel.Text.Length < 20)
-                            nameLabel.Text += "  ||  " + GetOrigTitle(cur_title as Film);
+                            nameLabel.Text += "  ||  " + (cur_title as Film).Rus_Name;
                         else
                         {
-                            nameLabel.Text += "\n  ||  " + GetOrigTitle(cur_title as Film);
+                            nameLabel.Text += "\n  ||  " + (cur_title as Film).Rus_Name;
                             nameLabel.Height += 9;
                         }
                         break;
                     }
                 case mode.TVSERIES:
                     if (nameLabel.Text.Length < 20)
-                        nameLabel.Text += "  ||  " + GetOrigTitle(cur_title as Film);
+                        nameLabel.Text += "  ||  " + (cur_title as Film).Rus_Name;
                     else
                     {
-                        nameLabel.Text += "\n  ||  " + GetOrigTitle(cur_title as Film);
+                        nameLabel.Text += "\n  ||  " + (cur_title as Film).Rus_Name;
                         nameLabel.Height += 9;
                     }
                     break;
@@ -384,7 +381,7 @@ namespace hltb
             }
 
             Label yearLabel = new Label();
-            yearLabel.Text = $"Year:                 {cur_title.year}";
+            yearLabel.Text = $"Year:                 {cur_title.Year}";
             yearLabel.Location = new Point(nameLabel.Left, timeLabel.Top + 25);
             yearLabel.Width = 200;
             currentTitlePanel.Controls.Add(yearLabel);
@@ -402,7 +399,7 @@ namespace hltb
             currentTitlePanel.Controls.Add(statusLabel);
 
             ComboBox score_c = new ComboBox();
-            score_c.Text = cur_title.score.ToString();
+            score_c.Text = cur_title.Score.ToString();
             score_c.Width = 75;
             score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             score_c.SelectedIndexChanged += ScoreCSelectedIndexChanged;
@@ -410,7 +407,7 @@ namespace hltb
             currentTitlePanel.Controls.Add(score_c);
 
             ComboBox status_c = new ComboBox();
-            status_c.Text = cur_title.status.ToString();
+            status_c.Text = cur_title.Status.ToString();
             status_c.Width = 75;
             status_c.Items.AddRange(new object[] {
             "completed",
@@ -448,8 +445,8 @@ namespace hltb
                     seasons_c.Location = new Point(seasonsLabel.Left + seasonsLabel.Width, seasonsLabel.Top);
                     seasons_c.Width = status_c.Width;
                     int i = 0;
-                    var a = new object[tVSeries.seasons.Count];
-                    foreach (var season in tVSeries.seasons)
+                    var a = new object[tVSeries.Seasons.Count];
+                    foreach (var season in tVSeries.Seasons)
                     {
                             a[i] = season.Key;
                             i++;
@@ -477,8 +474,8 @@ namespace hltb
                 button.Width = 240;
                 button.Height = 25;
                 button.Name = "btn" + i;
-                button.Text = g.name;
-                button.BackColor = GetColor(g.score);
+                button.Text = g.Name;
+                button.BackColor = GetColor(g.Score);
                 button.Click += ButtonOnClick;
                 button.ForeColor = Color.Black;
                 button.Font = new Font("Arial", 8, FontStyle.Bold);
@@ -496,7 +493,7 @@ namespace hltb
             YearSortBox.Items.Clear();
             var set = new SortedSet<int>();
             foreach (var g in titles[currentMode])
-                set.Add(g.year);
+                set.Add(g.Year);
             object[] a = new object[set.Count];
             int i = 0;
             foreach (var s in set)
@@ -514,7 +511,7 @@ namespace hltb
             //DANGER
             foreach (Film f in titles[currentMode])
             {
-                foreach (var g in f.genres)
+                foreach (var g in f.Genres)
                     set.Add(g);
             }
             object[] a = new object[set.Count];
@@ -593,22 +590,22 @@ namespace hltb
         private void YearSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_year = YearSortBox.SelectedItem.ToString();
-            AddButtons(titles[currentMode].Where(x => x.year.ToString() == cur_year).ToList());
+            AddButtons(titles[currentMode].Where(x => x.Year.ToString() == cur_year).ToList());
         }
         private void ScoreSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_score = ScoreSortBox.SelectedItem.ToString();
-            AddButtons(titles[currentMode].Where(x => x.score.ToString() == cur_score).ToList());
+            AddButtons(titles[currentMode].Where(x => x.Score.ToString() == cur_score).ToList());
         }
         private void GenreSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_genre = GenreSortBox.SelectedItem.ToString();
-            AddButtons(titles[currentMode].Where(x => (x as Film).genres.Any(y => y == cur_genre)).ToList());
+            AddButtons(titles[currentMode].Where(x => (x as Film).Genres.Any(y => y == cur_genre)).ToList());
         }
         private void StatusSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
             string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
-            AddButtons(titles[currentMode].Where(x => x.status.ToString() == cur_status).ToList());
+            AddButtons(titles[currentMode].Where(x => x.Status.ToString() == cur_status).ToList());
         }
 
         private void ModeBox_SelectedValueChanged(object sender, EventArgs e)

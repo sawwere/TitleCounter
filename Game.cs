@@ -3,31 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace hltb
 {
     public class Game : Title
     {
-        public double similarity { get; set; }
+        private double similarity;
+
+        public double Similarity 
+        {
+            get { return similarity; }
+            set { similarity = value; }
+        }
+
         public void print()
         {
-            Console.WriteLine(name + ' ' + image_url + ' ' + link + ' ' + time
-                + ' ' + similarity + ' ' + score + ' ' + year + ' ' + status);
+            Console.WriteLine(Name + ' ' + Image_Url + ' ' + Link + ' ' + Time
+                + ' ' + Similarity + ' ' + Score + ' ' + Year + ' ' + Status);
             return;
         }
 
-        private void Update(Game other)
-        {
-            name = other.name;
-            image_url = other.image_url;
-            link = other.link;
-            time = other.time;
-            similarity = other.similarity;
-            score = other.score;
-            year = other.year;
-            status = other.status;
-        }
-
-        
+        //[JsonConstructor]
+        //public Game(double sim, string n, string iu, string l, double t, int sc, int y, string st)
+        //{
+        //    similarity = sim;
+        //    Name = n;
+        //    //ImageUrl = iu;
+        //    ImageUrl = iu;
+        //    Link = l;
+        //    Time = t;
+        //    Score = sc;
+        //    Year = y;
+        //    Status = st;
+        //}
     }
 }

@@ -8,14 +8,25 @@ namespace hltb
 {
     public class Film : Title
     {
-        public string rus_name { get; set; }
+        private string rusName;
+        private List<string> genres;
 
-        public List<string> genres { get; set; }
-
-        public void print()
+        public string Rus_Name
         {
-            Console.WriteLine(name, rus_name, image_url,
-                link, time, score, year, status);
+            get { return rusName; }
+            set { rusName = value; }
+        }
+
+        public List<string> Genres 
+        {
+            get { return genres; }
+            set { genres = value; } 
+        }
+
+        public virtual void print()
+        {
+            Console.WriteLine(Name + ' ' + Rus_Name + ' ' + Image_Url + ' ' + Link + ' ' + Time
+                + ' ' + Score + ' ' + Year + ' ' + Status);
             foreach (var g in genres)
                 Console.WriteLine(g);
             return;
