@@ -33,8 +33,8 @@ namespace hltb
         {
             double total = 1, cmpltd = 1, tmcmpltd = 1, tmtotal = 1;
             total = titles[currentMode].Count() + 0.0;
-            cmpltd = titles[currentMode].Where(x => (x.Status == "completed") || (x.Status == "retired")).Count();
-            tmcmpltd = titles[currentMode].Where(x => (x.Status == "completed") || (x.Status == "retired")).Select(x => x.Time).Sum();
+            cmpltd = titles[currentMode].Where(x => (x.Status == TitleStatus.COMPLETED) || (x.Status == TitleStatus.RETIRED)).Count();
+            tmcmpltd = titles[currentMode].Where(x => (x.Status == TitleStatus.COMPLETED) || (x.Status == TitleStatus.RETIRED)).Select(x => x.Time).Sum();
             tmtotal = titles[currentMode].Select(x => x.Time).Sum();
 
             statisticsLabel.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
@@ -190,7 +190,7 @@ namespace hltb
         private void StatusCSelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             var combobox = (ComboBox)sender;
-            var s = combobox.SelectedItem.ToString();
+            TitleStatus s; System.Enum.TryParse(combobox.SelectedItem.ToString().ToLower(), out s);
             cur_title.Status = s;
         }
         
@@ -407,7 +407,7 @@ namespace hltb
             currentTitlePanel.Controls.Add(score_c);
 
             ComboBox status_c = new ComboBox();
-            status_c.Text = cur_title.Status.ToString();
+            status_c.Text = cur_title.Status.ToString().ToLower();
             status_c.Width = 75;
             status_c.Items.AddRange(new object[] {
             "completed",
@@ -604,7 +604,7 @@ namespace hltb
         }
         private void StatusSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
+            string cur_status = StatusSortBox.SelectedItem.ToString().ToUpper();
             AddButtons(titles[currentMode].Where(x => x.Status.ToString() == cur_status).ToList());
         }
 

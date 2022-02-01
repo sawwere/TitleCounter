@@ -3,6 +3,8 @@
 
 namespace hltb
 {
+    public enum TitleStatus { COMPLETED, BACKLOG, RETIRED};
+
     public class Title
     {
         private string name;
@@ -11,7 +13,7 @@ namespace hltb
         private double time;
         private int score;
         private int year;
-        private string status;
+        private TitleStatus status;
 
         public string Name
         {
@@ -44,7 +46,7 @@ namespace hltb
             get { return score; }
             set { score = value; }
         } 
-        public string Status
+        public TitleStatus Status
         {
             get { return status; }
             set { status = value; }
@@ -56,15 +58,15 @@ namespace hltb
         }
 
         [JsonConstructor]
-        public Title(string name, string image_url, string list, double time, int score, int year, string status)
+        public Title(string name, string image_url, string link, double time, int score, int year, string status)
         {
             Name = name;
             Image_Url = image_url;
-            Link = list;
+            Link = link;
             Time = time;
             Score = score;
             Year = year;
-            Status = status;
+            System.Enum.TryParse(status.ToUpper(), out this.status);
         }
     }
 }
