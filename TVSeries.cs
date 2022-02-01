@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace hltb
 {
@@ -10,16 +9,10 @@ namespace hltb
     {
         private Dictionary<int, int> seasons;
 
-        public override double Time
-        {
-            get { return Seasons.Select(p => p.Key * p.Value).Sum() * base.Time; }
-            set { base.Time = value; }
-        }
-
         public Dictionary<int, int> Seasons 
         {
             get { return seasons; }
-            set { seasons = value; }
+            private set { seasons = value; }
         }
 
         public override void print() 
@@ -28,6 +21,14 @@ namespace hltb
             foreach (var s in Seasons)
                 Console.WriteLine(s.Key.ToString(), s.Value);
             return;
+        }
+
+        [JsonConstructor]
+        public TVSeries(Dictionary<int, int> seasons, string rus_name, List<string> genres, 
+            string name, string image_url, string list, double time, int score, int year, string status)
+            : base(rus_name, genres, name, image_url, list, time, score, year, status)
+        {
+            Seasons = seasons;
         }
     }
 }

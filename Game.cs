@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace hltb
@@ -14,7 +10,7 @@ namespace hltb
         public double Similarity 
         {
             get { return similarity; }
-            set { similarity = value; }
+            private set { similarity = value; }
         }
 
         public void print()
@@ -24,18 +20,11 @@ namespace hltb
             return;
         }
 
-        //[JsonConstructor]
-        //public Game(double sim, string n, string iu, string l, double t, int sc, int y, string st)
-        //{
-        //    similarity = sim;
-        //    Name = n;
-        //    //ImageUrl = iu;
-        //    ImageUrl = iu;
-        //    Link = l;
-        //    Time = t;
-        //    Score = sc;
-        //    Year = y;
-        //    Status = st;
-        //}
+        [JsonConstructor]
+        public Game(double similarity, string name, string image_url, string list, double time, int score, int year, string status)
+            :base(name, image_url, list, time, score, year, status)
+        {
+            Similarity = similarity;
+        }
     }
 }

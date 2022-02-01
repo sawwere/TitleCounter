@@ -223,7 +223,7 @@ namespace hltb
                 textbox.Text = "0,0";
             }
             var s = double.Parse(textbox.Text);
-            cur_title.Time = s;
+            (cur_title as Game).Time = s;
         }
         
         private void CopyButtonOnClick(object sender, EventArgs eventArgs)

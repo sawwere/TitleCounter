@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 
 namespace hltb
@@ -17,41 +13,58 @@ namespace hltb
         private int year;
         private string status;
 
-        public virtual string Name
+        public string Name
         {
             get { return name; }
-            set { name = value;  }
+            private set { name = value;  }
         }
-        public virtual string Image_Url
+        public string Image_Url
         {
             get { return image_url; }
-            set { image_url = value; }
+            private set { image_url = value; }
         }
-        public virtual string Link
+        public string Link
         {
             get { return link; }
-            set { link = value; }
+            private set { link = value; }
         }
+        public int Year
+        {
+            get { return year; }
+            private set { year = value; }
+        }
+
         public virtual double Time
         {
             get { return time; }
             set { time = value; }
         }
-        public virtual int Score
+        public int Score
         {
             get { return score; }
             set { score = value; }
-        }
-
-        public virtual int Year
-        {
-            get { return year; }
-            set { year = value; }
-        }
-        public virtual string Status
+        } 
+        public string Status
         {
             get { return status; }
             set { status = value; }
-        }        
+        }
+
+        public Title()
+        {
+
+        }
+
+        [JsonConstructor]
+        public Title(string name, string image_url, string list, double time, int score, int year, string status)
+        {
+            Name = name;
+            Image_Url = image_url;
+            Link = list;
+            Time = time;
+            Score = score;
+            Year = year;
+            Status = status;
+        }
     }
 }
