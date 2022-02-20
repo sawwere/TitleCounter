@@ -50,6 +50,9 @@ namespace hltb
             this.currentTitlePanel = new System.Windows.Forms.Panel();
             this.ByNameButton = new System.Windows.Forms.Button();
             this.NameSortBox = new System.Windows.Forms.ComboBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.currentTitlePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // addgame
@@ -279,9 +282,11 @@ namespace hltb
             // 
             // currentTitlePanel
             // 
-            this.currentTitlePanel.Location = new System.Drawing.Point(1000, 25);
+            this.currentTitlePanel.Controls.Add(this.pictureBox1);
+            this.currentTitlePanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.currentTitlePanel.Location = new System.Drawing.Point(1084, 0);
             this.currentTitlePanel.Name = "currentTitlePanel";
-            this.currentTitlePanel.Size = new System.Drawing.Size(300, 600);
+            this.currentTitlePanel.Size = new System.Drawing.Size(300, 561);
             this.currentTitlePanel.TabIndex = 29;
             // 
             // ByNameButton
@@ -309,15 +314,23 @@ namespace hltb
             this.NameSortBox.Visible = false;
             this.NameSortBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(36, 45);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1384, 561);
+            this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.NameSortBox);
             this.Controls.Add(this.ByNameButton);
-            this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.StatusSortBox);
             this.Controls.Add(this.GenreSortBox);
             this.Controls.Add(this.ScoreSortBox);
@@ -341,6 +354,8 @@ namespace hltb
             this.Name = "Mainform";
             this.Text = "MyList";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.currentTitlePanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -369,6 +384,7 @@ namespace hltb
         private System.Windows.Forms.Panel currentTitlePanel;
         private System.Windows.Forms.Button ByNameButton;
         private System.Windows.Forms.ComboBox NameSortBox;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

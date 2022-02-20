@@ -206,30 +206,7 @@ namespace hltb
             episodesLabel.Location = new Point(combobox.Left + combobox.Width, combobox.Top);
             currentTitlePanel.Controls.Add(episodesLabel);
         }
-        private void TimeCKeyPress(object sender, KeyPressEventArgs e)
-        {
-            var textbox = (TextBox)sender;
-            char symb = e.KeyChar;
-            if (!double.TryParse(textbox.Text + symb.ToString(), out double a) && (e.KeyChar != 8))
-            {
-                e.Handled = true;
-            }
-        }
-        private void TimeCTextChanged(object sender, EventArgs eventArgs)
-        {
-            var textbox = (TextBox)sender;
-            if (!double.TryParse(textbox.Text, out double a))
-            {
-                textbox.Text = "0,0";
-            }
-            var s = double.Parse(textbox.Text);
-            (cur_title as Game).Time = s;
-        }
         
-        private void CopyButtonOnClick(object sender, EventArgs eventArgs)
-        {
-            Clipboard.SetText(cur_title.Name);
-        }
         //TODO Erase deleted title's image
         private void deleteButtonClick(object sender, EventArgs eventArgs)
         {
@@ -299,11 +276,9 @@ namespace hltb
         {
             currentTitlePanel.Controls.Clear();
 
-            var button = (Button)sender;
+            
 
-            PictureBox pb = new PictureBox();
-            pb.Location = new Point(0, 0);
-            pb.Size = new System.Drawing.Size(200, 250);
+            var button = (Button)sender;
 
             var g = button.Text.Where(x => (x != ':') & (x != '/')).ToArray();
             StringBuilder s = new StringBuilder();
@@ -311,151 +286,86 @@ namespace hltb
             {
                 s.Append(ss.ToString());
             }
-            pb.SizeMode = PictureBoxSizeMode.StretchImage;
-            currentTitlePanel.Controls.Add(pb);
 
-            pb.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + s + ".jpg");
             cur_title = titles[currentMode].Find(x => x.Name == button.Text);
+            currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_title, currentMode));
 
-            Label nameLabel = new Label();
-            nameLabel.Text = "Title name: " + cur_title.Name;
-            nameLabel.Location = new Point(0, 275);
-            nameLabel.Width = 200;
-            currentTitlePanel.Controls.Add(nameLabel);
-            // Get rus name for Films, TvSeries
-            switch (currentMode)
-            {
-                case mode.FILMS:
-                    {
-                        if (nameLabel.Text.Length < 20)
-                            nameLabel.Text += "  ||  " + (cur_title as Film).Rus_Name;
-                        else
-                        {
-                            nameLabel.Text += "\n  ||  " + (cur_title as Film).Rus_Name;
-                            nameLabel.Height += 9;
-                        }
-                        break;
-                    }
-                case mode.TVSERIES:
-                    if (nameLabel.Text.Length < 20)
-                        nameLabel.Text += "  ||  " + (cur_title as Film).Rus_Name;
-                    else
-                    {
-                        nameLabel.Text += "\n  ||  " + (cur_title as Film).Rus_Name;
-                        nameLabel.Height += 9;
-                    }
-                    break;
-            }
+            //Label yearLabel = new Label();
+            //yearLabel.Text = $"Year:                 {cur_title.Year}";
+            //yearLabel.Location = new Point(nameLabel.Left, timeLabel.Top + 25);
+            //yearLabel.Width = 200;
+            //currentTitlePanel.Controls.Add(yearLabel);
 
-            Button copyButton = new Button();
-            copyButton.Text = "Copy";
-            copyButton.Location = new Point(nameLabel.Right + 25, nameLabel.Top);
-            copyButton.Click += CopyButtonOnClick;
-            currentTitlePanel.Controls.Add(copyButton);
+            //Label scoreLabel = new Label();
+            //scoreLabel.Text = "Score:";
+            //scoreLabel.Location = new Point(nameLabel.Left, yearLabel.Top + 25);
+            //scoreLabel.Width = 75;
+            //currentTitlePanel.Controls.Add(scoreLabel);
 
-            Label timeLabel = new Label();
-            timeLabel.Text = "Time: ";
-            timeLabel.Location = new Point(nameLabel.Left, nameLabel.Bottom + 5);
-            timeLabel.Width = 75;
-            currentTitlePanel.Controls.Add(timeLabel);
+            //Label statusLabel = new Label();
+            //statusLabel.Text = "Status:";
+            //statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Top + 25); ;
+            //statusLabel.Width = 75;
+            //currentTitlePanel.Controls.Add(statusLabel);
 
-            switch (currentMode)
-            {
-                case mode.GAMES:
-                    TextBox time_c = new TextBox();
-                    time_c.Text = GetTime(cur_title);
-                    time_c.Width = 75;
-                    time_c.Location = new Point(timeLabel.Left + 80, timeLabel.Top);
-                    time_c.KeyPress += TimeCKeyPress;
-                    time_c.TextChanged += TimeCTextChanged;
-                    currentTitlePanel.Controls.Add(time_c);
-                    break;
-                case mode.FILMS:
-                    timeLabel.Width = 200;
-                    timeLabel.Text += GetTime(cur_title);
-                    break;
-                case mode.TVSERIES:
-                    timeLabel.Width = 200;
-                    timeLabel.Text += GetTime(cur_title);
-                    break;
-            }
+            //ComboBox score_c = new ComboBox();
+            //score_c.Text = cur_title.Score.ToString();
+            //score_c.Width = 75;
+            //score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            //score_c.SelectedIndexChanged += ScoreCSelectedIndexChanged;
+            //score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
+            //currentTitlePanel.Controls.Add(score_c);
 
-            Label yearLabel = new Label();
-            yearLabel.Text = $"Year:                 {cur_title.Year}";
-            yearLabel.Location = new Point(nameLabel.Left, timeLabel.Top + 25);
-            yearLabel.Width = 200;
-            currentTitlePanel.Controls.Add(yearLabel);
+            //ComboBox status_c = new ComboBox();
+            //status_c.Text = cur_title.Status.ToString().ToLower();
+            //status_c.Width = 75;
+            //status_c.Items.AddRange(new object[] {
+            //"completed",
+            //"backlog",
+            //"retired"});
+            //status_c.SelectedIndexChanged += StatusCSelectedIndexChanged;
+            //status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
+            //currentTitlePanel.Controls.Add(status_c);
 
-            Label scoreLabel = new Label();
-            scoreLabel.Text = "Score:";
-            scoreLabel.Location = new Point(nameLabel.Left, yearLabel.Top + 25);
-            scoreLabel.Width = 75;
-            currentTitlePanel.Controls.Add(scoreLabel);
+            //Button deleteButton = new Button();
+            //deleteButton.Text = "Delete this title";
+            //deleteButton.Width = 125;
+            //deleteButton.Location = new Point(statusLabel.Left, statusLabel.Top + 120);
+            //deleteButton.Click += deleteButtonClick;
+            //currentTitlePanel.Controls.Add(deleteButton);
+            //if (currentMode != mode.GAMES)
+            //{
+            //    Label genresLabel = new Label();
+            //    genresLabel.Location = new Point(nameLabel.Left, status_c.Top + 25);
+            //    string str = BuildStingGenres(cur_title as Film);
+            //    genresLabel.Width = 225;
+            //    genresLabel.Height += 9 * (str.Length / 40);
+            //    genresLabel.Text = str.ToString();
+            //    currentTitlePanel.Controls.Add(genresLabel);
 
-            Label statusLabel = new Label();
-            statusLabel.Text = "Status:";
-            statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Top + 25); ;
-            statusLabel.Width = 75;
-            currentTitlePanel.Controls.Add(statusLabel);
+            //    if (cur_title is TVSeries tVSeries)
+            //    {
+            //        Label seasonsLabel = new Label();
+            //        seasonsLabel.Text = "Select Season:";
+            //        seasonsLabel.Width = 80;
+            //        seasonsLabel.Location = new Point(nameLabel.Left, genresLabel.Bottom + 3);
+            //        currentTitlePanel.Controls.Add(seasonsLabel);
 
-            ComboBox score_c = new ComboBox();
-            score_c.Text = cur_title.Score.ToString();
-            score_c.Width = 75;
-            score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-            score_c.SelectedIndexChanged += ScoreCSelectedIndexChanged;
-            score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
-            currentTitlePanel.Controls.Add(score_c);
-
-            ComboBox status_c = new ComboBox();
-            status_c.Text = cur_title.Status.ToString().ToLower();
-            status_c.Width = 75;
-            status_c.Items.AddRange(new object[] {
-            "completed",
-            "backlog",
-            "retired"});
-            status_c.SelectedIndexChanged += StatusCSelectedIndexChanged;
-            status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
-            currentTitlePanel.Controls.Add(status_c);
-
-            Button deleteButton = new Button();
-            deleteButton.Text = "Delete this title";
-            deleteButton.Width = 125;
-            deleteButton.Location = new Point(statusLabel.Left, statusLabel.Top + 120);
-            deleteButton.Click += deleteButtonClick;
-            currentTitlePanel.Controls.Add(deleteButton);
-            if (currentMode != mode.GAMES)
-            {
-                Label genresLabel = new Label();
-                genresLabel.Location = new Point(nameLabel.Left, status_c.Top + 25);
-                string str = BuildStingGenres(cur_title as Film);
-                genresLabel.Width = 225;
-                genresLabel.Height += 9 * (str.Length / 40);
-                genresLabel.Text = str.ToString();
-                currentTitlePanel.Controls.Add(genresLabel);
-
-                if (cur_title is TVSeries tVSeries)
-                {
-                    Label seasonsLabel = new Label();
-                    seasonsLabel.Text = "Select Season:";
-                    seasonsLabel.Width = 80;
-                    seasonsLabel.Location = new Point(nameLabel.Left, genresLabel.Bottom + 3);
-                    currentTitlePanel.Controls.Add(seasonsLabel);
-
-                    ComboBox seasons_c = new ComboBox();
-                    seasons_c.Location = new Point(seasonsLabel.Left + seasonsLabel.Width, seasonsLabel.Top);
-                    seasons_c.Width = status_c.Width;
-                    int i = 0;
-                    var a = new object[tVSeries.Seasons.Count];
-                    foreach (var season in tVSeries.Seasons)
-                    {
-                            a[i] = season.Key;
-                            i++;
-                    }
-                    seasons_c.Items.AddRange(a);
-                    seasons_c.SelectedIndexChanged += SeasonsCSelectedIndexChanged;
-                    currentTitlePanel.Controls.Add(seasons_c);
-                }
-            }
+            //        ComboBox seasons_c = new ComboBox();
+            //        seasons_c.Location = new Point(seasonsLabel.Left + seasonsLabel.Width, seasonsLabel.Top);
+            //        seasons_c.Width = status_c.Width;
+            //        int i = 0;
+            //        var a = new object[tVSeries.Seasons.Count];
+            //        foreach (var season in tVSeries.Seasons)
+            //        {
+            //                a[i] = season.Key;
+            //                i++;
+            //        }
+            //        seasons_c.Items.AddRange(a);
+            //        seasons_c.SelectedIndexChanged += SeasonsCSelectedIndexChanged;
+            //        currentTitlePanel.Controls.Add(seasons_c);
+            //    }
+            //}
             this.Controls.Add(currentTitlePanel);
         }
         public void AddButtons(List<Title> titles, int y = 0)
