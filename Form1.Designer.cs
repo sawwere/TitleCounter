@@ -48,9 +48,9 @@ namespace hltb
             this.GenreSortBox = new System.Windows.Forms.ComboBox();
             this.StatusSortBox = new System.Windows.Forms.ComboBox();
             this.currentTitlePanel = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ByNameButton = new System.Windows.Forms.Button();
             this.NameSortBox = new System.Windows.Forms.ComboBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.currentTitlePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -133,8 +133,9 @@ namespace hltb
             // 
             // statisticsLabel
             // 
+            this.statisticsLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.statisticsLabel.AutoSize = true;
-            this.statisticsLabel.Location = new System.Drawing.Point(727, 500);
+            this.statisticsLabel.Location = new System.Drawing.Point(727, 600);
             this.statisticsLabel.Name = "statisticsLabel";
             this.statisticsLabel.Size = new System.Drawing.Size(35, 13);
             this.statisticsLabel.TabIndex = 16;
@@ -210,7 +211,7 @@ namespace hltb
             "Games",
             "Films",
             "TvSeries"});
-            this.ModeBox.Location = new System.Drawing.Point(12, 122);
+            this.ModeBox.Location = new System.Drawing.Point(12, 172);
             this.ModeBox.Name = "ModeBox";
             this.ModeBox.Size = new System.Drawing.Size(66, 52);
             this.ModeBox.TabIndex = 23;
@@ -284,10 +285,18 @@ namespace hltb
             // 
             this.currentTitlePanel.Controls.Add(this.pictureBox1);
             this.currentTitlePanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.currentTitlePanel.Location = new System.Drawing.Point(1084, 0);
+            this.currentTitlePanel.Location = new System.Drawing.Point(984, 0);
             this.currentTitlePanel.Name = "currentTitlePanel";
-            this.currentTitlePanel.Size = new System.Drawing.Size(300, 561);
+            this.currentTitlePanel.Size = new System.Drawing.Size(400, 661);
             this.currentTitlePanel.TabIndex = 29;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(36, 45);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // ByNameButton
             // 
@@ -314,20 +323,12 @@ namespace hltb
             this.NameSortBox.Visible = false;
             this.NameSortBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(36, 45);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1384, 561);
+            this.ClientSize = new System.Drawing.Size(1384, 661);
             this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.NameSortBox);
             this.Controls.Add(this.ByNameButton);

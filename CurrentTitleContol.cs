@@ -17,11 +17,11 @@ namespace hltb
 
         private string GetFullName()
         {
-            StringBuilder res = new StringBuilder( "Title name: ");
+            StringBuilder res = new StringBuilder( "");
             var ss = title.Name.Split(' ');//.Concat((title as Film).Rus_Name.Split(' '));
             foreach (var part in ss)
             {
-                if ((part.Length + res.Length % 30 ) > 30)
+                if ((res.Length % 30 + part.Length + 1) >= 30)
                     res.Append('\n');
                 res.Append(part + ' ');
             }
@@ -31,7 +31,7 @@ namespace hltb
                 res.Append(" || ");
                 foreach (var part in f.Rus_Name.Split(' '))
                 {
-                    if ((part.Length + res.Length % 30) > 30)
+                    if ((res.Length % 30 + part.Length + 1) >= 30)
                         res.Append('\n');
                     res.Append(part + ' ');
                 }
@@ -43,11 +43,37 @@ namespace hltb
 
         private string GetSafeName()
         {
-            var proh = @"<>:""'/\|? *";
-            return string.Join("", title.Name.Where(x => proh.Contains(x) ? '' : ' ').ToArray());
+            char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
+            return new string(title.Name.Where(x => !proh.Contains(x)).ToArray());
 
         }
 
+        private void ScoreCSelectedIndexChanged(object sender, EventArgs eventArgs)
+        {
+            var combobox = (ComboBox)sender;
+            var s = (int)combobox.SelectedItem;
+            title.Score = s;
+        }
+
+        private void StatusCSelectedIndexChanged(object sender, EventArgs eventArgs)
+        {
+            var combobox = (ComboBox)sender;
+            TitleStatus s; System.Enum.TryParse(combobox.SelectedItem.ToString().ToLower(), out s);
+            title.Status = s;
+        }
+
+        private void SeasonsCSelectedIndexChanged(object sender, EventArgs eventArgs)
+        {
+            var combobox = (ComboBox)sender;
+            var s = combobox.SelectedItem.ToString();
+            Controls.RemoveByKey("episodesLabel");
+            Label episodesLabel = new Label();
+            episodesLabel.Name = "episodesLabel";
+            episodesLabel.Text = $"Episodes count: {(title as TVSeries).Seasons[int.Parse(combobox.SelectedItem.ToString())]}";
+            episodesLabel.Width = 125;
+            episodesLabel.Location = new Point(combobox.Left + combobox.Width, combobox.Top);
+            Controls.Add(episodesLabel);
+        }
 
         public CurrentTitleContol(Title title, mode cm)
         {
@@ -55,17 +81,18 @@ namespace hltb
             this.title = title;
             currentMode = cm;
             string safeName = GetSafeName();
-            Console.WriteLine(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
             titlePicture.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
             nameLabel.Text = "Title name: " + title.Name;
             //if (currentMode != mode.GAMES)
                 nameLabel.Text = GetFullName();
 
+            timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
             switch (currentMode)
             {
                 case mode.GAMES:
                     TextBox time_c = new TextBox();
                     time_c.Text = GetTime(title);
+                    time_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
                     time_c.Width = 75;
                     time_c.Location = new Point(timeLabel.Left + 80, timeLabel.Top);
                     time_c.KeyPress += TimeCKeyPress;
@@ -81,7 +108,74 @@ namespace hltb
                     timeLabel.Text += GetTime(title);
                     break;
             }
+            yearLabel.Text = $"Year:                 {title.Year}";
+            yearLabel.Location = new Point(nameLabel.Left, timeLabel.Bottom + 5);
+            yearLabel.Width = 200;
 
+            scoreLabel.Location = new Point(nameLabel.Left, yearLabel.Bottom + 5);
+            scoreLabel.Width = 75;
+
+            score_c.Text = title.Score.ToString();
+            score_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
+            score_c.Width = 75;
+            score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            score_c.SelectedIndexChanged += ScoreCSelectedIndexChanged;
+            score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
+
+            statusLabel.Text = "Status:";
+            statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Bottom + 5); ;
+            statusLabel.Width = 75;
+
+            status_c.Text = title.Status.ToString().ToLower();
+            status_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
+            status_c.Width = 128;
+            status_c.Items.AddRange(new object[] {
+            "completed",
+            "backlog",
+            "retired"});
+            status_c.SelectedIndexChanged += StatusCSelectedIndexChanged;
+            status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
+
+            if (currentMode != mode.GAMES)
+            {
+                Label genresLabel = new Label();
+                genresLabel.Location = new Point(nameLabel.Left, statusLabel.Bottom + 5);
+                string str = BuildStingGenres(title as Film);
+                genresLabel.Width = 22500;
+                genresLabel.Text = str.ToString();
+                genresLabel.Font = new Font("Microsoft Tai Le", 16, FontStyle.Bold);
+                Controls.Add(genresLabel);
+
+                if (title is TVSeries tVSeries)
+                {
+                    Label seasonsLabel = new Label();
+                    seasonsLabel.Text = "Select Season:";
+                    seasonsLabel.Font = new Font("Microsoft Tai Le", 16, FontStyle.Bold);
+                    Graphics g = CreateGraphics();
+                    seasonsLabel.Width = (int)Math.Ceiling(g.MeasureString(seasonsLabel.Text + " ", seasonsLabel.Font).Width) + 10;
+                    Console.WriteLine(seasonsLabel.Width);
+                    seasonsLabel.Location = new Point(nameLabel.Left, genresLabel.Bottom + 5);
+                    Controls.Add(seasonsLabel);
+
+                    ComboBox seasons_c = new ComboBox();
+                    seasons_c.Location = new Point(seasonsLabel.Right + 5, seasonsLabel.Top);
+                    seasons_c.Width = status_c.Width;
+                    seasons_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
+                    int i = 0;
+                    var a = new object[tVSeries.Seasons.Count];
+                    foreach (var season in tVSeries.Seasons)
+                    {
+                        a[i] = season.Key;
+                        i++;
+                    }
+                    seasons_c.Items.AddRange(a);
+                    seasons_c.SelectedIndexChanged += SeasonsCSelectedIndexChanged;
+                    Controls.Add(seasons_c);
+                }
+            }
+
+            deleteButton.Text = "Delete this title";
+            //deleteButton.Location = new Point(statusLabel.Left, 600);
         }
 
         private void copyButton_Click(object sender, EventArgs e)
@@ -152,6 +246,11 @@ namespace hltb
                     break;
             }
             return res;
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            ;
         }
     }
 }
