@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from howlongtobeatpy import HowLongToBeat
 from Game import Game
 from Film import Film
@@ -10,9 +11,13 @@ from bs4 import BeautifulSoup
 import time
 
 missed_games = list()
-games_file_name = "F:/my_programs/python/HowLongToBeat/games_sheet1.txt"
 
 path_to_data = "F:\my_programs\c#\desk\TitleCounter\\bin\Debug\data\\"
+
+"""
+path_to_data = '/'.join(os.path.abspath(os.curdir).split('/')
+                        [:-2])
+"""
 
 def get_missed_games():
     return missed_games

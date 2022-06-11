@@ -144,9 +144,27 @@ namespace hltb
                 var r = t.Split('#');
                 Console.WriteLine(r[0]);
 
-                if (add_title.ShowDialog() == DialogResult.OK)
+                if (r[0] == "ERROR")
                 {
-                    status.Append("Completed succesfuly");
+                    add_title.Controls["addButton"].Visible = false;
+                    switch (r[1])
+                    {
+                        case "a":
+                            add_title.Controls["statusLabel"].Text += (": title is already in list");
+                            break;
+                        case "f":
+                            add_title.Controls["statusLabel"].Text += (": title has not found");
+                            break;
+                        case "t":
+                            add_title.Controls["statusLabel"].Text += (": incorrect type. Choose correct mode");
+                            break;
+                    }
+                }
+                
+
+                if (add_title.ShowDialog() == DialogResult.OK )
+                {
+                    add_title.Controls["statusLabel"].Text += ("Found succesfuly");
                     namebox.Text = "";
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
@@ -157,22 +175,7 @@ namespace hltb
                     Console.WriteLine(titles[currentMode].Count());
                 }
 
-                //if (r[0] == "ERROR")
-                //{
-                //    status.Append("ERROR");
-                //    switch (r[1])
-                //    {
-                //        case "a":
-                //            status.Append(": title is already in list");
-                //            break;
-                //        case "f":
-                //            status.Append(": title has not found");
-                //            break;
-                //        case "t":
-                //            status.Append(": incorrect type. Choose correct mode");
-                //            break;
-                //    }
-                //}
+                
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
