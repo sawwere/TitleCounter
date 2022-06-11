@@ -14,6 +14,9 @@ missed_games = list()
 
 path_to_data = "F:\my_programs\c#\desk\TitleCounter\\bin\Debug\data\\"
 
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
 """
 path_to_data = '/'.join(os.path.abspath(os.curdir).split('/')
                         [:-2])
@@ -23,9 +26,9 @@ def get_missed_games():
     return missed_games
 
 def get_game_year(url):
-    r = requests.get(url)
+    r = requests.get(url, headers=headers)
     with open('hltb.html', 'wb') as f:
-        f.write(r.text.encode('cp1251'))
+        f.write(r.text.encode('utf-8'))
     f = open('hltb.html')
     soup = BeautifulSoup(f, features="html.parser")
     # get text from html
@@ -217,7 +220,7 @@ def download_images(titles, tp, f=True):
 
 # Download image for 1 title
 def download_image(title, tp):
-    image = requests.get(title.image_url)
+    image = requests.get(title.image_url, headers=headers)
 
     temp_name = title.name
     symb = has_proh_symb(temp_name)

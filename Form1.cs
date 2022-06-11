@@ -160,11 +160,14 @@ namespace hltb
                             break;
                     }
                 }
+                //else
+                //{
+                //    add_title.Controls["statusLabel"].Text += "Found succesfuly";
+                //}
                 
 
                 if (add_title.ShowDialog() == DialogResult.OK )
                 {
-                    add_title.Controls["statusLabel"].Text += ("Found succesfuly");
                     namebox.Text = "";
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
