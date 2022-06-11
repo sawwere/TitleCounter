@@ -11,9 +11,8 @@ import time
 
 missed_games = list()
 games_file_name = "F:/my_programs/python/HowLongToBeat/games_sheet1.txt"
-films_file_name = "F:/my_programs/python/HowLongToBeat/films_sheet1.txt"
-json_games_games_file_name = "F:/my_programs/python/HowLongToBeat/games_sheet2.json"
-json_films_games_file_name = "F:/my_programs/python/HowLongToBeat/films_sheet2.json"
+
+path_to_data = "F:\my_programs\c#\desk\TitleCounter\\bin\Debug\data\\"
 
 def get_missed_games():
     return missed_games
@@ -112,7 +111,7 @@ def save_missed_games():
 def create_json(titles, tp, f=True):
     if f:
         print_status('s', 'create_json')    
-    filename = 'F:\my_programs\python\HowLongToBeat/' + tp + '_sheet.json'
+    filename = path_to_data + tp + '_sheet.json'
     file = open(filename, 'w', encoding='utf-8')
     data = list()
     for t in titles:
@@ -140,7 +139,7 @@ def append_json(title, tp):
 def read_json(tp, f = True):
     if f:
         print_status('s', 'read_json')
-    filename = 'F:/my_programs/python/HowLongToBeat/' + tp + '_sheet.json'
+    filename = path_to_data + tp + '_sheet.json'
     file = open(filename, 'r', encoding='utf-8')
     data = json.load(file)
     result = list()
@@ -223,7 +222,7 @@ def download_image(title, tp):
     else:
         pass
         #print(temp_name)
-    path = 'F:\my_programs\python\HowLongToBeat\images/' + tp + '/' + temp_name + '.jpg'
+    path = path_to_data + 'images\\' + tp + '/' + temp_name + '.jpg'
     with open(path, 'wb') as f:
         f.write(image.content)
 

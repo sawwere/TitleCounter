@@ -10,48 +10,43 @@ namespace hltb
     {
         public static readonly string path = Directory.GetCurrentDirectory();
         
-        public static List<Title> GetGames()
+        public static List<Title> GetTitles(mode md, bool tmp = false)
         {
-            string json_string = File.ReadAllText(path + "\\data\\games_sheet.json");
-            var games = JsonConvert.DeserializeObject<List<Game>>(json_string);
-            List<Title> res = games.Select(x => x as Title).ToList();
+            string json_string = "";
+            if (tmp)
+                json_string = File.ReadAllText(path + "\\data\\temp_sheet.json");
+            else
+                json_string = File.ReadAllText(path + "\\data\\" + md.ToString().ToLower() + "_sheet.json");
 
-            return res;
-        }
-        public static List<Title> GetFilms()
-        {
-            string json_string = File.ReadAllText(path + "\\data\\films_sheet.json");
-            var films = JsonConvert.DeserializeObject<List<Film>>(json_string);
-            List<Title> res = films.Select(x => x as Title).ToList();
-            return res;
-        }
-        public static List<Title> GetTVSeries()
-        {
-            string json_string = File.ReadAllText(path + "\\data\\tvseries_sheet.json");
-            var tvseries = JsonConvert.DeserializeObject<List<TVSeries>>(json_string);
-            List<Title> res = tvseries.Select(x => x as Title).ToList();
-            return res;
+            var titles = new List<Title>();
+            switch (md)
+            {
+                case mode.GAMES:
+                    {
+                        var games = JsonConvert.DeserializeObject<List<Game>>(json_string);
+                        return games.Select(x => x as Title).ToList();
+                    }
+                case mode.FILMS:
+                    {
+                        var films = JsonConvert.DeserializeObject<List<Film>>(json_string);
+                        return films.Select(x => x as Title).ToList();
+                    }
+                case mode.TVSERIES:
+                    {
+                        var tvseries = JsonConvert.DeserializeObject<List<TVSeries>>(json_string);
+                        return tvseries.Select(x => x as Title).ToList();
+                    }
+            }
+            return titles;
         }
 
-
-        public static void SaveGames(List<Title> games)
+        public static void SaveTitles(List<Title> titles, mode md)
         {
-            string file_name = path + "\\data\\games_sheet.json";
-            string jstring = JsonConvert.SerializeObject(games, Formatting.Indented);
+            string file_name = path + "\\data\\" + md.ToString().ToLower() + "_sheet.json";
+            string jstring = JsonConvert.SerializeObject(titles, Formatting.Indented);
             File.WriteAllText(file_name, jstring);
         }
-        public static void SaveFilms(List<Title> films)
-        {
-            string file_name = path + "\\data\\films_sheet.json";
-            string jstring = JsonConvert.SerializeObject(films, Formatting.Indented);
-            File.WriteAllText(file_name, jstring);
-        }
-        public static void SaveTVSeries(List<Title> tvseries)
-        {
-            string file_name = path + "\\data\\tvseries_sheet.json";
-            string jstring = JsonConvert.SerializeObject(tvseries, Formatting.Indented);
-            File.WriteAllText(file_name, jstring);
-        }
+
 
         public static void CheckDataFiles()
         {

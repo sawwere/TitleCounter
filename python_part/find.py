@@ -4,8 +4,8 @@ from functions import *
 
 
 string = sys.argv[1].split('#')
-#string = "Hollow Knight#Baclog#6#games".split('#')
-#string = "Hobbit#Baclog#3#films".split('#')
+#string = "Hollow Knight#Backlog#6#games".split('#')
+#string = "Hobbit#Backlog#3#films".split('#')
 #string = "House of cards#Backlog#7#tvseries".split('#')
 
 def check(tp):
@@ -13,10 +13,10 @@ def check(tp):
     result = "SUCCS"
     if tp == "games":
         a = choose_game(string[0])
-        titles = read_json("game", False)
+        titles = read_json("games", False)
     elif tp == "films":
         a = Film(string[0])
-        titles = read_json("film", False)
+        titles = read_json("films", False)
     elif tp == "tvseries":
         try:
             a = TVSeries(string[0])
@@ -40,16 +40,16 @@ def check(tp):
         a.score = int(string[2])
         if tp == "games":
             a.year = get_game_year(a.link)       
-        titles.append(a)
-        s = tp[:-1] if tp != "tvseries" else tp 
-        create_json(titles, s, False)
-        download_image(a, s)
+        temp = list()
+        temp.append(a)
+        create_json(temp, "temp", False)
+        download_image(a, tp)
         return (result, a.name)
     else:
         return (result, string[0])
 
 res = check(string[3])
-print(res[0], res[1])
+print(res[0], res[1], sep="#")
 
 
 

@@ -14,19 +14,20 @@ namespace hltb
     public enum mode { GAMES, FILMS, TVSERIES };
     public partial class Mainform : Form
     {
-        Panel list_panel = new Panel();
+        private Panel list_panel = new Panel();
 
-        Dictionary<mode, List<Title>> titles;
-        Title cur_title;
+        private Dictionary<mode, List<Title>> titles;
+        private Title cur_title;
+        private AddTitle add_title = new AddTitle();
 
-        mode currentMode = mode.GAMES;
+        private mode currentMode = mode.GAMES;
 
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            SaveGames(titles[mode.GAMES]);
-            SaveFilms(titles[mode.FILMS]);
-            SaveTVSeries(titles[mode.TVSERIES]);
+            SaveTitles(titles[mode.GAMES], mode.GAMES);
+            SaveTitles(titles[mode.FILMS], mode.FILMS);
+            SaveTitles(titles[mode.TVSERIES], mode.TVSERIES);
         }
 
         void UpdateStatisticsLabel()
@@ -82,6 +83,7 @@ namespace hltb
         public Mainform()
         {
             InitializeComponent();
+            AddOwnedForm(add_title);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -90,9 +92,9 @@ namespace hltb
 
             titles = new Dictionary<mode, List<Title>>(3);
 
-            titles[mode.GAMES] = GetGames();
-            titles[mode.FILMS] = GetFilms();
-            titles[mode.TVSERIES] = GetTVSeries();
+            titles[mode.GAMES] = GetTitles(mode.GAMES);
+            titles[mode.FILMS] = GetTitles(mode.FILMS);
+            titles[mode.TVSERIES] = GetTitles(mode.TVSERIES);
 
             ResetYears();
             UpdateStatisticsLabel();
@@ -123,7 +125,7 @@ namespace hltb
             }
             else
             {
-                string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + currentMode.ToString();
+                string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + currentMode.ToString().ToLower();
                 string pathToFind = path;
                 for ( int i = 0; i < 2; i++)
                 {
@@ -139,43 +141,38 @@ namespace hltb
                     WindowStyle = ProcessWindowStyle.Hidden
                 });
                 var t = p.StandardOutput.ReadToEnd();
-                var r = t.Split(' ');
+                var r = t.Split('#');
                 Console.WriteLine(r[0]);
-                if (r[0] == "ERROR")
-                {
-                    status.Append("ERROR");
-                    switch (r[1])
-                    {
-                        case "a":
-                            status.Append(": title is already in list");
-                            break;
-                        case "f":
-                            status.Append(": title has not found");
-                            break;
-                        case "t":
-                            status.Append(": incorrect type. Choose correct mode");
-                            break;
-                    }
-                }
-                else
+
+                if (add_title.ShowDialog() == DialogResult.OK)
                 {
                     status.Append("Completed succesfuly");
                     namebox.Text = "";
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
-                    switch (currentMode)
-                    {
-                        case mode.GAMES:
-                            titles[mode.GAMES] = GetGames();
-                            break;
-                        case mode.FILMS:
-                            titles[mode.FILMS] = GetFilms();
-                            break;
-                        case mode.TVSERIES:
-                            titles[mode.TVSERIES] = GetTVSeries();
-                            break;
-                    }
+
+                    titles[currentMode] = GetTitles(currentMode);
+                    Console.WriteLine(titles[currentMode].Count());
+                    titles[currentMode].Add(GetTitles(currentMode, true).First());
+                    Console.WriteLine(titles[currentMode].Count());
                 }
+
+                //if (r[0] == "ERROR")
+                //{
+                //    status.Append("ERROR");
+                //    switch (r[1])
+                //    {
+                //        case "a":
+                //            status.Append(": title is already in list");
+                //            break;
+                //        case "f":
+                //            status.Append(": title has not found");
+                //            break;
+                //        case "t":
+                //            status.Append(": incorrect type. Choose correct mode");
+                //            break;
+                //    }
+                //}
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
@@ -188,19 +185,7 @@ namespace hltb
             currentTitlePanel.Controls.Clear();
             titles[currentMode].Remove(cur_title);
             cur_title = new Title();
-            switch (currentMode)
-            {
-                case mode.GAMES:
-
-                    SaveGames(titles[mode.GAMES]);
-                    break;
-                case mode.FILMS:
-                    SaveFilms(titles[mode.FILMS]);
-                    break;
-                case mode.TVSERIES:
-                    SaveTVSeries(titles[mode.TVSERIES]);
-                    break;
-            }
+            SaveTitles(titles[currentMode], currentMode);
             UpdateStatisticsLabel();
         }
 
