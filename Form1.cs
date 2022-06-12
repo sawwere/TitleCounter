@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -226,6 +227,7 @@ namespace hltb
                     titles[currentMode].Add(GetTitles(currentMode, true).First());
                     Console.WriteLine(titles[currentMode].Count());
                 }
+                File.Delete(DataFiles.path + "\\data\\temp_sheet.json");
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
