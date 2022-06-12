@@ -248,9 +248,12 @@ namespace hltb
             return res;
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
+        //TODO Erase deleted title's image
+        private void deleteButton_Click(object sender, EventArgs eventArgs)
         {
-            ;
+            Controls.Clear();
+            (this.Parent.Parent as Mainform).RemoveTitle(title, currentMode);
+            title = new Title();
         }
     }
 }

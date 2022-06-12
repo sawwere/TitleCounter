@@ -8,7 +8,7 @@ class Game:
                 year=-1,
                 status = "Backlog"):
         self.name = name
-        self.image_url = image_url
+        self.image_url = "https://howlongtobeat.com" + image_url
         self.link = link
         
         mt = str(time)

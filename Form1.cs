@@ -12,6 +12,7 @@ using static hltb.DataFiles;
 namespace hltb
 {
     public enum mode { GAMES, FILMS, TVSERIES };
+    public enum filterCategory { YEAR, SCORE, STATUS, NAME, GENRE};
     public partial class Mainform : Form
     {
         private Panel list_panel = new Panel();
@@ -21,6 +22,7 @@ namespace hltb
         private AddTitle add_title = new AddTitle();
 
         private mode currentMode = mode.GAMES;
+        private filterCategory filter = filterCategory.YEAR;
 
 
         private void OnApplicationExit(object sender, EventArgs e)
@@ -80,6 +82,53 @@ namespace hltb
             }
             return result;
         }
+
+        private void RefreshTitles(mode _mode, filterCategory _filter)
+        {
+            switch (_filter)
+            {
+                case filterCategory.YEAR:
+                    {
+                        string cur_year = YearSortBox.SelectedItem.ToString();
+                        AddButtons(titles[_mode].Where(x => x.Year.ToString() == cur_year).ToList());
+                        break;
+                    }
+
+                case filterCategory.SCORE:
+                    {
+                        string cur_score = ScoreSortBox.SelectedItem.ToString();
+                        AddButtons(titles[currentMode].Where(x => x.Score.ToString() == cur_score).ToList());
+                        break;
+                    }
+                case filterCategory.STATUS:
+                    {
+                        string cur_status = StatusSortBox.SelectedItem.ToString().ToUpper();
+                        AddButtons(titles[currentMode].Where(x => x.Status.ToString() == cur_status).ToList());
+                        break;
+                    }
+                case filterCategory.NAME:
+                    {
+                        char cur_letter = NameSortBox.SelectedItem.ToString().First();
+                        AddButtons(titles[currentMode].Where(x => x.Name.ToString().First() == cur_letter).ToList());
+                        break;
+                    }
+                case filterCategory.GENRE:
+                    {
+                        string cur_genre = GenreSortBox.SelectedItem.ToString();
+                        AddButtons(titles[currentMode].Where(x => (x as Film).Genres.Any(y => y == cur_genre)).ToList());
+                        break;
+                    }
+            }
+        }
+
+        public void RemoveTitle(Title title, mode md)
+        {
+            titles[md].Remove(title);
+            SaveTitles(titles[md], md);
+            UpdateStatisticsLabel();
+            RefreshTitles(currentMode, filter);
+        }
+
         public Mainform()
         {
             InitializeComponent();
@@ -177,23 +226,13 @@ namespace hltb
                     titles[currentMode].Add(GetTitles(currentMode, true).First());
                     Console.WriteLine(titles[currentMode].Count());
                 }
-
-                
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
         }
         
         
-        //TODO Erase deleted title's image
-        private void deleteButtonClick(object sender, EventArgs eventArgs)
-        {
-            currentTitlePanel.Controls.Clear();
-            titles[currentMode].Remove(cur_title);
-            cur_title = new Title();
-            SaveTitles(titles[currentMode], currentMode);
-            UpdateStatisticsLabel();
-        }
+        
 
         private void ButtonOnClick(object sender, EventArgs eventArgs)
         {
@@ -217,7 +256,7 @@ namespace hltb
             
             this.Controls.Add(currentTitlePanel);
         }
-        public void AddButtons(List<Title> titles, int y = 0)
+        private void AddButtons(List<Title> titles, int y = 0)
         {
             list_panel.Controls.Clear();
             list_panel.Location = new Point(ByYearButton.Left, YearSortBox.Bottom + 25);
@@ -247,7 +286,7 @@ namespace hltb
             this.Controls.Add(list_panel);
         }
         
-        public void ResetYears()
+        private void ResetYears()
         {
             YearSortBox.Items.Clear();
             var set = new SortedSet<int>();
@@ -263,7 +302,7 @@ namespace hltb
             YearSortBox.Items.AddRange(a);
             YearSortBox.SelectedIndex = 0;
         }
-        public void ResetGenres()
+        private void ResetGenres()
         {
             GenreSortBox.Items.Clear();
             var set = new SortedSet<string>();
@@ -282,89 +321,116 @@ namespace hltb
             GenreSortBox.Items.AddRange(a);
             GenreSortBox.SelectedIndex = 0;
         }
-        public void ResetStatus()
+        private void ResetStatus()
         {
             StatusSortBox.SelectedIndex = 0;
         }
+
+        private void ResetNames()
+        {
+            NameSortBox.Items.Clear();
+            var set = new SortedSet<int>();
+            foreach (var g in titles[currentMode])
+                set.Add(g.Name.First());
+            object[] a = new object[set.Count];
+            int i = 0;
+            foreach (var s in set)
+            {
+                a[i] = (char)s;
+                i++;
+            }
+            NameSortBox.Items.AddRange(a);
+            NameSortBox.SelectedIndex = 0;
+        }
         private void ByYearButton_Click(object sender, EventArgs e)
         {
+            filter = filterCategory.YEAR;
             ResetYears();
 
             YearSortBox.Visible = true;
             ScoreSortBox.Visible = false;
-            GenreSortBox.Visible = false;
+            NameSortBox.Visible = false;
             StatusSortBox.Visible = false;
+            GenreSortBox.Visible = false;
 
             YearSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            YearSortBox_SelectedValueChanged(sender, e);
+            RefreshTitles(currentMode, filter);
         }
 
         private void ByScoreButton_Click(object sender, EventArgs e)
         {
+            filter = filterCategory.SCORE;
             YearSortBox.Visible = false;
             ScoreSortBox.Visible = true;
-            GenreSortBox.Visible = false;
+            NameSortBox.Visible = false;
             StatusSortBox.Visible = false;
+            GenreSortBox.Visible = false;
 
             ScoreSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            ScoreSortBox_SelectedValueChanged(sender, e);
+            RefreshTitles(currentMode, filter);
         }
         private void ByGenreButton_Click(object sender, EventArgs e)
         {
+            filter = filterCategory.GENRE;
             ResetGenres();
 
             YearSortBox.Visible = false;
             ScoreSortBox.Visible = false;
-            GenreSortBox.Visible = true;
+            NameSortBox.Visible = false;
             StatusSortBox.Visible = false;
+            GenreSortBox.Visible = true;
 
             GenreSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            GenreSortBox_SelectedValueChanged(sender, e);
+            RefreshTitles(currentMode, filter);
         }
         private void ByStatusButton_Click(object sender, EventArgs e)
         {
+            filter = filterCategory.STATUS;
             ResetStatus();
 
             YearSortBox.Visible = false;
             ScoreSortBox.Visible = false;
-            GenreSortBox.Visible = false;
+            NameSortBox.Visible = false;
             StatusSortBox.Visible = true;
+            GenreSortBox.Visible = false;
 
             StatusSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            StatusSortBox_SelectedValueChanged(sender, e);
+            RefreshTitles(currentMode, filter);
         }
-        
+
+        private void ByNameButton_Click(object sender, EventArgs e)
+        {
+            filter = filterCategory.NAME;
+            ResetNames();
+
+            YearSortBox.Visible = false;
+            ScoreSortBox.Visible = false;
+            NameSortBox.Visible = true;
+            StatusSortBox.Visible = false;
+            GenreSortBox.Visible = false;
+
+            NameSortBox.SelectedIndex = 0;
+
+            list_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
+            RefreshTitles(currentMode, filter);
+        }
+
         private void YearSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            string cur_year = YearSortBox.SelectedItem.ToString();
-            AddButtons(titles[currentMode].Where(x => x.Year.ToString() == cur_year).ToList());
-        }
-        private void ScoreSortBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            string cur_score = ScoreSortBox.SelectedItem.ToString();
-            AddButtons(titles[currentMode].Where(x => x.Score.ToString() == cur_score).ToList());
-        }
-        private void GenreSortBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            string cur_genre = GenreSortBox.SelectedItem.ToString();
-            AddButtons(titles[currentMode].Where(x => (x as Film).Genres.Any(y => y == cur_genre)).ToList());
-        }
-        private void StatusSortBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            string cur_status = StatusSortBox.SelectedItem.ToString().ToUpper();
-            AddButtons(titles[currentMode].Where(x => x.Status.ToString() == cur_status).ToList());
+            RefreshTitles(currentMode, filter);
         }
 
         private void ModeBox_SelectedValueChanged(object sender, EventArgs e)
@@ -410,5 +476,12 @@ namespace hltb
         {
 
         }
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            RefreshTitles(currentMode, filter);
+        }
+
+        
     }
 }

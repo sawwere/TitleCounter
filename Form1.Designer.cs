@@ -48,11 +48,9 @@ namespace hltb
             this.GenreSortBox = new System.Windows.Forms.ComboBox();
             this.StatusSortBox = new System.Windows.Forms.ComboBox();
             this.currentTitlePanel = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ByNameButton = new System.Windows.Forms.Button();
             this.NameSortBox = new System.Windows.Forms.ComboBox();
-            this.currentTitlePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.refreshButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // addgame
@@ -251,7 +249,7 @@ namespace hltb
             this.ScoreSortBox.TabIndex = 26;
             this.ScoreSortBox.Text = "Score";
             this.ScoreSortBox.Visible = false;
-            this.ScoreSortBox.SelectedValueChanged += new System.EventHandler(this.ScoreSortBox_SelectedValueChanged);
+            this.ScoreSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
             // 
             // GenreSortBox
             // 
@@ -263,7 +261,7 @@ namespace hltb
             this.GenreSortBox.TabIndex = 27;
             this.GenreSortBox.Text = "Genre";
             this.GenreSortBox.Visible = false;
-            this.GenreSortBox.SelectedValueChanged += new System.EventHandler(this.GenreSortBox_SelectedValueChanged);
+            this.GenreSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
             // 
             // StatusSortBox
             // 
@@ -279,24 +277,15 @@ namespace hltb
             this.StatusSortBox.TabIndex = 28;
             this.StatusSortBox.Text = "Status";
             this.StatusSortBox.Visible = false;
-            this.StatusSortBox.SelectedValueChanged += new System.EventHandler(this.StatusSortBox_SelectedValueChanged);
+            this.StatusSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
             // 
             // currentTitlePanel
             // 
-            this.currentTitlePanel.Controls.Add(this.pictureBox1);
             this.currentTitlePanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.currentTitlePanel.Location = new System.Drawing.Point(984, 0);
             this.currentTitlePanel.Name = "currentTitlePanel";
             this.currentTitlePanel.Size = new System.Drawing.Size(400, 661);
             this.currentTitlePanel.TabIndex = 29;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(36, 45);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // ByNameButton
             // 
@@ -307,6 +296,7 @@ namespace hltb
             this.ByNameButton.TabIndex = 30;
             this.ByNameButton.Text = "By Name";
             this.ByNameButton.UseVisualStyleBackColor = true;
+            this.ByNameButton.Click += new System.EventHandler(this.ByNameButton_Click);
             // 
             // NameSortBox
             // 
@@ -321,7 +311,18 @@ namespace hltb
             this.NameSortBox.TabIndex = 31;
             this.NameSortBox.Text = "Name starts with";
             this.NameSortBox.Visible = false;
-            this.NameSortBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.NameSortBox.SelectedIndexChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.BackgroundImage = global::hltb.Properties.Resources.refresh_icon;
+            this.refreshButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.refreshButton.Location = new System.Drawing.Point(841, 12);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(86, 57);
+            this.refreshButton.TabIndex = 32;
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
             // Mainform
             // 
@@ -329,6 +330,7 @@ namespace hltb
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1384, 661);
+            this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.NameSortBox);
             this.Controls.Add(this.ByNameButton);
@@ -355,8 +357,6 @@ namespace hltb
             this.Name = "Mainform";
             this.Text = "MyList";
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.currentTitlePanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -385,7 +385,7 @@ namespace hltb
         private System.Windows.Forms.Panel currentTitlePanel;
         private System.Windows.Forms.Button ByNameButton;
         private System.Windows.Forms.ComboBox NameSortBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button refreshButton;
     }
 }
 
