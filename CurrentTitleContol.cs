@@ -258,9 +258,6 @@ namespace hltb
 
         private void nameLabel_Click(object sender, EventArgs e)
         {
-
-
-
             System.Diagnostics.Process.Start(title.Link);
         }
     }
