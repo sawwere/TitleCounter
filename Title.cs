@@ -14,6 +14,8 @@ namespace hltb
         private int score;
         private int year;
         private TitleStatus status;
+        private bool has_image;
+        private string image_name;
 
         public string Name
         {
@@ -52,13 +54,25 @@ namespace hltb
             set { status = value; }
         }
 
+        public bool HasImage
+        {
+            get { return has_image; }
+            set { has_image = value; }
+        }
+
+        public string ImageName
+        {
+            get { return image_name; }
+            private set { image_name = value; }
+        }
+
         public Title()
         {
 
         }
 
         [JsonConstructor]
-        public Title(string name, string image_url, string link, double time, int score, int year, string status)
+        public Title(string name, string image_url, string link, double time, int score, int year, string status, bool has_image, string image_name)
         {
             Name = name;
             Image_Url = image_url;
@@ -67,6 +81,8 @@ namespace hltb
             Score = score;
             Year = year;
             System.Enum.TryParse(status.ToUpper(), out this.status);
+            HasImage = has_image;
+            ImageName = image_name;
         }
     }
 }

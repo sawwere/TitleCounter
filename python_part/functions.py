@@ -2,6 +2,7 @@
 
 import os
 from howlongtobeatpy import HowLongToBeat
+from sqlalchemy import false, true
 from Game import Game
 from Film import Film
 from TVSeries import TVSeries
@@ -26,19 +27,23 @@ def get_missed_games():
     return missed_games
 
 def get_game_year(url):
-    r = requests.get(url, headers=headers)
-    with open('hltb.html', 'wb') as f:
-        f.write(r.text.encode('utf-8'))
-    f = open('hltb.html')
-    soup = BeautifulSoup(f, features="html.parser")
-    # get text from html
-    text = soup.get_text()
-    a = text.find("NA:")
-    t = text[a+4:a+22]
-    t = t.split(' ')
-    #m = t[0]  month
-    #d = t[1][:-1]  day
-    y = int(t[2][:4])  # year
+    y = -1
+    try:
+        r = requests.get(url, headers=headers)
+        with open('hltb.html', 'wb') as f:
+            f.write(r.text.encode('utf-8'))
+        f = open('hltb.html')
+        soup = BeautifulSoup(f, features="html.parser")
+        # get text from html
+        text = soup.get_text()
+        a = text.find("NA:")
+        t = text[a+4:a+22]
+        t = t.split(' ')
+        #m = t[0]  month
+        #d = t[1][:-1]  day
+        y = int(t[2][:4])  # year
+    except:
+        y = -1
     return y
 
 # Print status of current operation
@@ -220,19 +225,27 @@ def download_images(titles, tp, f=True):
 
 # Download image for 1 title
 def download_image(title, tp):
-    image = requests.get(title.image_url, headers=headers)
+    try:
+        image = requests.get(title.image_url, headers=headers)
 
-    temp_name = title.name
-    symb = has_proh_symb(temp_name)
-    if symb != '':
-        temp_name = replace_symbols(temp_name, symb)
-        #print(temp_name + '  |||  CHANGED FROM "'+game.name+'"')
-    else:
-        pass
-        #print(temp_name)
-    path = path_to_data + 'images\\' + tp + '/' + temp_name + '.jpg'
-    with open(path, 'wb') as f:
-        f.write(image.content)
+        temp_name = title.name
+        symb = has_proh_symb(temp_name)
+        if symb != '':
+            temp_name = replace_symbols(temp_name, symb)
+            #print(temp_name + '  |||  CHANGED FROM "'+game.name+'"')
+        else:
+            pass
+            #print(temp_name)
+        path = path_to_data + 'images\\' + tp + '/' + temp_name + '.jpg'
+        title.has_image = true
+        title.image_name = temp_name + '.jpg'
+
+        with open(path, 'wb') as f:
+            f.write(image.content)
+    except:
+        title.has_image = false
+        title.image_name = "noimage.png"
+
 
 def print_json(tp):
     titles = read_json(tp, False)

@@ -21,8 +21,8 @@ namespace hltb
         }
 
         [JsonConstructor]
-        public Game(double similarity, string name, string image_url, string list, double time, int score, int year, string status)
-            :base(name, image_url, list, time, score, year, status)
+        public Game(double similarity, string name, string image_url, string link, double time, int score, int year, string status, bool has_image, string image_name)
+            :base(name, image_url, link, time, score, year, status, has_image, image_name)
         {
             Similarity = similarity;
         }

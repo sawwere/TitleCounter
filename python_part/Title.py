@@ -1,3 +1,6 @@
+from sqlalchemy import false
+
+
 class Title():
     def __init__(self, name="None",
                  image_url="https://kitairu.net/images/noimage.png",
@@ -13,4 +16,6 @@ class Title():
         self.score = int(score)
         self.year = int(year)
         self.status = status
+        self.has_image = false
+        self.image_name = name
 

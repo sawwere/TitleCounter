@@ -25,8 +25,8 @@ namespace hltb
 
         [JsonConstructor]
         public TVSeries(Dictionary<int, int> seasons, string rus_name, List<string> genres, 
-            string name, string image_url, string list, double time, int score, int year, string status)
-            : base(rus_name, genres, name, image_url, list, time, score, year, status)
+            string name, string image_url, string list, double time, int score, int year, string status, bool has_image, string image_name)
+            : base(rus_name, genres, name, image_url, list, time, score, year, status, has_image, image_name)
         {
             Seasons = seasons;
         }
