@@ -255,5 +255,13 @@ namespace hltb
             (this.Parent.Parent as Mainform).RemoveTitle(title, currentMode);
             title = new Title();
         }
+
+        private void nameLabel_Click(object sender, EventArgs e)
+        {
+
+
+
+            System.Diagnostics.Process.Start(title.Link);
+        }
     }
 }

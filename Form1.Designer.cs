@@ -51,6 +51,9 @@ namespace hltb
             this.ByNameButton = new System.Windows.Forms.Button();
             this.NameSortBox = new System.Windows.Forms.ComboBox();
             this.refreshButton = new System.Windows.Forms.Button();
+            this.displayLinesButton = new System.Windows.Forms.Button();
+            this.displayImagesButton = new System.Windows.Forms.Button();
+            this.displayButtonsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // addgame
@@ -324,12 +327,46 @@ namespace hltb
             this.refreshButton.UseVisualStyleBackColor = true;
             this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
+            // displayLinesButton
+            // 
+            this.displayLinesButton.Location = new System.Drawing.Point(169, 136);
+            this.displayLinesButton.Name = "displayLinesButton";
+            this.displayLinesButton.Size = new System.Drawing.Size(75, 23);
+            this.displayLinesButton.TabIndex = 33;
+            this.displayLinesButton.Text = "lines";
+            this.displayLinesButton.UseVisualStyleBackColor = true;
+            this.displayLinesButton.Click += new System.EventHandler(this.displayLinesButton_Click);
+            // 
+            // displayImagesButton
+            // 
+            this.displayImagesButton.Location = new System.Drawing.Point(250, 136);
+            this.displayImagesButton.Name = "displayImagesButton";
+            this.displayImagesButton.Size = new System.Drawing.Size(75, 23);
+            this.displayImagesButton.TabIndex = 34;
+            this.displayImagesButton.Text = "greed";
+            this.displayImagesButton.UseVisualStyleBackColor = true;
+            this.displayImagesButton.Click += new System.EventHandler(this.displayImagesButton_Click);
+            // 
+            // displayButtonsButton
+            // 
+            this.displayButtonsButton.Location = new System.Drawing.Point(88, 136);
+            this.displayButtonsButton.Name = "displayButtonsButton";
+            this.displayButtonsButton.Size = new System.Drawing.Size(75, 23);
+            this.displayButtonsButton.TabIndex = 35;
+            this.displayButtonsButton.Text = "button1";
+            this.displayButtonsButton.UseVisualStyleBackColor = true;
+            this.displayButtonsButton.Click += new System.EventHandler(this.displayButtonsButton_Click);
+            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(1384, 661);
+            this.Controls.Add(this.displayButtonsButton);
+            this.Controls.Add(this.displayImagesButton);
+            this.Controls.Add(this.displayLinesButton);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.currentTitlePanel);
             this.Controls.Add(this.NameSortBox);
@@ -386,6 +423,9 @@ namespace hltb
         private System.Windows.Forms.Button ByNameButton;
         private System.Windows.Forms.ComboBox NameSortBox;
         private System.Windows.Forms.Button refreshButton;
+        private System.Windows.Forms.Button displayLinesButton;
+        private System.Windows.Forms.Button displayImagesButton;
+        private System.Windows.Forms.Button displayButtonsButton;
     }
 }
 

@@ -14,6 +14,8 @@ namespace hltb
 {
     public enum mode { GAMES, FILMS, TVSERIES };
     public enum filterCategory { YEAR, SCORE, STATUS, NAME, GENRE};
+    
+    public enum displayOption { BUTTONS, LINES, IMAGES};
     public partial class Mainform : Form
     {
         private Panel list_panel = new Panel();
@@ -24,6 +26,7 @@ namespace hltb
 
         private mode currentMode = mode.GAMES;
         private filterCategory filter = filterCategory.YEAR;
+        private displayOption currentDisplayOption = displayOption.BUTTONS;
 
 
         private void OnApplicationExit(object sender, EventArgs e)
@@ -244,50 +247,93 @@ namespace hltb
 
             var button = (Button)sender;
 
-            var g = button.Text.Where(x => (x != ':') & (x != '/')).ToArray();
-            StringBuilder s = new StringBuilder();
-            foreach (var ss in g)
-            {
-                s.Append(ss.ToString());
-            }
+            //var g = (button.Tag as string).Where(x => (x != ':') & (x != '/')).ToArray();
+            //StringBuilder s = new StringBuilder();
+            //foreach (var ss in g)
+            //{
+            //    s.Append(ss.ToString());
+            //}
 
-            cur_title = titles[currentMode].Find(x => x.Name == button.Text);
+            cur_title = titles[currentMode].Find(x => x.Name == (button.Tag as string));
             currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_title, currentMode));
 
             
             
             this.Controls.Add(currentTitlePanel);
         }
-        private void AddButtons(List<Title> titles, int y = 0)
+        private void AddButtons(List<Title> titles, int y = 5)
         {
             list_panel.Controls.Clear();
-            list_panel.Location = new Point(ByYearButton.Left, YearSortBox.Bottom + 25);
+            list_panel.Location = new Point(ByYearButton.Left, displayButtonsButton.Bottom + 25);
             list_panel.Width = 800;
             list_panel.AutoScroll = true;
             list_panel.Height = 351;
+
+            int buttonWidth = 1, buttonHeight = 1, colCount = 1;
+
+            switch (currentDisplayOption)
+            {
+                case displayOption.BUTTONS:
+                    {
+                        buttonWidth = 250;
+                        buttonHeight = 25;
+                        colCount = 3;
+                        break;
+                    }
+                case displayOption.LINES:
+                    {
+                        buttonWidth = 250;
+                        buttonHeight = 25;
+                        colCount = 1;
+                        break;
+                    }
+                case displayOption.IMAGES:
+                    {
+                        buttonWidth = 120;
+                        buttonHeight = 200;
+                        colCount = 6;
+                        break;
+                    }
+            }
+
             int i = 1;
             foreach (var g in titles)
             {
                 Button button = new Button();
-                button.Left = 250 * ((i - 1) % 3);
+                button.Width = buttonWidth;
+                button.Height = buttonHeight;
+                button.Left = button.Width * ((i - 1) % colCount);
                 button.Top = y;
-                button.Width = 240;
-                button.Height = 25;
+                
                 button.Name = "btn" + i;
-                button.Text = g.Name;
+                
                 button.BackColor = GetColor(g.Score);
-                button.Click += ButtonOnClick;
                 button.ForeColor = Color.Black;
                 button.Font = new Font("Arial", 8, FontStyle.Bold);
+                button.Tag = g.Name;
+
+                if (currentDisplayOption == displayOption.IMAGES)
+                {
+                    string safeName = GetSafeName(g);
+                    button.BackgroundImage = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
+                    button.BackgroundImageLayout = ImageLayout.Stretch;
+                    button.ForeColor = Color.Transparent;
+                }
+                else
+                {
+                    button.Text = g.Name;
+                }
+                button.Click += ButtonOnClick;
+                
                 list_panel.Controls.Add(button);
-                if (i % 3 == 0)
+                if (i % colCount == 0)
                     y += button.Height + 2;
                 i++;
             }
 
             this.Controls.Add(list_panel);
         }
-        
+
         private void ResetYears()
         {
             YearSortBox.Items.Clear();
@@ -474,16 +520,34 @@ namespace hltb
             UpdateStatisticsLabel();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void refreshButton_Click(object sender, EventArgs e)
         {
             RefreshTitles(currentMode, filter);
         }
 
-        
+        private string GetSafeName(Title title)
+        {
+            char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
+            return new string(title.Name.Where(x => !proh.Contains(x)).ToArray());
+
+        }
+
+        private void displayImagesButton_Click(object sender, EventArgs e)
+        {
+            currentDisplayOption = displayOption.IMAGES;
+            RefreshTitles(currentMode, filter);
+        }
+
+        private void displayLinesButton_Click(object sender, EventArgs e)
+        {
+            currentDisplayOption = displayOption.LINES;
+            RefreshTitles(currentMode, filter);
+        }
+
+        private void displayButtonsButton_Click(object sender, EventArgs e)
+        {
+            currentDisplayOption = displayOption.BUTTONS;
+            RefreshTitles(currentMode, filter);
+        }
     }
 }

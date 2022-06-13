@@ -56,11 +56,13 @@ namespace hltb
             // 
             this.nameLabel.AutoSize = true;
             this.nameLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nameLabel.ForeColor = System.Drawing.Color.Black;
             this.nameLabel.Location = new System.Drawing.Point(22, 381);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.Size = new System.Drawing.Size(70, 27);
             this.nameLabel.TabIndex = 1;
             this.nameLabel.Text = "Name";
+            this.nameLabel.Click += new System.EventHandler(this.nameLabel_Click);
             // 
             // copyButton
             // 
@@ -76,6 +78,7 @@ namespace hltb
             // 
             this.timeLabel.AutoSize = true;
             this.timeLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.timeLabel.ForeColor = System.Drawing.Color.Black;
             this.timeLabel.Location = new System.Drawing.Point(22, 408);
             this.timeLabel.Name = "timeLabel";
             this.timeLabel.Size = new System.Drawing.Size(72, 27);
@@ -86,6 +89,7 @@ namespace hltb
             // 
             this.yearLabel.AutoSize = true;
             this.yearLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.yearLabel.ForeColor = System.Drawing.Color.Black;
             this.yearLabel.Location = new System.Drawing.Point(22, 435);
             this.yearLabel.Name = "yearLabel";
             this.yearLabel.Size = new System.Drawing.Size(67, 27);
@@ -96,6 +100,7 @@ namespace hltb
             // 
             this.scoreLabel.AutoSize = true;
             this.scoreLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreLabel.ForeColor = System.Drawing.Color.Black;
             this.scoreLabel.Location = new System.Drawing.Point(22, 462);
             this.scoreLabel.Name = "scoreLabel";
             this.scoreLabel.Size = new System.Drawing.Size(78, 27);
@@ -114,6 +119,7 @@ namespace hltb
             // 
             this.statusLabel.AutoSize = true;
             this.statusLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.ForeColor = System.Drawing.Color.Black;
             this.statusLabel.Location = new System.Drawing.Point(22, 489);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(85, 27);
@@ -144,6 +150,7 @@ namespace hltb
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.SteelBlue;
             this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.status_c);
             this.Controls.Add(this.statusLabel);
