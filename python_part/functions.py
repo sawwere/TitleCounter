@@ -158,23 +158,23 @@ def read_json(tp, f = True):
     result = list()
     for d in data:
         if f:
-            print(d['name'])
-        if tp == 'game':
-            result.append(Game(name=d['name'], image_url=d['image_url'], link=d['link'], 
-                time=d['time'], similarity=d['similarity'], 
-                score=d['score'], year=d['year'], status=d['status']))
-        elif tp == 'film':
-            result.append(Film(name=d['name'], rus_name=d['rus_name'], 
-                                image_url=d['image_url'], link=d['link'],
-                                time=d['time'], score=d['score'],
-                                year=d['year'], status=d['status'],
-                                genres=d["genres"]))
-        elif tp =="tvseries":
-            result.append(TVSeries(name=d['name'], rus_name=d['rus_name'],
-                                   image_url=d['image_url'], link=d['link'],
-                                   time=d['time'], score=d['score'],
-                                   year=d['year'], status=d['status'],
-                                   genres=d["genres"], seasons=d['seasons']))
+            print(d)
+        if tp == 'games':
+            result.append(Game(name=d['Name'], image_url=d['Image_Url'], link=d['Link'], 
+                time=d['Time'], similarity=d['Similarity'], 
+                score=d['Score'], year=d['Year'], status=d['Status']))
+        elif tp == 'films':
+            result.append(Film(name=d['Name'], rus_name=d['Rus_Name'], 
+                                image_url=d['Image_Url'], link=d['Link'],
+                                time=d['Time'], score=d['Score'],
+                                year=d['Year'], status=d['Status'],
+                                genres=d["Genres"]))
+        elif tp =='tvseries':
+            result.append(TVSeries(name=d['Name'], rus_name=d['Rus_Name'],
+                                   image_url=d['Image_Url'], link=d['Link'],
+                                   time=d['Time'], score=d['Score'],
+                                   year=d['Year'], status=d['Status'],
+                                   genres=d["Genres"], seasons=d['Seasons']))
     if f:
         print_status('f', 'read_json')
     return result

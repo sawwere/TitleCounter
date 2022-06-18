@@ -1,4 +1,5 @@
 import sys
+from turtle import title
 from functions import *
 
 
@@ -24,10 +25,9 @@ def check(tp):
             result = "ERROR t"
             return (result, string[0])
         else:
-            titles = read_json("tvseries")
+            titles = read_json("tvseries", False)
 
     for t in titles:
-        #print(t.to_dict())
         if t.to_dict()["name"] == a.name:
             flag = False
             result = "ERROR a"
@@ -35,15 +35,18 @@ def check(tp):
     if a.name == "None":
         flag = False
         result = "ERROR f"
+
+    temp = list()
+    temp.append(a)
+    create_json(temp, "temp", False)
+    download_image(a, tp)
     if flag:
         a.status = string[1]
         a.score = int(string[2])
         if tp == "games":
             a.year = get_game_year(a.link)       
-        temp = list()
-        temp.append(a)
-        create_json(temp, "temp", False)
-        download_image(a, tp)
+        
+        
         return (result, a.name)
     else:
         return (result, string[0])

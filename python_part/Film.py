@@ -20,7 +20,10 @@ class Film():
             self.rus_name = self.movie['original title']
             self.image_url = self.movie['cover url']
             self.link = 'https://www.imdb.com/title/tt' + self.movie['imdbID']
-            self.time = float(self.movie['runtime'][0])
+            try:
+                self.time = float(self.movie['runtime'][0])
+            except:
+                self.time = 0
             self.year = int(self.movie['year'])
             self.status = status
             self.score = int(score)

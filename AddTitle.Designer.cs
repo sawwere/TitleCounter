@@ -33,7 +33,7 @@ namespace hltb
             this.titlePicture = new System.Windows.Forms.PictureBox();
             this.addButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.stausLabel = new System.Windows.Forms.Label();
+            this.statusLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.titlePicture)).BeginInit();
             this.SuspendLayout();
             // 
@@ -80,16 +80,16 @@ namespace hltb
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // stausLabel
+            // statusLabel
             // 
-            this.stausLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.stausLabel.AutoSize = true;
-            this.stausLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stausLabel.Location = new System.Drawing.Point(4, 436);
-            this.stausLabel.Name = "stausLabel";
-            this.stausLabel.Size = new System.Drawing.Size(73, 27);
-            this.stausLabel.TabIndex = 22;
-            this.stausLabel.Text = "Status";
+            this.statusLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.Location = new System.Drawing.Point(4, 436);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(73, 27);
+            this.statusLabel.TabIndex = 22;
+            this.statusLabel.Text = "Status";
             // 
             // AddTitle
             // 
@@ -97,7 +97,7 @@ namespace hltb
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button2;
             this.ClientSize = new System.Drawing.Size(369, 525);
-            this.Controls.Add(this.stausLabel);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.nameLabel);
@@ -119,6 +119,6 @@ namespace hltb
         private System.Windows.Forms.PictureBox titlePicture;
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label stausLabel;
+        private System.Windows.Forms.Label statusLabel;
     }
 }

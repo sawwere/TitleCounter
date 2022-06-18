@@ -34,6 +34,7 @@ namespace hltb
             SaveTitles(titles[mode.GAMES], mode.GAMES);
             SaveTitles(titles[mode.FILMS], mode.FILMS);
             SaveTitles(titles[mode.TVSERIES], mode.TVSERIES);
+            File.Delete(DataFiles.path + "\\data\\temp_sheet.json");
         }
 
         void UpdateStatisticsLabel()
@@ -197,27 +198,27 @@ namespace hltb
                 var r = t.Split('#');
                 Console.WriteLine(r[0]);
 
-                if (r[0] == "ERROR")
+                if (r[0].StartsWith("ERROR"))
                 {
                     add_title.Controls["addButton"].Visible = false;
-                    switch (r[1])
+                    switch (r[0].Last())
                     {
-                        case "a":
-                            add_title.Controls["statusLabel"].Text += (": title is already in list");
+                        case 'a':
+                            add_title.Controls["statusLabel"].Text += (": title is already in the list");
                             break;
-                        case "f":
+                        case 'f':
                             add_title.Controls["statusLabel"].Text += (": title has not found");
                             break;
-                        case "t":
+                        case 't':
                             add_title.Controls["statusLabel"].Text += (": incorrect type. Choose correct mode");
                             break;
                     }
                 }
-                //else
-                //{
-                //    add_title.Controls["statusLabel"].Text += "Found succesfuly";
-                //}
-                
+                else if (r[0] == "SUCCS")
+                {
+                    add_title.Controls["statusLabel"].Text += "Found succesfuly";
+                }
+
 
                 if (add_title.ShowDialog() == DialogResult.OK )
                 {
@@ -225,10 +226,7 @@ namespace hltb
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
 
-                    titles[currentMode] = GetTitles(currentMode);
-                    Console.WriteLine(titles[currentMode].Count());
                     titles[currentMode].Add(GetTitles(currentMode, true).First());
-                    Console.WriteLine(titles[currentMode].Count());
                 }
                 File.Delete(DataFiles.path + "\\data\\temp_sheet.json");
             }
@@ -247,18 +245,9 @@ namespace hltb
 
             var button = (Button)sender;
 
-            //var g = (button.Tag as string).Where(x => (x != ':') & (x != '/')).ToArray();
-            //StringBuilder s = new StringBuilder();
-            //foreach (var ss in g)
-            //{
-            //    s.Append(ss.ToString());
-            //}
-
             cur_title = titles[currentMode].Find(x => x.Name == (button.Tag as string));
             currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_title, currentMode));
-
-            
-            
+                    
             this.Controls.Add(currentTitlePanel);
         }
         private void AddButtons(List<Title> titles, int y = 5)
