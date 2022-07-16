@@ -240,8 +240,6 @@ namespace hltb
         private void ButtonOnClick(object sender, EventArgs eventArgs)
         {
             currentTitlePanel.Controls.Clear();
-            //TODO Update information about current title before swap 
-            //currentTitlePanel.Controls.Find("", true);
 
             var button = (Button)sender;
 

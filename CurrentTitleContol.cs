@@ -48,20 +48,6 @@ namespace hltb
 
         }
 
-        private void ScoreCSelectedIndexChanged(object sender, EventArgs eventArgs)
-        {
-            var combobox = (ComboBox)sender;
-            var s = (int)combobox.SelectedItem;
-            title.Score = s;
-        }
-
-        private void StatusCSelectedIndexChanged(object sender, EventArgs eventArgs)
-        {
-            var combobox = (ComboBox)sender;
-            TitleStatus s; System.Enum.TryParse(combobox.SelectedItem.ToString().ToLower(), out s);
-            title.Status = s;
-        }
-
         private void SeasonsCSelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             var combobox = (ComboBox)sender;
@@ -119,7 +105,6 @@ namespace hltb
             score_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
             score_c.Width = 75;
             score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-            score_c.SelectedIndexChanged += ScoreCSelectedIndexChanged;
             score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
 
             statusLabel.Text = "Status:";
@@ -130,10 +115,9 @@ namespace hltb
             status_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
             status_c.Width = 128;
             status_c.Items.AddRange(new object[] {
-            "completed",
-            "backlog",
-            "retired"});
-            status_c.SelectedIndexChanged += StatusCSelectedIndexChanged;
+            "COMPLETED",
+            "BACKLOG",
+            "RETIRED"});
             status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
             if (currentMode != mode.GAMES)
@@ -259,6 +243,21 @@ namespace hltb
         private void nameLabel_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(title.Link);
+        }
+
+        private void score_c_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var combobox = (ComboBox)sender;
+            var s = (int)combobox.SelectedItem;
+            title.Score = s;
+        }
+
+        private void status_c_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var status = status_c.SelectedItem.ToString();
+            TitleStatus ts = TitleStatus.BACKLOG;
+            System.Enum.TryParse(status.ToUpper(), out ts);
+            title.Status = ts;
         }
     }
 }

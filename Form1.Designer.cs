@@ -90,9 +90,9 @@ namespace hltb
             this.statusbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.statusbox.FormattingEnabled = true;
             this.statusbox.Items.AddRange(new object[] {
-            "completed",
-            "backlog",
-            "retired"});
+            "COMPLETED",
+            "BACKLOG",
+            "RETIRED"});
             this.statusbox.Location = new System.Drawing.Point(507, 25);
             this.statusbox.Name = "statusbox";
             this.statusbox.Size = new System.Drawing.Size(121, 24);

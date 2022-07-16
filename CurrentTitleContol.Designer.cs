@@ -114,6 +114,7 @@ namespace hltb
             this.score_c.Name = "score_c";
             this.score_c.Size = new System.Drawing.Size(121, 21);
             this.score_c.TabIndex = 6;
+            this.score_c.SelectedIndexChanged += new System.EventHandler(this.score_c_SelectedIndexChanged);
             // 
             // statusLabel
             // 
@@ -133,6 +134,7 @@ namespace hltb
             this.status_c.Name = "status_c";
             this.status_c.Size = new System.Drawing.Size(121, 21);
             this.status_c.TabIndex = 8;
+            this.status_c.SelectedIndexChanged += new System.EventHandler(this.status_c_SelectedIndexChanged);
             // 
             // deleteButton
             // 
