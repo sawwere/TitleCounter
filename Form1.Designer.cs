@@ -141,6 +141,7 @@ namespace hltb
             this.statisticsLabel.Size = new System.Drawing.Size(35, 13);
             this.statisticsLabel.TabIndex = 16;
             this.statisticsLabel.Text = "label2";
+            this.statisticsLabel.Click += new System.EventHandler(this.statisticsLabel_Click);
             // 
             // ByStatusButton
             // 

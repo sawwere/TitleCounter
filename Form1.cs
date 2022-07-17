@@ -23,6 +23,7 @@ namespace hltb
         private Dictionary<mode, List<Title>> titles;
         private Title cur_title;
         private AddTitle add_title = new AddTitle();
+        private StatisticsForm statisticsForm = new StatisticsForm(new List<Title>());
 
         private mode currentMode = mode.GAMES;
         private filterCategory filter = filterCategory.YEAR;
@@ -138,6 +139,7 @@ namespace hltb
         {
             InitializeComponent();
             AddOwnedForm(add_title);
+            AddOwnedForm(statisticsForm);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -216,7 +218,7 @@ namespace hltb
                 }
                 else if (r[0] == "SUCCS")
                 {
-                    add_title.Controls["statusLabel"].Text += "Found succesfuly";
+                    add_title.Controls["statusLabel"].Text += ": Found succesfuly";
                 }
 
 
@@ -229,6 +231,7 @@ namespace hltb
                     titles[currentMode].Add(GetTitles(currentMode, true).First());
                 }
                 File.Delete(DataFiles.path + "\\data\\temp_sheet.json");
+                add_title.Controls["statusLabel"].Text = "Status";
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
@@ -535,6 +538,14 @@ namespace hltb
         {
             currentDisplayOption = displayOption.BUTTONS;
             RefreshTitles(currentMode, filter);
+        }
+
+        private void statisticsLabel_Click(object sender, EventArgs e)
+        {
+            statisticsForm = new StatisticsForm(titles[currentMode]);
+
+            statisticsForm.Show();
+            statisticsForm.Text = currentMode.ToString();
         }
     }
 }
