@@ -43,10 +43,6 @@ def check(tp):
     if flag:
         a.status = string[1]
         a.score = int(string[2])
-        if tp == "games":
-            a.year = get_game_year(a.link)       
-        
-        
         return (result, a.name)
     else:
         return (result, string[0])

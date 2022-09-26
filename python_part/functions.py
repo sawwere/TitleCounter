@@ -26,26 +26,6 @@ path_to_data = '/'.join(os.path.abspath(os.curdir).split('/')
 def get_missed_games():
     return missed_games
 
-def get_game_year(url):
-    y = -1
-    try:
-        r = requests.get(url, headers=headers)
-        with open('hltb.html', 'wb') as f:
-            f.write(r.text.encode('utf-8'))
-        f = open('hltb.html')
-        soup = BeautifulSoup(f, features="html.parser")
-        # get text from html
-        text = soup.get_text()
-        a = text.find("NA:")
-        t = text[a+4:a+22]
-        t = t.split(' ')
-        #m = t[0]  month
-        #d = t[1][:-1]  day
-        y = int(t[2][:4])  # year
-    except:
-        y = -1
-    return y
-
 # Print status of current operation
 def print_status(status, process):
     string = '='*30+'\n'
@@ -79,10 +59,9 @@ def choose_game(name):
 
     if results is not None and len(results) > 0:
         r = results[-1]
-        y = get_game_year(r.game_web_link)
         res = Game(r.game_name, r.game_image_url,
-               r.game_web_link, r.gameplay_main, 
-               r.similarity, year=y)
+                   r.game_web_link, r.main_story,
+                   r.similarity, year=r.release_world)
         #print(name)
         return res
     else: 
@@ -98,21 +77,6 @@ def remove_none_games(games):
         if not (g.name == "None"):
             result.append(g)
     return result
-
-# Get list of all games from textfile from HLTB
-def load_games_info():
-    print_status('s', 'load_info')
-    base = open(games_file_name, 'r')
-    lines = base.readlines()
-    base.close
-    games = list()
-    for g in lines:
-        title = g[:-1]
-        gg = choose_game(title)
-        games.append(gg)
-    print_status('l', 'load_info')
-    save_missed_games()
-    return games
 
 def save_missed_games():
     file_name = 'MissedGames.txt'
