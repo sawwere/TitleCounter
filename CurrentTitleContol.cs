@@ -67,7 +67,7 @@ namespace hltb
             this.title = title;
             currentMode = cm;
             string safeName = GetSafeName();
-            titlePicture.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
+            titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
             nameLabel.Text = "Title name: " + title.Name;
             //if (currentMode != mode.GAMES)
                 nameLabel.Text = GetFullName();

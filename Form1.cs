@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -35,7 +36,7 @@ namespace hltb
             SaveTitles(titles[mode.GAMES], mode.GAMES);
             SaveTitles(titles[mode.FILMS], mode.FILMS);
             SaveTitles(titles[mode.TVSERIES], mode.TVSERIES);
-            File.Delete(DataFiles.path + "\\data\\temp_sheet.json");
+            File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
         }
 
         void UpdateStatisticsLabel()
@@ -171,7 +172,7 @@ namespace hltb
         {
             e.Handled = true;
         }
-        
+
         private void addtitle_MouseDown(object sender, MouseEventArgs e)
         {
             StringBuilder status = new StringBuilder();
@@ -182,7 +183,7 @@ namespace hltb
             else
             {
                 string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + currentMode.ToString().ToLower();
-                string pathToFind = path;
+                string pathToFind = DataFiles.PATH;
                 for ( int i = 0; i < 2; i++)
                 {
                     int pos = pathToFind.LastIndexOf("\\");
@@ -190,7 +191,7 @@ namespace hltb
                 }
                 Process p = Process.Start(new ProcessStartInfo
                 {
-                    FileName = "F:/programs/Python/python.exe",
+                    FileName = DataFiles.GetPythonPath(),
                     Arguments = pathToFind + "/python_part/find.py \"" + title + "\"",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
@@ -230,7 +231,7 @@ namespace hltb
 
                     titles[currentMode].Add(GetTitles(currentMode, true).First());
                 }
-                File.Delete(DataFiles.path + "\\data\\temp_sheet.json");
+                File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
                 add_title.Controls["statusLabel"].Text = "Status";
             }
             operationLabel.Text = status.ToString();
@@ -305,7 +306,7 @@ namespace hltb
                 if (currentDisplayOption == displayOption.IMAGES)
                 {
                     string safeName = GetSafeName(g);
-                    button.BackgroundImage = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
+                    button.BackgroundImage = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
                     button.BackgroundImageLayout = ImageLayout.Stretch;
                     button.ForeColor = Color.Transparent;
                 }

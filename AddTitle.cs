@@ -51,7 +51,7 @@ namespace hltb
             title = DataFiles.GetTitles(currentMode, true).First();
             nameLabel.Text = title.Name;
             string safeName = GetSafeName();
-            titlePicture.Image = new Bitmap(DataFiles.path + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
+            titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
 
         }
 
