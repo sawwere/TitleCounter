@@ -219,6 +219,7 @@ namespace hltb
                 }
                 else if (r[0] == "SUCCS")
                 {
+                    add_title.Controls["addButton"].Visible = true;
                     add_title.Controls["statusLabel"].Text += ": Found succesfuly";
                 }
 
@@ -484,24 +485,15 @@ namespace hltb
             switch (nmode)
             {
                 case "games":
-                    ByYearButton.Visible = true;
-                    ByScoreButton.Visible = true;
                     ByGenreButton.Visible = false;
-                    ByStatusButton.Visible = true;
                     currentMode = mode.GAMES;
                     break;
                 case "films":
-                    ByYearButton.Visible = true;
-                    ByScoreButton.Visible = true;
                     ByGenreButton.Visible = true;
-                    ByStatusButton.Visible = true;
                     currentMode = mode.FILMS;
                     break;
                 case "tvseries":
-                    ByYearButton.Visible = true;
-                    ByScoreButton.Visible = true;
                     ByGenreButton.Visible = true;
-                    ByStatusButton.Visible = true;
                     currentMode = mode.TVSERIES;
                     break;
             }
