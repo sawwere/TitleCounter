@@ -29,96 +29,100 @@ namespace hltb
         /// </summary>
         private void InitializeComponent()
         {
-            this.nameLabel = new System.Windows.Forms.Label();
-            this.titlePicture = new System.Windows.Forms.PictureBox();
-            this.addButton = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.statusLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.titlePicture)).BeginInit();
-            this.SuspendLayout();
+            nameLabel = new Label();
+            titlePicture = new PictureBox();
+            addButton = new Button();
+            button2 = new Button();
+            statusLabel = new Label();
+            ((System.ComponentModel.ISupportInitialize)titlePicture).BeginInit();
+            SuspendLayout();
             // 
             // nameLabel
             // 
-            this.nameLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nameLabel.AutoSize = true;
-            this.nameLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nameLabel.Location = new System.Drawing.Point(4, 392);
-            this.nameLabel.Name = "nameLabel";
-            this.nameLabel.Size = new System.Drawing.Size(70, 27);
-            this.nameLabel.TabIndex = 11;
-            this.nameLabel.Text = "Name";
+            nameLabel.Anchor = AnchorStyles.Left;
+            nameLabel.AutoSize = true;
+            nameLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            nameLabel.Location = new Point(5, 452);
+            nameLabel.Margin = new Padding(4, 0, 4, 0);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(70, 27);
+            nameLabel.TabIndex = 11;
+            nameLabel.Text = "Name";
             // 
             // titlePicture
             // 
-            this.titlePicture.Location = new System.Drawing.Point(58, 12);
-            this.titlePicture.Name = "titlePicture";
-            this.titlePicture.Size = new System.Drawing.Size(240, 360);
-            this.titlePicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.titlePicture.TabIndex = 10;
-            this.titlePicture.TabStop = false;
+            titlePicture.Location = new Point(68, 14);
+            titlePicture.Margin = new Padding(4, 3, 4, 3);
+            titlePicture.Name = "titlePicture";
+            titlePicture.Size = new Size(280, 415);
+            titlePicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            titlePicture.TabIndex = 10;
+            titlePicture.TabStop = false;
             // 
             // addButton
             // 
-            this.addButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.addButton.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.addButton.Location = new System.Drawing.Point(58, 466);
-            this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(106, 32);
-            this.addButton.TabIndex = 20;
-            this.addButton.Text = "Add";
-            this.addButton.UseVisualStyleBackColor = true;
-            this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            addButton.DialogResult = DialogResult.OK;
+            addButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            addButton.Location = new Point(68, 538);
+            addButton.Margin = new Padding(4, 3, 4, 3);
+            addButton.Name = "addButton";
+            addButton.Size = new Size(124, 37);
+            addButton.TabIndex = 20;
+            addButton.Text = "Add";
+            addButton.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
-            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(170, 466);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(122, 32);
-            this.button2.TabIndex = 21;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
+            button2.DialogResult = DialogResult.Cancel;
+            button2.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            button2.Location = new Point(198, 538);
+            button2.Margin = new Padding(4, 3, 4, 3);
+            button2.Name = "button2";
+            button2.Size = new Size(142, 37);
+            button2.TabIndex = 21;
+            button2.Text = "Cancel";
+            button2.UseVisualStyleBackColor = true;
             // 
             // statusLabel
             // 
-            this.statusLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusLabel.Location = new System.Drawing.Point(4, 436);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(73, 27);
-            this.statusLabel.TabIndex = 22;
-            this.statusLabel.Text = "Status";
+            statusLabel.Anchor = AnchorStyles.Left;
+            statusLabel.AutoSize = true;
+            statusLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            statusLabel.Location = new Point(5, 503);
+            statusLabel.Margin = new Padding(4, 0, 4, 0);
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(73, 27);
+            statusLabel.TabIndex = 22;
+            statusLabel.Text = "Status";
             // 
-            // AddTitle
+            // AddContent
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.button2;
-            this.ClientSize = new System.Drawing.Size(369, 525);
-            this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.addButton);
-            this.Controls.Add(this.nameLabel);
-            this.Controls.Add(this.titlePicture);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "AddTitle";
-            this.Text = "AddTitle";
-            this.VisibleChanged += new System.EventHandler(this.AddTitle_VisibleChanged);
-            ((System.ComponentModel.ISupportInitialize)(this.titlePicture)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = button2;
+            ClientSize = new Size(430, 606);
+            Controls.Add(statusLabel);
+            Controls.Add(button2);
+            Controls.Add(addButton);
+            Controls.Add(nameLabel);
+            Controls.Add(titlePicture);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Margin = new Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "AddContent";
+            Text = "AddTitle";
+            VisibleChanged += AddTitle_VisibleChanged;
+            ((System.ComponentModel.ISupportInitialize)titlePicture).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-        private System.Windows.Forms.Label nameLabel;
-        private System.Windows.Forms.PictureBox titlePicture;
-        private System.Windows.Forms.Button addButton;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label statusLabel;
+        private Label nameLabel;
+        private PictureBox titlePicture;
+        private Button addButton;
+        private Button button2;
+        private Label statusLabel;
     }
 }

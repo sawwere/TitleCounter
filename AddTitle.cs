@@ -54,10 +54,5 @@ namespace hltb
             titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
 
         }
-
-        private void addButton_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

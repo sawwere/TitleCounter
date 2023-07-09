@@ -9,5 +9,7 @@ public partial class Status
 
     public string Name { get; set; } = null!;
 
+    public virtual ICollection<Film> Films { get; set; } = new List<Film>();
+
     public virtual ICollection<Game> Games { get; set; } = new List<Game>();
 }

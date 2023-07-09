@@ -82,24 +82,8 @@ namespace hltb
         {
             using (TitleCounterContext db = new TitleCounterContext())
             {
-                //switch (md)
-                //{
-                //    case mode.GAMES:
-                //        var games = db.Games.Include(x => x.Status).ToList();
-                //        //foreach (var game in games)
-                //        //{
-                //        //    game.Time = game.Time * 60;
-                //        //}
-                //        break;
-
-                //}
-                
-                
                 db.SaveChanges();
             }
-            //string file_name = PATH + "\\data\\" + md.ToString().ToLower() + "_sheet.json";
-            //string jstring = JsonConvert.SerializeObject(titles, Formatting.Indented);
-            //File.WriteAllText(file_name, jstring);
         }
 
 

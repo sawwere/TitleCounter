@@ -23,6 +23,7 @@ namespace hltb
 
         private Dictionary<mode, EFGenericRepository<Content>> repositories;
         private EFGenericRepository<Game> gameRepository;
+        private EFGenericRepository<Film> filmRepository;
         private List<Content> contents;
         private Content cur_content;
         private AddContent add_content = new AddContent();
@@ -91,37 +92,50 @@ namespace hltb
 
         public void RefreshTitles(mode _mode)
         {
+            contents = new List<Content>();
+            
+            switch (currentMode)
+            {
+                case mode.GAMES: {
+                        contents = gameRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
+                        break; 
+                    }
+                case mode.FILMS: {
+                        contents = filmRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
+                        break; 
+                    }
+            }
             switch (filter)
             {
                 case filterCategory.YEAR:
                     {
                         string cur_year = YearSortBox.SelectedItem.ToString();
-                        AddButtons(gameRepository.Get().Where(x => x.DateRelease.Year.ToString() == cur_year).Select(x=> x as Content).ToList());
+                        AddButtons(contents.Where(x => x.DateRelease.Year.ToString() == cur_year).Select(x=> x as Content).ToList());
                         break;
                     }
 
                 case filterCategory.SCORE:
                     {
                         string cur_score = ScoreSortBox.SelectedItem.ToString();
-                        AddButtons(gameRepository.Get().Where(x => x.Score.ToString() == cur_score).Select(x => x as Content).ToList());
+                        AddButtons(contents.Where(x => x.Score.ToString() == cur_score).Select(x => x as Content).ToList());
                         break;
                     }
                 case filterCategory.STATUS:
                     {
                         string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
-                        AddButtons(gameRepository.GetWithInclude(x=>x.Status).Where(x => x.Status.Name == cur_status).Select(x => x as Content).ToList());
+                        AddButtons(contents.Where(x => x.Status.Name == cur_status).Select(x => x as Content).ToList());
                         break;
                     }
                 case filterCategory.NAME:
                     {
                         char cur_letter = NameSortBox.SelectedItem.ToString().First();
-                        AddButtons(gameRepository.Get().Where(x => x.Title.ToString().First() == cur_letter).Select(x => x as Content).ToList());
+                        AddButtons(contents.Where(x => x.Title.ToString().First() == cur_letter).Select(x => x as Content).ToList());
                         break;
                     }
                 case filterCategory.GENRE:
                     {
                         string cur_genre = GenreSortBox.SelectedItem.ToString();
-                        AddButtons(contents.Where(x => (x as Film).Genres.Any(y => y == cur_genre)).ToList());
+                        //AddButtons(contents.Where(x => (x as TVSeries).Genres.Any(y => y == cur_genre)).ToList());
                         break;
                     }
             }
@@ -130,7 +144,19 @@ namespace hltb
         public void RemoveContent(Content title, mode md)
         {
             contents.Remove(title);
-            SaveContent(contents, md);
+            switch (currentMode)
+            {
+                case mode.GAMES:
+                    {
+                        gameRepository.Remove(title as Game);
+                        break;
+                    }
+                case mode.FILMS:
+                    {
+                        filmRepository.Remove(title as Film);
+                        break;
+                    }
+            }
             UpdateStatisticsLabel();
             RefreshTitles(currentMode);
         }
@@ -147,11 +173,10 @@ namespace hltb
 
             repositories = new Dictionary<mode, EFGenericRepository<Content>>();
             gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
-            //repositories[mode.FILMS] = GetContent(mode.FILMS);
-            //repositories[mode.TVSERIES] = GetContent(mode.TVSERIES);
+            filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
 
             contents = new List<Content>();
-            contents = gameRepository.Get().Select(x=> x as Content).ToList();
+            contents = gameRepository.GetWithInclude(x=>x.Status).Select(x=> x as Content).ToList();
 
             ResetYears();
             UpdateStatisticsLabel();
@@ -228,7 +253,6 @@ namespace hltb
                     namebox.Text = "";
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
-
                     contents.Add(GetContent(currentMode, true).First());
                 }
                 File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
@@ -243,7 +267,7 @@ namespace hltb
         {
             currentTitlePanel.Controls.Clear();
             var button = (Button)sender;
-            cur_content = gameRepository.FindById((long)button.Tag);
+            cur_content = contents.FirstOrDefault(x => x.Id == (long)button.Tag);
             currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_content, currentMode));
             this.Controls.Add(currentTitlePanel);
         }
@@ -300,8 +324,7 @@ namespace hltb
 
                 if (currentDisplayOption == displayOption.IMAGES)
                 {
-                    string safeName = GetSafeName(g);
-                    button.BackgroundImage = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
+                    button.BackgroundImage = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + g.FixedTitle + ".jpg");
                     button.BackgroundImageLayout = ImageLayout.Stretch;
                     button.ForeColor = Color.Transparent;
                 }
@@ -340,11 +363,11 @@ namespace hltb
         {
             GenreSortBox.Items.Clear();
             var set = new SortedSet<string>();
-            //DANGER
+            //DANGER TODO
             foreach (Film f in contents)
             {
-                foreach (var g in f.Genres)
-                    set.Add(g);
+                //foreach (var g in f.Genres)
+                //    set.Add(g);
             }
             object[] a = new object[set.Count];
             int i = 0;
@@ -479,18 +502,15 @@ namespace hltb
                 case "games":
                     ByGenreButton.Visible = false;
                     currentMode = mode.GAMES;
-                    contents = gameRepository.Get().Select(x => x as Content).ToList();
                     break;
                 // TODO
                 case "films":
                     ByGenreButton.Visible = true;
                     currentMode = mode.FILMS;
-                    contents = gameRepository.Get().Select(x => x as Content).ToList();
                     break;
                 case "tvseries":
                     ByGenreButton.Visible = true;
                     currentMode = mode.TVSERIES;
-                    contents = gameRepository.Get().Select(x => x as Content).ToList();
                     break;
             }
             ByYearButton_Click(sender, e);
@@ -500,12 +520,6 @@ namespace hltb
         private void refreshButton_Click(object sender, EventArgs e)
         {
             RefreshTitles(currentMode);
-        }
-
-        private string GetSafeName(Content content)
-        {
-            char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
-            return new string(content.Title.Where(x => !proh.Contains(x)).ToArray());
         }
 
         private void displayImagesButton_Click(object sender, EventArgs e)
