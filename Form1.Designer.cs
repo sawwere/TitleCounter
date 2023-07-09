@@ -29,404 +29,369 @@ namespace hltb
         /// </summary>
         private void InitializeComponent()
         {
-            this.addgame = new System.Windows.Forms.Button();
-            this.operationLabel = new System.Windows.Forms.Label();
-            this.namebox = new System.Windows.Forms.TextBox();
-            this.statusbox = new System.Windows.Forms.ComboBox();
-            this.YearSortBox = new System.Windows.Forms.ComboBox();
-            this.ByYearButton = new System.Windows.Forms.Button();
-            this.ByScoreButton = new System.Windows.Forms.Button();
-            this.statisticsLabel = new System.Windows.Forms.Label();
-            this.ByStatusButton = new System.Windows.Forms.Button();
-            this.scorebox = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.ModeBox = new System.Windows.Forms.ListBox();
-            this.ByGenreButton = new System.Windows.Forms.Button();
-            this.ScoreSortBox = new System.Windows.Forms.ComboBox();
-            this.GenreSortBox = new System.Windows.Forms.ComboBox();
-            this.StatusSortBox = new System.Windows.Forms.ComboBox();
-            this.currentTitlePanel = new System.Windows.Forms.Panel();
-            this.ByNameButton = new System.Windows.Forms.Button();
-            this.NameSortBox = new System.Windows.Forms.ComboBox();
-            this.refreshButton = new System.Windows.Forms.Button();
-            this.displayLinesButton = new System.Windows.Forms.Button();
-            this.displayImagesButton = new System.Windows.Forms.Button();
-            this.displayButtonsButton = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            addgame = new Button();
+            operationLabel = new Label();
+            namebox = new TextBox();
+            statusbox = new ComboBox();
+            YearSortBox = new ComboBox();
+            ByYearButton = new Button();
+            ByScoreButton = new Button();
+            statisticsLabel = new Label();
+            ByStatusButton = new Button();
+            scorebox = new ComboBox();
+            label3 = new Label();
+            label5 = new Label();
+            label6 = new Label();
+            ModeBox = new ListBox();
+            ByGenreButton = new Button();
+            ScoreSortBox = new ComboBox();
+            GenreSortBox = new ComboBox();
+            StatusSortBox = new ComboBox();
+            currentTitlePanel = new Panel();
+            ByNameButton = new Button();
+            NameSortBox = new ComboBox();
+            refreshButton = new Button();
+            displayLinesButton = new Button();
+            displayImagesButton = new Button();
+            displayButtonsButton = new Button();
+            SuspendLayout();
             // 
             // addgame
             // 
-            this.addgame.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.addgame.Location = new System.Drawing.Point(84, 26);
-            this.addgame.Name = "addgame";
-            this.addgame.Size = new System.Drawing.Size(133, 23);
-            this.addgame.TabIndex = 0;
-            this.addgame.Text = "Add titile";
-            this.addgame.UseVisualStyleBackColor = true;
-            this.addgame.MouseDown += new System.Windows.Forms.MouseEventHandler(this.addtitle_MouseDown);
+            addgame.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            addgame.Location = new Point(84, 26);
+            addgame.Name = "addgame";
+            addgame.Size = new Size(133, 23);
+            addgame.TabIndex = 0;
+            addgame.Text = "Add titile";
+            addgame.UseVisualStyleBackColor = true;
+            addgame.MouseDown += addtitle_MouseDown;
             // 
             // operationLabel
             // 
-            this.operationLabel.AutoSize = true;
-            this.operationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.operationLabel.Location = new System.Drawing.Point(84, 49);
-            this.operationLabel.Name = "operationLabel";
-            this.operationLabel.Size = new System.Drawing.Size(57, 20);
-            this.operationLabel.TabIndex = 1;
-            this.operationLabel.Text = "status:";
+            operationLabel.AutoSize = true;
+            operationLabel.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            operationLabel.Location = new Point(84, 49);
+            operationLabel.Name = "operationLabel";
+            operationLabel.Size = new Size(57, 20);
+            operationLabel.TabIndex = 1;
+            operationLabel.Text = "status:";
             // 
             // namebox
             // 
-            this.namebox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.namebox.Location = new System.Drawing.Point(225, 26);
-            this.namebox.Name = "namebox";
-            this.namebox.Size = new System.Drawing.Size(276, 23);
-            this.namebox.TabIndex = 2;
+            namebox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            namebox.Location = new Point(225, 26);
+            namebox.Name = "namebox";
+            namebox.Size = new Size(276, 23);
+            namebox.TabIndex = 2;
             // 
             // statusbox
             // 
-            this.statusbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.statusbox.FormattingEnabled = true;
-            this.statusbox.Items.AddRange(new object[] {
-            "COMPLETED",
-            "BACKLOG",
-            "RETIRED"});
-            this.statusbox.Location = new System.Drawing.Point(507, 25);
-            this.statusbox.Name = "statusbox";
-            this.statusbox.Size = new System.Drawing.Size(121, 24);
-            this.statusbox.TabIndex = 6;
-            this.statusbox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.statusbox_KeyPress);
+            statusbox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            statusbox.FormattingEnabled = true;
+            statusbox.Items.AddRange(new object[] { "COMPLETED", "BACKLOG", "RETIRED" });
+            statusbox.Location = new Point(507, 25);
+            statusbox.Name = "statusbox";
+            statusbox.Size = new Size(121, 24);
+            statusbox.TabIndex = 6;
+            statusbox.KeyPress += statusbox_KeyPress;
             // 
             // YearSortBox
             // 
-            this.YearSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.YearSortBox.FormattingEnabled = true;
-            this.YearSortBox.Location = new System.Drawing.Point(84, 105);
-            this.YearSortBox.Name = "YearSortBox";
-            this.YearSortBox.Size = new System.Drawing.Size(135, 24);
-            this.YearSortBox.TabIndex = 8;
-            this.YearSortBox.Text = "Year";
-            this.YearSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
+            YearSortBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            YearSortBox.FormattingEnabled = true;
+            YearSortBox.Location = new Point(84, 105);
+            YearSortBox.Name = "YearSortBox";
+            YearSortBox.Size = new Size(135, 24);
+            YearSortBox.TabIndex = 8;
+            YearSortBox.Text = "Year";
+            YearSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
             // 
             // ByYearButton
             // 
-            this.ByYearButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.ByYearButton.Location = new System.Drawing.Point(84, 72);
-            this.ByYearButton.Name = "ByYearButton";
-            this.ByYearButton.Size = new System.Drawing.Size(135, 27);
-            this.ByYearButton.TabIndex = 10;
-            this.ByYearButton.Text = "By Year";
-            this.ByYearButton.UseVisualStyleBackColor = true;
-            this.ByYearButton.Click += new System.EventHandler(this.ByYearButton_Click);
+            ByYearButton.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            ByYearButton.Location = new Point(84, 72);
+            ByYearButton.Name = "ByYearButton";
+            ByYearButton.Size = new Size(135, 27);
+            ByYearButton.TabIndex = 10;
+            ByYearButton.Text = "By Year";
+            ByYearButton.UseVisualStyleBackColor = true;
+            ByYearButton.Click += ByYearButton_Click;
             // 
             // ByScoreButton
             // 
-            this.ByScoreButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ByScoreButton.Location = new System.Drawing.Point(225, 72);
-            this.ByScoreButton.Name = "ByScoreButton";
-            this.ByScoreButton.Size = new System.Drawing.Size(135, 27);
-            this.ByScoreButton.TabIndex = 11;
-            this.ByScoreButton.Text = "By Score";
-            this.ByScoreButton.UseVisualStyleBackColor = true;
-            this.ByScoreButton.Click += new System.EventHandler(this.ByScoreButton_Click);
+            ByScoreButton.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            ByScoreButton.Location = new Point(225, 72);
+            ByScoreButton.Name = "ByScoreButton";
+            ByScoreButton.Size = new Size(135, 27);
+            ByScoreButton.TabIndex = 11;
+            ByScoreButton.Text = "By Score";
+            ByScoreButton.UseVisualStyleBackColor = true;
+            ByScoreButton.Click += ByScoreButton_Click;
             // 
             // statisticsLabel
             // 
-            this.statisticsLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.statisticsLabel.AutoSize = true;
-            this.statisticsLabel.Location = new System.Drawing.Point(727, 600);
-            this.statisticsLabel.Name = "statisticsLabel";
-            this.statisticsLabel.Size = new System.Drawing.Size(35, 13);
-            this.statisticsLabel.TabIndex = 16;
-            this.statisticsLabel.Text = "label2";
-            this.statisticsLabel.Click += new System.EventHandler(this.statisticsLabel_Click);
+            statisticsLabel.Anchor = AnchorStyles.Bottom;
+            statisticsLabel.AutoSize = true;
+            statisticsLabel.Location = new Point(727, 600);
+            statisticsLabel.Name = "statisticsLabel";
+            statisticsLabel.Size = new Size(35, 13);
+            statisticsLabel.TabIndex = 16;
+            statisticsLabel.Text = "label2";
             // 
             // ByStatusButton
             // 
-            this.ByStatusButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.ByStatusButton.Location = new System.Drawing.Point(507, 72);
-            this.ByStatusButton.Name = "ByStatusButton";
-            this.ByStatusButton.Size = new System.Drawing.Size(121, 27);
-            this.ByStatusButton.TabIndex = 17;
-            this.ByStatusButton.Text = "By Status";
-            this.ByStatusButton.UseVisualStyleBackColor = true;
-            this.ByStatusButton.Click += new System.EventHandler(this.ByStatusButton_Click);
+            ByStatusButton.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            ByStatusButton.Location = new Point(507, 72);
+            ByStatusButton.Name = "ByStatusButton";
+            ByStatusButton.Size = new Size(121, 27);
+            ByStatusButton.TabIndex = 17;
+            ByStatusButton.Text = "By Status";
+            ByStatusButton.UseVisualStyleBackColor = true;
+            ByStatusButton.Click += ByStatusButton_Click;
             // 
             // scorebox
             // 
-            this.scorebox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.scorebox.FormattingEnabled = true;
-            this.scorebox.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"});
-            this.scorebox.Location = new System.Drawing.Point(634, 25);
-            this.scorebox.Name = "scorebox";
-            this.scorebox.Size = new System.Drawing.Size(68, 24);
-            this.scorebox.TabIndex = 18;
-            this.scorebox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.scorebox_KeyPress);
+            scorebox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            scorebox.FormattingEnabled = true;
+            scorebox.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
+            scorebox.Location = new Point(634, 25);
+            scorebox.Name = "scorebox";
+            scorebox.Size = new Size(68, 24);
+            scorebox.TabIndex = 18;
+            scorebox.KeyPress += scorebox_KeyPress;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(631, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Score";
+            label3.AutoSize = true;
+            label3.Location = new Point(631, 9);
+            label3.Name = "label3";
+            label3.Size = new Size(35, 13);
+            label3.TabIndex = 19;
+            label3.Text = "Score";
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(504, 9);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 13);
-            this.label5.TabIndex = 21;
-            this.label5.Text = "Status";
+            label5.AutoSize = true;
+            label5.Location = new Point(504, 9);
+            label5.Name = "label5";
+            label5.Size = new Size(37, 13);
+            label5.TabIndex = 21;
+            label5.Text = "Status";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(222, 9);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(35, 13);
-            this.label6.TabIndex = 22;
-            this.label6.Text = "Name";
+            label6.AutoSize = true;
+            label6.Location = new Point(222, 9);
+            label6.Name = "label6";
+            label6.Size = new Size(35, 13);
+            label6.TabIndex = 22;
+            label6.Text = "Name";
             // 
             // ModeBox
             // 
-            this.ModeBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ModeBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.ModeBox.FormattingEnabled = true;
-            this.ModeBox.ItemHeight = 16;
-            this.ModeBox.Items.AddRange(new object[] {
-            "Games",
-            "Films",
-            "TvSeries"});
-            this.ModeBox.Location = new System.Drawing.Point(12, 172);
-            this.ModeBox.Name = "ModeBox";
-            this.ModeBox.Size = new System.Drawing.Size(66, 52);
-            this.ModeBox.TabIndex = 23;
-            this.ModeBox.SelectedValueChanged += new System.EventHandler(this.ModeBox_SelectedValueChanged);
+            ModeBox.Anchor = AnchorStyles.Left;
+            ModeBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            ModeBox.FormattingEnabled = true;
+            ModeBox.ItemHeight = 16;
+            ModeBox.Items.AddRange(new object[] { "Games", "Films", "TvSeries" });
+            ModeBox.Location = new Point(12, 172);
+            ModeBox.Name = "ModeBox";
+            ModeBox.Size = new Size(66, 52);
+            ModeBox.TabIndex = 23;
+            ModeBox.SelectedValueChanged += ModeBox_SelectedValueChanged;
             // 
             // ByGenreButton
             // 
-            this.ByGenreButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.ByGenreButton.Location = new System.Drawing.Point(634, 72);
-            this.ByGenreButton.Name = "ByGenreButton";
-            this.ByGenreButton.Size = new System.Drawing.Size(135, 27);
-            this.ByGenreButton.TabIndex = 25;
-            this.ByGenreButton.Text = "By Genre";
-            this.ByGenreButton.UseVisualStyleBackColor = true;
-            this.ByGenreButton.Visible = false;
-            this.ByGenreButton.Click += new System.EventHandler(this.ByGenreButton_Click);
+            ByGenreButton.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            ByGenreButton.Location = new Point(634, 72);
+            ByGenreButton.Name = "ByGenreButton";
+            ByGenreButton.Size = new Size(135, 27);
+            ByGenreButton.TabIndex = 25;
+            ByGenreButton.Text = "By Genre";
+            ByGenreButton.UseVisualStyleBackColor = true;
+            ByGenreButton.Visible = false;
+            ByGenreButton.Click += ByGenreButton_Click;
             // 
             // ScoreSortBox
             // 
-            this.ScoreSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.ScoreSortBox.FormattingEnabled = true;
-            this.ScoreSortBox.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"});
-            this.ScoreSortBox.Location = new System.Drawing.Point(225, 105);
-            this.ScoreSortBox.Name = "ScoreSortBox";
-            this.ScoreSortBox.Size = new System.Drawing.Size(135, 24);
-            this.ScoreSortBox.TabIndex = 26;
-            this.ScoreSortBox.Text = "Score";
-            this.ScoreSortBox.Visible = false;
-            this.ScoreSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
+            ScoreSortBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            ScoreSortBox.FormattingEnabled = true;
+            ScoreSortBox.Items.AddRange(new object[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
+            ScoreSortBox.Location = new Point(225, 105);
+            ScoreSortBox.Name = "ScoreSortBox";
+            ScoreSortBox.Size = new Size(135, 24);
+            ScoreSortBox.TabIndex = 26;
+            ScoreSortBox.Text = "Score";
+            ScoreSortBox.Visible = false;
+            ScoreSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
             // 
             // GenreSortBox
             // 
-            this.GenreSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.GenreSortBox.FormattingEnabled = true;
-            this.GenreSortBox.Location = new System.Drawing.Point(634, 104);
-            this.GenreSortBox.Name = "GenreSortBox";
-            this.GenreSortBox.Size = new System.Drawing.Size(135, 24);
-            this.GenreSortBox.TabIndex = 27;
-            this.GenreSortBox.Text = "Genre";
-            this.GenreSortBox.Visible = false;
-            this.GenreSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
+            GenreSortBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            GenreSortBox.FormattingEnabled = true;
+            GenreSortBox.Location = new Point(634, 104);
+            GenreSortBox.Name = "GenreSortBox";
+            GenreSortBox.Size = new Size(135, 24);
+            GenreSortBox.TabIndex = 27;
+            GenreSortBox.Text = "Genre";
+            GenreSortBox.Visible = false;
+            GenreSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
             // 
             // StatusSortBox
             // 
-            this.StatusSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.StatusSortBox.FormattingEnabled = true;
-            this.StatusSortBox.Items.AddRange(new object[] {
-            "Backlog",
-            "Completed",
-            "Retired"});
-            this.StatusSortBox.Location = new System.Drawing.Point(507, 104);
-            this.StatusSortBox.Name = "StatusSortBox";
-            this.StatusSortBox.Size = new System.Drawing.Size(121, 24);
-            this.StatusSortBox.TabIndex = 28;
-            this.StatusSortBox.Text = "Status";
-            this.StatusSortBox.Visible = false;
-            this.StatusSortBox.SelectedValueChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
+            StatusSortBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            StatusSortBox.FormattingEnabled = true;
+            StatusSortBox.Items.AddRange(new object[] { "Backlog", "Completed", "Retired", "In progress" });
+            StatusSortBox.Location = new Point(507, 104);
+            StatusSortBox.Name = "StatusSortBox";
+            StatusSortBox.Size = new Size(121, 24);
+            StatusSortBox.TabIndex = 28;
+            StatusSortBox.Text = "Status";
+            StatusSortBox.Visible = false;
+            StatusSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
             // 
             // currentTitlePanel
             // 
-            this.currentTitlePanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.currentTitlePanel.Location = new System.Drawing.Point(984, 0);
-            this.currentTitlePanel.Name = "currentTitlePanel";
-            this.currentTitlePanel.Size = new System.Drawing.Size(400, 661);
-            this.currentTitlePanel.TabIndex = 29;
+            currentTitlePanel.Dock = DockStyle.Right;
+            currentTitlePanel.Location = new Point(984, 0);
+            currentTitlePanel.Name = "currentTitlePanel";
+            currentTitlePanel.Size = new Size(400, 661);
+            currentTitlePanel.TabIndex = 29;
             // 
             // ByNameButton
             // 
-            this.ByNameButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.ByNameButton.Location = new System.Drawing.Point(366, 72);
-            this.ByNameButton.Name = "ByNameButton";
-            this.ByNameButton.Size = new System.Drawing.Size(135, 27);
-            this.ByNameButton.TabIndex = 30;
-            this.ByNameButton.Text = "By Name";
-            this.ByNameButton.UseVisualStyleBackColor = true;
-            this.ByNameButton.Click += new System.EventHandler(this.ByNameButton_Click);
+            ByNameButton.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            ByNameButton.Location = new Point(366, 72);
+            ByNameButton.Name = "ByNameButton";
+            ByNameButton.Size = new Size(135, 27);
+            ByNameButton.TabIndex = 30;
+            ByNameButton.Text = "By Name";
+            ByNameButton.UseVisualStyleBackColor = true;
+            ByNameButton.Click += ByNameButton_Click;
             // 
             // NameSortBox
             // 
-            this.NameSortBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.NameSortBox.FormattingEnabled = true;
-            this.NameSortBox.Items.AddRange(new object[] {
-            "Increasing",
-            "Descending"});
-            this.NameSortBox.Location = new System.Drawing.Point(366, 104);
-            this.NameSortBox.Name = "NameSortBox";
-            this.NameSortBox.Size = new System.Drawing.Size(135, 24);
-            this.NameSortBox.TabIndex = 31;
-            this.NameSortBox.Text = "Name starts with";
-            this.NameSortBox.Visible = false;
-            this.NameSortBox.SelectedIndexChanged += new System.EventHandler(this.YearSortBox_SelectedValueChanged);
+            NameSortBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            NameSortBox.FormattingEnabled = true;
+            NameSortBox.Items.AddRange(new object[] { "Increasing", "Descending" });
+            NameSortBox.Location = new Point(366, 104);
+            NameSortBox.Name = "NameSortBox";
+            NameSortBox.Size = new Size(135, 24);
+            NameSortBox.TabIndex = 31;
+            NameSortBox.Text = "Name starts with";
+            NameSortBox.Visible = false;
+            NameSortBox.SelectedIndexChanged += YearSortBox_SelectedValueChanged;
             // 
             // refreshButton
             // 
-            this.refreshButton.BackgroundImage = global::hltb.Properties.Resources.refresh_icon;
-            this.refreshButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.refreshButton.Location = new System.Drawing.Point(841, 12);
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(86, 57);
-            this.refreshButton.TabIndex = 32;
-            this.refreshButton.UseVisualStyleBackColor = true;
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            refreshButton.BackgroundImage = Properties.Resources.refresh_icon;
+            refreshButton.BackgroundImageLayout = ImageLayout.Stretch;
+            refreshButton.Location = new Point(841, 12);
+            refreshButton.Name = "refreshButton";
+            refreshButton.Size = new Size(86, 57);
+            refreshButton.TabIndex = 32;
+            refreshButton.UseVisualStyleBackColor = true;
+            refreshButton.Click += refreshButton_Click;
             // 
             // displayLinesButton
             // 
-            this.displayLinesButton.Location = new System.Drawing.Point(169, 136);
-            this.displayLinesButton.Name = "displayLinesButton";
-            this.displayLinesButton.Size = new System.Drawing.Size(75, 23);
-            this.displayLinesButton.TabIndex = 33;
-            this.displayLinesButton.Text = "lines";
-            this.displayLinesButton.UseVisualStyleBackColor = true;
-            this.displayLinesButton.Click += new System.EventHandler(this.displayLinesButton_Click);
+            displayLinesButton.Location = new Point(169, 136);
+            displayLinesButton.Name = "displayLinesButton";
+            displayLinesButton.Size = new Size(75, 23);
+            displayLinesButton.TabIndex = 33;
+            displayLinesButton.Text = "lines";
+            displayLinesButton.UseVisualStyleBackColor = true;
+            displayLinesButton.Click += displayLinesButton_Click;
             // 
             // displayImagesButton
             // 
-            this.displayImagesButton.Location = new System.Drawing.Point(250, 136);
-            this.displayImagesButton.Name = "displayImagesButton";
-            this.displayImagesButton.Size = new System.Drawing.Size(75, 23);
-            this.displayImagesButton.TabIndex = 34;
-            this.displayImagesButton.Text = "greed";
-            this.displayImagesButton.UseVisualStyleBackColor = true;
-            this.displayImagesButton.Click += new System.EventHandler(this.displayImagesButton_Click);
+            displayImagesButton.Location = new Point(250, 136);
+            displayImagesButton.Name = "displayImagesButton";
+            displayImagesButton.Size = new Size(75, 23);
+            displayImagesButton.TabIndex = 34;
+            displayImagesButton.Text = "greed";
+            displayImagesButton.UseVisualStyleBackColor = true;
+            displayImagesButton.Click += displayImagesButton_Click;
             // 
             // displayButtonsButton
             // 
-            this.displayButtonsButton.Location = new System.Drawing.Point(88, 136);
-            this.displayButtonsButton.Name = "displayButtonsButton";
-            this.displayButtonsButton.Size = new System.Drawing.Size(75, 23);
-            this.displayButtonsButton.TabIndex = 35;
-            this.displayButtonsButton.Text = "button1";
-            this.displayButtonsButton.UseVisualStyleBackColor = true;
-            this.displayButtonsButton.Click += new System.EventHandler(this.displayButtonsButton_Click);
+            displayButtonsButton.Location = new Point(88, 136);
+            displayButtonsButton.Name = "displayButtonsButton";
+            displayButtonsButton.Size = new Size(75, 23);
+            displayButtonsButton.TabIndex = 35;
+            displayButtonsButton.Text = "button1";
+            displayButtonsButton.UseVisualStyleBackColor = true;
+            displayButtonsButton.Click += displayButtonsButton_Click;
             // 
             // Mainform
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.AutoScroll = true;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(1384, 661);
-            this.Controls.Add(this.displayButtonsButton);
-            this.Controls.Add(this.displayImagesButton);
-            this.Controls.Add(this.displayLinesButton);
-            this.Controls.Add(this.refreshButton);
-            this.Controls.Add(this.currentTitlePanel);
-            this.Controls.Add(this.NameSortBox);
-            this.Controls.Add(this.ByNameButton);
-            this.Controls.Add(this.StatusSortBox);
-            this.Controls.Add(this.GenreSortBox);
-            this.Controls.Add(this.ScoreSortBox);
-            this.Controls.Add(this.ByGenreButton);
-            this.Controls.Add(this.ModeBox);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.scorebox);
-            this.Controls.Add(this.ByStatusButton);
-            this.Controls.Add(this.statisticsLabel);
-            this.Controls.Add(this.ByScoreButton);
-            this.Controls.Add(this.ByYearButton);
-            this.Controls.Add(this.YearSortBox);
-            this.Controls.Add(this.statusbox);
-            this.Controls.Add(this.namebox);
-            this.Controls.Add(this.operationLabel);
-            this.Controls.Add(this.addgame);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.Name = "Mainform";
-            this.Text = "MyList";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            AutoScroll = true;
+            BackColor = SystemColors.ActiveCaption;
+            ClientSize = new Size(1384, 661);
+            Controls.Add(displayButtonsButton);
+            Controls.Add(displayImagesButton);
+            Controls.Add(displayLinesButton);
+            Controls.Add(refreshButton);
+            Controls.Add(currentTitlePanel);
+            Controls.Add(NameSortBox);
+            Controls.Add(ByNameButton);
+            Controls.Add(StatusSortBox);
+            Controls.Add(GenreSortBox);
+            Controls.Add(ScoreSortBox);
+            Controls.Add(ByGenreButton);
+            Controls.Add(ModeBox);
+            Controls.Add(label6);
+            Controls.Add(label5);
+            Controls.Add(label3);
+            Controls.Add(scorebox);
+            Controls.Add(ByStatusButton);
+            Controls.Add(statisticsLabel);
+            Controls.Add(ByScoreButton);
+            Controls.Add(ByYearButton);
+            Controls.Add(YearSortBox);
+            Controls.Add(statusbox);
+            Controls.Add(namebox);
+            Controls.Add(operationLabel);
+            Controls.Add(addgame);
+            Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            ForeColor = Color.DarkSlateGray;
+            Name = "Mainform";
+            Text = "MyList";
+            Load += MainForm_Load;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Button addgame;
-        private System.Windows.Forms.Label operationLabel;
-        private System.Windows.Forms.TextBox namebox;
-        private System.Windows.Forms.ComboBox statusbox;
-        private System.Windows.Forms.ComboBox YearSortBox;
-        private System.Windows.Forms.Button ByYearButton;
-        private System.Windows.Forms.Button ByScoreButton;
-        private System.Windows.Forms.Label statisticsLabel;
-        private System.Windows.Forms.Button ByStatusButton;
-        private System.Windows.Forms.ComboBox scorebox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ListBox ModeBox;
-        private System.Windows.Forms.Button ByGenreButton;
-        private System.Windows.Forms.ComboBox ScoreSortBox;
-        private System.Windows.Forms.ComboBox GenreSortBox;
-        private System.Windows.Forms.ComboBox StatusSortBox;
-        private System.Windows.Forms.Panel currentTitlePanel;
-        private System.Windows.Forms.Button ByNameButton;
-        private System.Windows.Forms.ComboBox NameSortBox;
-        private System.Windows.Forms.Button refreshButton;
-        private System.Windows.Forms.Button displayLinesButton;
-        private System.Windows.Forms.Button displayImagesButton;
-        private System.Windows.Forms.Button displayButtonsButton;
+        private Button addgame;
+        private Label operationLabel;
+        private TextBox namebox;
+        private ComboBox statusbox;
+        private ComboBox YearSortBox;
+        private Button ByYearButton;
+        private Button ByScoreButton;
+        private Label statisticsLabel;
+        private Button ByStatusButton;
+        private ComboBox scorebox;
+        private Label label3;
+        private Label label5;
+        private Label label6;
+        private ListBox ModeBox;
+        private Button ByGenreButton;
+        private ComboBox ScoreSortBox;
+        private ComboBox GenreSortBox;
+        private ComboBox StatusSortBox;
+        private Panel currentTitlePanel;
+        private Button ByNameButton;
+        private ComboBox NameSortBox;
+        private Button refreshButton;
+        private Button displayLinesButton;
+        private Button displayImagesButton;
+        private Button displayButtonsButton;
     }
 }
 

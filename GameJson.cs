@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-
+﻿using System;
+using Newtonsoft.Json;
 
 namespace hltb
 {
-    public enum TitleStatus { COMPLETED, BACKLOG, RETIRED};
 
     public class Title
     {
@@ -13,14 +12,14 @@ namespace hltb
         private double time;
         private int score;
         private int year;
-        private TitleStatus status;
+        private string status;
         private bool has_image;
         private string image_name;
 
         public string Name
         {
             get { return name; }
-            private set { name = value;  }
+            private set { name = value; }
         }
         public string Image_Url
         {
@@ -47,8 +46,8 @@ namespace hltb
         {
             get { return score; }
             set { score = value; }
-        } 
-        public TitleStatus Status
+        }
+        public string Status
         {
             get { return status; }
             set { status = value; }
@@ -72,7 +71,7 @@ namespace hltb
         }
 
         [JsonConstructor]
-        public Title(string name, string image_url, string link, double time, int score, int year, string status, bool has_image, string image_name)
+        public Title(string name, string image_url, string link, double time, int score, int year, string status)
         {
             Name = name;
             Image_Url = image_url;
@@ -80,9 +79,33 @@ namespace hltb
             Time = time;
             Score = score;
             Year = year;
-            System.Enum.TryParse(status.ToUpper(), out this.status);
-            HasImage = has_image;
-            ImageName = image_name;
+            Status = status;
+            //System.Enum.TryParse(status.ToUpper(), out this.status);
+        }
+    }
+
+    public class GameJson : Title
+    {
+        private double similarity;
+
+        public double Similarity
+        {
+            get { return similarity; }
+            private set { similarity = value; }
+        }
+
+        public void print()
+        {
+            Console.WriteLine(Name + ' ' + Image_Url + ' ' + Link + ' ' + Time
+                + ' ' + Similarity + ' ' + Score + ' ' + Year + ' ' + Status);
+            return;
+        }
+
+        [JsonConstructor]
+        public GameJson(double similarity, string name, string image_url, string link, double time, int score, int year, string status)
+            : base(name, image_url, link, time, score, year, status)
+        {
+            Similarity = similarity;
         }
     }
 }

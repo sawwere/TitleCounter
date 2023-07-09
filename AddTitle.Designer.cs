@@ -1,7 +1,7 @@
 ﻿
 namespace hltb
 {
-    partial class AddTitle
+    partial class AddContent
     {
         /// <summary>
         /// Required designer variable.

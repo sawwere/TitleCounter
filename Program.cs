@@ -13,10 +13,6 @@ namespace hltb
         [STAThread]
         static void Main()
         {
-
-
-
-            //AddButtons(cur_games, cur_year);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Mainform());

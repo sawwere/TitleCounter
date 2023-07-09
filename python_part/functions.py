@@ -13,7 +13,7 @@ import time
 
 missed_games = list()
 
-path_to_data = "F:\my_programs\c#\desk\TitleCounter\\bin\Debug\data\\"
+path_to_data = "F:\\my_programs\\c#\desk\\TitleCounter\\bin\\Debug\\net6.0-windows\\data\\"
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}

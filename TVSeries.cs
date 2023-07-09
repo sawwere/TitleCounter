@@ -15,18 +15,18 @@ namespace hltb
             private set { seasons = value; }
         }
 
-        public override void print() 
+        /*public override void print() 
         {
             base.print();
             foreach (var s in Seasons)
                 Console.WriteLine(s.Key.ToString(), s.Value);
             return;
-        }
+        }*/
 
         [JsonConstructor]
         public TVSeries(Dictionary<int, int> seasons, string rus_name, List<string> genres, 
-            string name, string image_url, string list, double time, int score, int year, string status, bool has_image, string image_name)
-            : base(rus_name, genres, name, image_url, list, time, score, year, status, has_image, image_name)
+            string name, string image_url, string list, double time, int score, int year, string status)
+            : base(rus_name, genres, name, image_url, list, time, score, year, status)
         {
             Seasons = seasons;
         }

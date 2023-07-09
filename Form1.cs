@@ -11,20 +11,21 @@ using System.Windows.Forms;
 
 using static hltb.DataFiles;
 
+#pragma warning disable CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.
 namespace hltb
 {
     public enum mode { GAMES, FILMS, TVSERIES };
-    public enum filterCategory { YEAR, SCORE, STATUS, NAME, GENRE};
-    
-    public enum displayOption { BUTTONS, LINES, IMAGES};
+    public enum filterCategory { YEAR, SCORE, STATUS, NAME, GENRE };
+    public enum displayOption { BUTTONS, LINES, IMAGES };
     public partial class Mainform : Form
     {
         private Panel list_panel = new Panel();
 
-        private Dictionary<mode, List<Title>> titles;
-        private Title cur_title;
-        private AddTitle add_title = new AddTitle();
-        private StatisticsForm statisticsForm = new StatisticsForm(new List<Title>());
+        private Dictionary<mode, EFGenericRepository<Content>> repositories;
+        private EFGenericRepository<Game> gameRepository;
+        private List<Content> contents;
+        private Content cur_content;
+        private AddContent add_content = new AddContent();
 
         private mode currentMode = mode.GAMES;
         private filterCategory filter = filterCategory.YEAR;
@@ -33,19 +34,17 @@ namespace hltb
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            SaveTitles(titles[mode.GAMES], mode.GAMES);
-            SaveTitles(titles[mode.FILMS], mode.FILMS);
-            SaveTitles(titles[mode.TVSERIES], mode.TVSERIES);
+            SaveContent(contents, mode.GAMES);
             File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
         }
 
         void UpdateStatisticsLabel()
         {
             double total = 1, cmpltd = 1, tmcmpltd = 1, tmtotal = 1;
-            total = titles[currentMode].Count() + 0.0;
-            cmpltd = titles[currentMode].Where(x => (x.Status == TitleStatus.COMPLETED) || (x.Status == TitleStatus.RETIRED)).Count();
-            tmcmpltd = titles[currentMode].Where(x => (x.Status == TitleStatus.COMPLETED) || (x.Status == TitleStatus.RETIRED)).Select(x => x.Time).Sum();
-            tmtotal = titles[currentMode].Select(x => x.Time).Sum();
+            total = contents.Count() + 0.0;
+            cmpltd = contents.Where(x => (x.StatusId == (int)TitleStatus.COMPLETED) || (x.StatusId == (int)TitleStatus.RETIRED)).Count();
+            tmcmpltd = contents.Where(x => (x.StatusId == (int)TitleStatus.COMPLETED) || (x.StatusId == (int)TitleStatus.RETIRED)).Select(x => (int)x.Time).Sum();
+            tmtotal = contents.Select(x => (int)x.Time).Sum();
 
             statisticsLabel.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
                 + $"Time : {tmcmpltd} / {tmtotal} ({(tmcmpltd / tmtotal * 100):F2}%)";
@@ -90,68 +89,69 @@ namespace hltb
             return result;
         }
 
-        private void RefreshTitles(mode _mode, filterCategory _filter)
+        public void RefreshTitles(mode _mode)
         {
-            switch (_filter)
+            switch (filter)
             {
                 case filterCategory.YEAR:
                     {
                         string cur_year = YearSortBox.SelectedItem.ToString();
-                        AddButtons(titles[_mode].Where(x => x.Year.ToString() == cur_year).ToList());
+                        AddButtons(gameRepository.Get().Where(x => x.DateRelease.Year.ToString() == cur_year).Select(x=> x as Content).ToList());
                         break;
                     }
 
                 case filterCategory.SCORE:
                     {
                         string cur_score = ScoreSortBox.SelectedItem.ToString();
-                        AddButtons(titles[currentMode].Where(x => x.Score.ToString() == cur_score).ToList());
+                        AddButtons(gameRepository.Get().Where(x => x.Score.ToString() == cur_score).Select(x => x as Content).ToList());
                         break;
                     }
                 case filterCategory.STATUS:
                     {
-                        string cur_status = StatusSortBox.SelectedItem.ToString().ToUpper();
-                        AddButtons(titles[currentMode].Where(x => x.Status.ToString() == cur_status).ToList());
+                        string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
+                        AddButtons(gameRepository.GetWithInclude(x=>x.Status).Where(x => x.Status.Name == cur_status).Select(x => x as Content).ToList());
                         break;
                     }
                 case filterCategory.NAME:
                     {
                         char cur_letter = NameSortBox.SelectedItem.ToString().First();
-                        AddButtons(titles[currentMode].Where(x => x.Name.ToString().First() == cur_letter).ToList());
+                        AddButtons(gameRepository.Get().Where(x => x.Title.ToString().First() == cur_letter).Select(x => x as Content).ToList());
                         break;
                     }
                 case filterCategory.GENRE:
                     {
                         string cur_genre = GenreSortBox.SelectedItem.ToString();
-                        AddButtons(titles[currentMode].Where(x => (x as Film).Genres.Any(y => y == cur_genre)).ToList());
+                        AddButtons(contents.Where(x => (x as Film).Genres.Any(y => y == cur_genre)).ToList());
                         break;
                     }
             }
         }
 
-        public void RemoveTitle(Title title, mode md)
+        public void RemoveContent(Content title, mode md)
         {
-            titles[md].Remove(title);
-            SaveTitles(titles[md], md);
+            contents.Remove(title);
+            SaveContent(contents, md);
             UpdateStatisticsLabel();
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         public Mainform()
         {
             InitializeComponent();
-            AddOwnedForm(add_title);
-            AddOwnedForm(statisticsForm);
+            AddOwnedForm(add_content);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             CheckDataFiles();
 
-            titles = new Dictionary<mode, List<Title>>(3);
+            repositories = new Dictionary<mode, EFGenericRepository<Content>>();
+            gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
+            //repositories[mode.FILMS] = GetContent(mode.FILMS);
+            //repositories[mode.TVSERIES] = GetContent(mode.TVSERIES);
 
-            titles[mode.GAMES] = GetTitles(mode.GAMES);
-            titles[mode.FILMS] = GetTitles(mode.FILMS);
-            titles[mode.TVSERIES] = GetTitles(mode.TVSERIES);
+            contents = new List<Content>();
+            contents = gameRepository.Get().Select(x=> x as Content).ToList();
 
             ResetYears();
             UpdateStatisticsLabel();
@@ -162,7 +162,6 @@ namespace hltb
             scorebox.SelectedIndex = 0;
 
             Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
-
         }
         private void statusbox_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -184,7 +183,7 @@ namespace hltb
             {
                 string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + currentMode.ToString().ToLower();
                 string pathToFind = DataFiles.PATH;
-                for ( int i = 0; i < 2; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     int pos = pathToFind.LastIndexOf("\\");
                     pathToFind = pathToFind.Remove(pos, pathToFind.Length - pos);
@@ -203,57 +202,52 @@ namespace hltb
 
                 if (r[0].StartsWith("ERROR"))
                 {
-                    add_title.Controls["addButton"].Visible = false;
+                    add_content.Controls["addButton"].Visible = false;
                     switch (r[0].Last())
                     {
                         case 'a':
-                            add_title.Controls["statusLabel"].Text += (": title is already in the list");
+                            add_content.Controls["statusLabel"].Text += (": title is already in the list");
                             break;
                         case 'f':
-                            add_title.Controls["statusLabel"].Text += (": title has not found");
+                            add_content.Controls["statusLabel"].Text += (": title has not found");
                             break;
                         case 't':
-                            add_title.Controls["statusLabel"].Text += (": incorrect type. Choose correct mode");
+                            add_content.Controls["statusLabel"].Text += (": incorrect type. Choose correct mode");
                             break;
                     }
                 }
                 else if (r[0] == "SUCCS")
                 {
-                    add_title.Controls["addButton"].Visible = true;
-                    add_title.Controls["statusLabel"].Text += ": Found succesfuly";
+                    add_content.Controls["addButton"].Visible = true;
+                    add_content.Controls["statusLabel"].Text += ": Found succesfuly";
                 }
 
 
-                if (add_title.ShowDialog() == DialogResult.OK )
+                if (add_content.ShowDialog() == DialogResult.OK)
                 {
                     namebox.Text = "";
                     statusbox.SelectedIndex = 1;
                     scorebox.SelectedIndex = 0;
 
-                    titles[currentMode].Add(GetTitles(currentMode, true).First());
+                    contents.Add(GetContent(currentMode, true).First());
                 }
                 File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
-                add_title.Controls["statusLabel"].Text = "Status";
+                add_content.Controls["statusLabel"].Text = "Status";
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
         }
-        
-        
-        
+
 
         private void ButtonOnClick(object sender, EventArgs eventArgs)
         {
             currentTitlePanel.Controls.Clear();
-
             var button = (Button)sender;
-
-            cur_title = titles[currentMode].Find(x => x.Name == (button.Tag as string));
-            currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_title, currentMode));
-                    
+            cur_content = gameRepository.FindById((long)button.Tag);
+            currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_content, currentMode));
             this.Controls.Add(currentTitlePanel);
         }
-        private void AddButtons(List<Title> titles, int y = 5)
+        private void AddButtons(List<Content> titles, int y = 5)
         {
             list_panel.Controls.Clear();
             list_panel.Location = new Point(ByYearButton.Left, displayButtonsButton.Bottom + 25);
@@ -296,13 +290,13 @@ namespace hltb
                 button.Height = buttonHeight;
                 button.Left = button.Width * ((i - 1) % colCount);
                 button.Top = y;
-                
+
                 button.Name = "btn" + i;
-                
-                button.BackColor = GetColor(g.Score);
+
+                button.BackColor = GetColor((int)g.Score);
                 button.ForeColor = Color.Black;
                 button.Font = new Font("Arial", 8, FontStyle.Bold);
-                button.Tag = g.Name;
+                button.Tag = g.Id;
 
                 if (currentDisplayOption == displayOption.IMAGES)
                 {
@@ -313,10 +307,10 @@ namespace hltb
                 }
                 else
                 {
-                    button.Text = g.Name;
+                    button.Text = g.Title;
                 }
                 button.Click += ButtonOnClick;
-                
+
                 list_panel.Controls.Add(button);
                 if (i % colCount == 0)
                     y += button.Height + 2;
@@ -330,8 +324,8 @@ namespace hltb
         {
             YearSortBox.Items.Clear();
             var set = new SortedSet<int>();
-            foreach (var g in titles[currentMode])
-                set.Add(g.Year);
+            foreach (var g in contents)
+                set.Add(g.DateRelease.Year);
             object[] a = new object[set.Count];
             int i = 0;
             foreach (var s in set)
@@ -347,7 +341,7 @@ namespace hltb
             GenreSortBox.Items.Clear();
             var set = new SortedSet<string>();
             //DANGER
-            foreach (Film f in titles[currentMode])
+            foreach (Film f in contents)
             {
                 foreach (var g in f.Genres)
                     set.Add(g);
@@ -365,13 +359,12 @@ namespace hltb
         {
             StatusSortBox.SelectedIndex = 0;
         }
-
-        private void ResetNames()
+        private void ResetTitles()
         {
             NameSortBox.Items.Clear();
             var set = new SortedSet<int>();
-            foreach (var g in titles[currentMode])
-                set.Add(g.Name.First());
+            foreach (var g in contents)
+                set.Add(g.Title.First());
             object[] a = new object[set.Count];
             int i = 0;
             foreach (var s in set)
@@ -397,7 +390,7 @@ namespace hltb
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         private void ByScoreButton_Click(object sender, EventArgs e)
@@ -413,7 +406,7 @@ namespace hltb
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
         private void ByGenreButton_Click(object sender, EventArgs e)
         {
@@ -430,7 +423,7 @@ namespace hltb
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
         private void ByStatusButton_Click(object sender, EventArgs e)
         {
@@ -447,13 +440,13 @@ namespace hltb
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         private void ByNameButton_Click(object sender, EventArgs e)
         {
             filter = filterCategory.NAME;
-            ResetNames();
+            ResetTitles();
 
             YearSortBox.Visible = false;
             ScoreSortBox.Visible = false;
@@ -465,12 +458,12 @@ namespace hltb
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         private void YearSortBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         private void ModeBox_SelectedValueChanged(object sender, EventArgs e)
@@ -479,7 +472,6 @@ namespace hltb
             string nmode = ModeBox.SelectedItem.ToString().ToLower();
             if (nmode == currentMode.ToString())
                 return;
-            Console.WriteLine(nmode);
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
             switch (nmode)
@@ -487,58 +479,52 @@ namespace hltb
                 case "games":
                     ByGenreButton.Visible = false;
                     currentMode = mode.GAMES;
+                    contents = gameRepository.Get().Select(x => x as Content).ToList();
                     break;
+                // TODO
                 case "films":
                     ByGenreButton.Visible = true;
                     currentMode = mode.FILMS;
+                    contents = gameRepository.Get().Select(x => x as Content).ToList();
                     break;
                 case "tvseries":
                     ByGenreButton.Visible = true;
                     currentMode = mode.TVSERIES;
+                    contents = gameRepository.Get().Select(x => x as Content).ToList();
                     break;
             }
-            
             ByYearButton_Click(sender, e);
-
             UpdateStatisticsLabel();
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
-        private string GetSafeName(Title title)
+        private string GetSafeName(Content content)
         {
             char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
-            return new string(title.Name.Where(x => !proh.Contains(x)).ToArray());
-
+            return new string(content.Title.Where(x => !proh.Contains(x)).ToArray());
         }
 
         private void displayImagesButton_Click(object sender, EventArgs e)
         {
             currentDisplayOption = displayOption.IMAGES;
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         private void displayLinesButton_Click(object sender, EventArgs e)
         {
             currentDisplayOption = displayOption.LINES;
-            RefreshTitles(currentMode, filter);
+            RefreshTitles(currentMode);
         }
 
         private void displayButtonsButton_Click(object sender, EventArgs e)
         {
             currentDisplayOption = displayOption.BUTTONS;
-            RefreshTitles(currentMode, filter);
-        }
-
-        private void statisticsLabel_Click(object sender, EventArgs e)
-        {
-            statisticsForm = new StatisticsForm(titles[currentMode]);
-
-            statisticsForm.Show();
-            statisticsForm.Text = currentMode.ToString();
+            RefreshTitles(currentMode);
         }
     }
 }
+#pragma warning restore CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.

@@ -4,6 +4,8 @@ using System.Linq;
 using System.IO;
 using Newtonsoft.Json;
 using Microsoft.Win32;
+using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace hltb
 {
@@ -11,7 +13,7 @@ namespace hltb
     {
         public static readonly string PATH = Directory.GetCurrentDirectory();
         
-        public static List<Title> GetTitles(mode md, bool tmp = false)
+        public static List<Content> GetContent(mode md, bool tmp = false)
         {
             string json_string = "";
             if (tmp)
@@ -19,33 +21,85 @@ namespace hltb
             else
                 json_string = File.ReadAllText(PATH + "\\data\\" + md.ToString().ToLower() + "_sheet.json");
 
-            var titles = new List<Title>();
+            var titles = new List<Content>();
             switch (md)
             {
                 case mode.GAMES:
                     {
-                        var games = JsonConvert.DeserializeObject<List<Game>>(json_string);
-                        return games.Select(x => x as Title).ToList();
+                        using (TitleCounterContext db = new TitleCounterContext())
+                        {
+                            var Games = db.Games.Include(x => x.Status).ToList();
+                            return Games.Select(x => x as Content).ToList();
+                        }
+                        //var games = JsonConvert.DeserializeObject<List<GameJson>>(json_string);
+                        //using (TitleCounterContext db = new TitleCounterContext())
+                        //{
+                        //    foreach (var game in games)
+                        //    {
+                        //        Console.WriteLine(777777777777);
+                        //        var ls = db.Statuses.ToList();
+                        //        foreach (var ss in ls)
+                        //        {
+                        //            Console.WriteLine(ss);
+
+                        //        }
+                        //        Status stat = db.Statuses.ToList().First(x => x.Name == game.Status);
+                        //        // создаем два объекта Game
+                        //        Game Game1 = new Game
+                        //        {
+                        //            Title = game.Name,
+                        //            FixedTitle = game.Name,
+                        //            ImageUrl = game.Image_Url,
+                        //            LinkUrl = game.Link,
+                        //            Time = ((int)game.Time),
+                        //            Score = game.Score,
+                        //        };
+                        //        stat.Games.Add(Game1);
+                        //        // добавляем их в бд
+                        //        db.Games.Add(Game1);
+
+                        //        db.SaveChanges();
+                        //    }
+                        //}
+
+                        //return titles;// games.Select(x => x as Content).ToList();
+                        //// TODO
+
                     }
                 case mode.FILMS:
                     {
-                        var films = JsonConvert.DeserializeObject<List<Film>>(json_string);
-                        return films.Select(x => x as Title).ToList();
+                        return titles;
                     }
                 case mode.TVSERIES:
                     {
-                        var tvseries = JsonConvert.DeserializeObject<List<TVSeries>>(json_string);
-                        return tvseries.Select(x => x as Title).ToList();
+                        return titles;
                     }
             }
             return titles;
         }
 
-        public static void SaveTitles(List<Title> titles, mode md)
+        public static void SaveContent(List<Content> titles, mode md)
         {
-            string file_name = PATH + "\\data\\" + md.ToString().ToLower() + "_sheet.json";
-            string jstring = JsonConvert.SerializeObject(titles, Formatting.Indented);
-            File.WriteAllText(file_name, jstring);
+            using (TitleCounterContext db = new TitleCounterContext())
+            {
+                //switch (md)
+                //{
+                //    case mode.GAMES:
+                //        var games = db.Games.Include(x => x.Status).ToList();
+                //        //foreach (var game in games)
+                //        //{
+                //        //    game.Time = game.Time * 60;
+                //        //}
+                //        break;
+
+                //}
+                
+                
+                db.SaveChanges();
+            }
+            //string file_name = PATH + "\\data\\" + md.ToString().ToLower() + "_sheet.json";
+            //string jstring = JsonConvert.SerializeObject(titles, Formatting.Indented);
+            //File.WriteAllText(file_name, jstring);
         }
 
 

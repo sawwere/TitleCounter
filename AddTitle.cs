@@ -11,18 +11,18 @@ using System.IO;
 
 namespace hltb
 {
-    public partial class AddTitle : Form
+    public partial class AddContent : Form
     {
-        Title title;
+        Content content;
         mode currentMode;
 
         private string GetSafeName()
         {
             char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
-            return new string(title.Name.Where(x => !proh.Contains(x)).ToArray());
+            return new string(content.Title.Where(x => !proh.Contains(x)).ToArray());
 
         }
-        public AddTitle()
+        public AddContent()
         {
             InitializeComponent();
         }
@@ -48,8 +48,8 @@ namespace hltb
                     }
                 default: break;
             }
-            title = DataFiles.GetTitles(currentMode, true).First();
-            nameLabel.Text = title.Name;
+            content = DataFiles.GetContent(currentMode, true).First();
+            nameLabel.Text = content.Title;
             string safeName = GetSafeName();
             titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
 

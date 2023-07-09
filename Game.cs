@@ -1,30 +1,33 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace hltb
+namespace hltb;
+
+public partial class Game : Content
 {
-    public class Game : Title
-    {
-        private double similarity;
+    //public long Id { get; set; }
 
-        public double Similarity 
-        {
-            get { return similarity; }
-            private set { similarity = value; }
-        }
+    //public string Title { get; set; } = null!;
 
-        public void print()
-        {
-            Console.WriteLine(Name + ' ' + Image_Url + ' ' + Link + ' ' + Time
-                + ' ' + Similarity + ' ' + Score + ' ' + Year + ' ' + Status);
-            return;
-        }
+    //public string FixedTitle { get; set; } = null!;
 
-        [JsonConstructor]
-        public Game(double similarity, string name, string image_url, string link, double time, int score, int year, string status, bool has_image, string image_name)
-            :base(name, image_url, link, time, score, year, status, has_image, image_name)
-        {
-            Similarity = similarity;
-        }
-    }
+    //public string? ImageUrl { get; set; }
+
+    //public string? LinkUrl { get; set; }
+
+    //public long? Time { get; set; }
+
+    //public long StatusId { get; set; }
+
+    //public DateOnly DateRelease { get; set; }
+
+    //public DateOnly DateCompleted { get; set; }
+
+    //public string? Note { get; set; }
+
+    public string? Platform { get; set; }
+
+    //public long Score { get; set; }
+
+    //public virtual Status Status { get; set; } = null!;
 }

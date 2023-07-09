@@ -29,159 +29,283 @@ namespace hltb
         /// </summary>
         private void InitializeComponent()
         {
-            this.titlePicture = new System.Windows.Forms.PictureBox();
-            this.nameLabel = new System.Windows.Forms.Label();
-            this.copyButton = new System.Windows.Forms.Button();
-            this.timeLabel = new System.Windows.Forms.Label();
-            this.yearLabel = new System.Windows.Forms.Label();
-            this.scoreLabel = new System.Windows.Forms.Label();
-            this.score_c = new System.Windows.Forms.ComboBox();
-            this.statusLabel = new System.Windows.Forms.Label();
-            this.status_c = new System.Windows.Forms.ComboBox();
-            this.deleteButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.titlePicture)).BeginInit();
-            this.SuspendLayout();
+            titlePicture = new PictureBox();
+            nameLabel = new Label();
+            copyButton = new Button();
+            timeLabel = new Label();
+            releaseLabel = new Label();
+            scoreLabel = new Label();
+            score_c = new ComboBox();
+            statusLabel = new Label();
+            status_c = new ComboBox();
+            deleteButton = new Button();
+            timeHourLabel = new Label();
+            timeMinuteLabel = new Label();
+            timeHour = new TextBox();
+            timeMinute = new TextBox();
+            completitionLabel = new Label();
+            competitionDay = new ComboBox();
+            competitionMonth = new ComboBox();
+            competitionYear = new TextBox();
+            ((System.ComponentModel.ISupportInitialize)titlePicture).BeginInit();
+            SuspendLayout();
             // 
             // titlePicture
             // 
-            this.titlePicture.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.titlePicture.Location = new System.Drawing.Point(77, 3);
-            this.titlePicture.Name = "titlePicture";
-            this.titlePicture.Size = new System.Drawing.Size(240, 360);
-            this.titlePicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.titlePicture.TabIndex = 0;
-            this.titlePicture.TabStop = false;
+            titlePicture.Anchor = AnchorStyles.Top;
+            titlePicture.Location = new Point(90, 3);
+            titlePicture.Margin = new Padding(4, 3, 4, 3);
+            titlePicture.Name = "titlePicture";
+            titlePicture.Size = new Size(280, 415);
+            titlePicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            titlePicture.TabIndex = 0;
+            titlePicture.TabStop = false;
             // 
             // nameLabel
             // 
-            this.nameLabel.AutoSize = true;
-            this.nameLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nameLabel.ForeColor = System.Drawing.Color.Black;
-            this.nameLabel.Location = new System.Drawing.Point(22, 381);
-            this.nameLabel.Name = "nameLabel";
-            this.nameLabel.Size = new System.Drawing.Size(70, 27);
-            this.nameLabel.TabIndex = 1;
-            this.nameLabel.Text = "Name";
-            this.nameLabel.Click += new System.EventHandler(this.nameLabel_Click);
+            nameLabel.AutoSize = true;
+            nameLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            nameLabel.ForeColor = Color.Black;
+            nameLabel.Location = new Point(26, 440);
+            nameLabel.Margin = new Padding(4, 0, 4, 0);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(70, 27);
+            nameLabel.TabIndex = 1;
+            nameLabel.Text = "Name";
+            nameLabel.Click += nameLabel_Click;
             // 
             // copyButton
             // 
-            this.copyButton.Location = new System.Drawing.Point(322, 381);
-            this.copyButton.Name = "copyButton";
-            this.copyButton.Size = new System.Drawing.Size(75, 23);
-            this.copyButton.TabIndex = 2;
-            this.copyButton.Text = "Copy";
-            this.copyButton.UseVisualStyleBackColor = true;
-            this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
+            copyButton.Location = new Point(376, 440);
+            copyButton.Margin = new Padding(4, 3, 4, 3);
+            copyButton.Name = "copyButton";
+            copyButton.Size = new Size(88, 27);
+            copyButton.TabIndex = 2;
+            copyButton.Text = "Copy";
+            copyButton.UseVisualStyleBackColor = true;
+            copyButton.Click += copyButton_Click;
             // 
             // timeLabel
             // 
-            this.timeLabel.AutoSize = true;
-            this.timeLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.timeLabel.ForeColor = System.Drawing.Color.Black;
-            this.timeLabel.Location = new System.Drawing.Point(22, 408);
-            this.timeLabel.Name = "timeLabel";
-            this.timeLabel.Size = new System.Drawing.Size(72, 27);
-            this.timeLabel.TabIndex = 3;
-            this.timeLabel.Text = "Time: ";
+            timeLabel.AutoSize = true;
+            timeLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            timeLabel.ForeColor = Color.Black;
+            timeLabel.Location = new Point(26, 471);
+            timeLabel.Margin = new Padding(4, 0, 4, 0);
+            timeLabel.Name = "timeLabel";
+            timeLabel.Size = new Size(72, 27);
+            timeLabel.TabIndex = 3;
+            timeLabel.Text = "Time: ";
             // 
-            // yearLabel
+            // releaseLabel
             // 
-            this.yearLabel.AutoSize = true;
-            this.yearLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yearLabel.ForeColor = System.Drawing.Color.Black;
-            this.yearLabel.Location = new System.Drawing.Point(22, 435);
-            this.yearLabel.Name = "yearLabel";
-            this.yearLabel.Size = new System.Drawing.Size(67, 27);
-            this.yearLabel.TabIndex = 4;
-            this.yearLabel.Text = "Year: ";
+            releaseLabel.AutoSize = true;
+            releaseLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            releaseLabel.ForeColor = Color.Black;
+            releaseLabel.Location = new Point(26, 502);
+            releaseLabel.Margin = new Padding(4, 0, 4, 0);
+            releaseLabel.Name = "releaseLabel";
+            releaseLabel.Size = new Size(97, 27);
+            releaseLabel.TabIndex = 4;
+            releaseLabel.Text = "Release: ";
             // 
             // scoreLabel
             // 
-            this.scoreLabel.AutoSize = true;
-            this.scoreLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scoreLabel.ForeColor = System.Drawing.Color.Black;
-            this.scoreLabel.Location = new System.Drawing.Point(22, 462);
-            this.scoreLabel.Name = "scoreLabel";
-            this.scoreLabel.Size = new System.Drawing.Size(78, 27);
-            this.scoreLabel.TabIndex = 5;
-            this.scoreLabel.Text = "Score: ";
+            scoreLabel.AutoSize = true;
+            scoreLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            scoreLabel.ForeColor = Color.Black;
+            scoreLabel.Location = new Point(26, 533);
+            scoreLabel.Margin = new Padding(4, 0, 4, 0);
+            scoreLabel.Name = "scoreLabel";
+            scoreLabel.Size = new Size(78, 27);
+            scoreLabel.TabIndex = 5;
+            scoreLabel.Text = "Score: ";
             // 
             // score_c
             // 
-            this.score_c.FormattingEnabled = true;
-            this.score_c.Location = new System.Drawing.Point(107, 462);
-            this.score_c.Name = "score_c";
-            this.score_c.Size = new System.Drawing.Size(121, 21);
-            this.score_c.TabIndex = 6;
-            this.score_c.SelectedIndexChanged += new System.EventHandler(this.score_c_SelectedIndexChanged);
+            score_c.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            score_c.FormattingEnabled = true;
+            score_c.Location = new Point(125, 533);
+            score_c.Margin = new Padding(4, 3, 4, 3);
+            score_c.Name = "score_c";
+            score_c.Size = new Size(140, 24);
+            score_c.TabIndex = 6;
+            score_c.SelectedIndexChanged += score_c_SelectedIndexChanged;
             // 
             // statusLabel
             // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.statusLabel.ForeColor = System.Drawing.Color.Black;
-            this.statusLabel.Location = new System.Drawing.Point(22, 489);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(85, 27);
-            this.statusLabel.TabIndex = 7;
-            this.statusLabel.Text = "Status: ";
+            statusLabel.AutoSize = true;
+            statusLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            statusLabel.ForeColor = Color.Black;
+            statusLabel.Location = new Point(26, 564);
+            statusLabel.Margin = new Padding(4, 0, 4, 0);
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(85, 27);
+            statusLabel.TabIndex = 7;
+            statusLabel.Text = "Status: ";
             // 
             // status_c
             // 
-            this.status_c.FormattingEnabled = true;
-            this.status_c.Location = new System.Drawing.Point(106, 489);
-            this.status_c.Name = "status_c";
-            this.status_c.Size = new System.Drawing.Size(121, 21);
-            this.status_c.TabIndex = 8;
-            this.status_c.SelectedIndexChanged += new System.EventHandler(this.status_c_SelectedIndexChanged);
+            status_c.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            status_c.FormattingEnabled = true;
+            status_c.Location = new Point(125, 564);
+            status_c.Margin = new Padding(4, 3, 4, 3);
+            status_c.Name = "status_c";
+            status_c.Size = new Size(140, 24);
+            status_c.TabIndex = 8;
+            status_c.SelectedIndexChanged += status_c_SelectedIndexChanged;
             // 
             // deleteButton
             // 
-            this.deleteButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.deleteButton.Font = new System.Drawing.Font("Microsoft Tai Le", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.deleteButton.Location = new System.Drawing.Point(77, 628);
-            this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(240, 30);
-            this.deleteButton.TabIndex = 9;
-            this.deleteButton.Text = "Delete title";
-            this.deleteButton.UseVisualStyleBackColor = true;
-            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            deleteButton.Anchor = AnchorStyles.Top;
+            deleteButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            deleteButton.Location = new Point(90, 725);
+            deleteButton.Margin = new Padding(4, 3, 4, 3);
+            deleteButton.Name = "deleteButton";
+            deleteButton.Size = new Size(280, 35);
+            deleteButton.TabIndex = 9;
+            deleteButton.Text = "Delete title";
+            deleteButton.UseVisualStyleBackColor = true;
+            deleteButton.Click += deleteButton_Click;
+            // 
+            // timeHourLabel
+            // 
+            timeHourLabel.AutoSize = true;
+            timeHourLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            timeHourLabel.Location = new Point(160, 471);
+            timeHourLabel.Name = "timeHourLabel";
+            timeHourLabel.Size = new Size(31, 27);
+            timeHourLabel.TabIndex = 10;
+            timeHourLabel.Text = "h.";
+            // 
+            // timeMinuteLabel
+            // 
+            timeMinuteLabel.AutoSize = true;
+            timeMinuteLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            timeMinuteLabel.Location = new Point(257, 471);
+            timeMinuteLabel.Name = "timeMinuteLabel";
+            timeMinuteLabel.Size = new Size(37, 27);
+            timeMinuteLabel.TabIndex = 11;
+            timeMinuteLabel.Text = "m.";
+            // 
+            // timeHour
+            // 
+            timeHour.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            timeHour.Location = new Point(106, 471);
+            timeHour.Name = "timeHour";
+            timeHour.Size = new Size(55, 26);
+            timeHour.TabIndex = 12;
+            timeHour.Text = "0";
+            timeHour.TextChanged += TimeHourCTextChanged;
+            timeHour.KeyPress += TimeHourCKeyPress;
+            timeHour.Leave += timeHour_Leave;
+            // 
+            // timeMinute
+            // 
+            timeMinute.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            timeMinute.Location = new Point(196, 471);
+            timeMinute.Name = "timeMinute";
+            timeMinute.Size = new Size(55, 26);
+            timeMinute.TabIndex = 13;
+            timeMinute.Text = "0";
+            timeMinute.TextChanged += TimeHourCTextChanged;
+            timeMinute.KeyPress += TimeHourCKeyPress;
+            timeMinute.Leave += timeMinute_Leave;
+            // 
+            // completitionLabel
+            // 
+            completitionLabel.AutoSize = true;
+            completitionLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            completitionLabel.ForeColor = Color.Black;
+            completitionLabel.Location = new Point(26, 593);
+            completitionLabel.Margin = new Padding(4, 0, 4, 0);
+            completitionLabel.Name = "completitionLabel";
+            completitionLabel.Size = new Size(153, 27);
+            completitionLabel.TabIndex = 14;
+            completitionLabel.Text = "Completition: ";
+            // 
+            // competitionDay
+            // 
+            competitionDay.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            competitionDay.FormattingEnabled = true;
+            competitionDay.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" });
+            competitionDay.Location = new Point(173, 593);
+            competitionDay.Name = "competitionDay";
+            competitionDay.Size = new Size(54, 24);
+            competitionDay.TabIndex = 15;
+            competitionDay.SelectionChangeCommitted += competitionDateChanged;
+            // 
+            // competitionMonth
+            // 
+            competitionMonth.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            competitionMonth.FormattingEnabled = true;
+            competitionMonth.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" });
+            competitionMonth.Location = new Point(240, 593);
+            competitionMonth.Name = "competitionMonth";
+            competitionMonth.Size = new Size(54, 24);
+            competitionMonth.TabIndex = 16;
+            competitionMonth.SelectionChangeCommitted += competitionDateChanged;
+            // 
+            // competitionYear
+            // 
+            competitionYear.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            competitionYear.Location = new Point(300, 593);
+            competitionYear.Name = "competitionYear";
+            competitionYear.Size = new Size(70, 24);
+            competitionYear.TabIndex = 17;
+            competitionYear.Text = "0";
+            competitionYear.Leave += competitionDateChanged;
             // 
             // CurrentTitleContol
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.SteelBlue;
-            this.Controls.Add(this.deleteButton);
-            this.Controls.Add(this.status_c);
-            this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.score_c);
-            this.Controls.Add(this.scoreLabel);
-            this.Controls.Add(this.yearLabel);
-            this.Controls.Add(this.timeLabel);
-            this.Controls.Add(this.copyButton);
-            this.Controls.Add(this.nameLabel);
-            this.Controls.Add(this.titlePicture);
-            this.Name = "CurrentTitleContol";
-            this.Size = new System.Drawing.Size(400, 700);
-            ((System.ComponentModel.ISupportInitialize)(this.titlePicture)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.SteelBlue;
+            Controls.Add(competitionYear);
+            Controls.Add(competitionMonth);
+            Controls.Add(competitionDay);
+            Controls.Add(completitionLabel);
+            Controls.Add(timeMinute);
+            Controls.Add(timeHour);
+            Controls.Add(timeMinuteLabel);
+            Controls.Add(timeHourLabel);
+            Controls.Add(deleteButton);
+            Controls.Add(status_c);
+            Controls.Add(statusLabel);
+            Controls.Add(score_c);
+            Controls.Add(scoreLabel);
+            Controls.Add(releaseLabel);
+            Controls.Add(timeLabel);
+            Controls.Add(copyButton);
+            Controls.Add(nameLabel);
+            Controls.Add(titlePicture);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "CurrentTitleContol";
+            Size = new Size(467, 808);
+            ((System.ComponentModel.ISupportInitialize)titlePicture).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox titlePicture;
-        private System.Windows.Forms.Label nameLabel;
-        private System.Windows.Forms.Button copyButton;
-        private System.Windows.Forms.Label timeLabel;
-        private System.Windows.Forms.Label yearLabel;
-        private System.Windows.Forms.Label scoreLabel;
-        private System.Windows.Forms.ComboBox score_c;
-        private System.Windows.Forms.Label statusLabel;
-        private System.Windows.Forms.ComboBox status_c;
-        private System.Windows.Forms.Button deleteButton;
+        private PictureBox titlePicture;
+        private Label nameLabel;
+        private Button copyButton;
+        private Label timeLabel;
+        private Label releaseLabel;
+        private Label scoreLabel;
+        private ComboBox score_c;
+        private Label statusLabel;
+        private ComboBox status_c;
+        private Button deleteButton;
+        private Label timeHourLabel;
+        private Label timeMinuteLabel;
+        private TextBox timeHour;
+        private TextBox timeMinute;
+        private Label completitionLabel;
+        private ComboBox competitionDay;
+        private ComboBox competitionMonth;
+        private TextBox competitionYear;
     }
 }
