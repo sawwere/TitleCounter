@@ -1,7 +1,7 @@
 ﻿
 namespace hltb
 {
-    partial class CurrentTitleContol
+    partial class CurrentContentContol
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -47,6 +47,7 @@ namespace hltb
             competitionDay = new ComboBox();
             competitionMonth = new ComboBox();
             competitionYear = new TextBox();
+            saveButton = new Button();
             ((System.ComponentModel.ISupportInitialize)titlePicture).BeginInit();
             SuspendLayout();
             // 
@@ -130,7 +131,6 @@ namespace hltb
             score_c.Name = "score_c";
             score_c.Size = new Size(140, 24);
             score_c.TabIndex = 6;
-            score_c.SelectedIndexChanged += score_c_SelectedIndexChanged;
             // 
             // statusLabel
             // 
@@ -153,13 +153,12 @@ namespace hltb
             status_c.Name = "status_c";
             status_c.Size = new Size(140, 24);
             status_c.TabIndex = 8;
-            status_c.SelectedIndexChanged += status_c_SelectedIndexChanged;
             // 
             // deleteButton
             // 
             deleteButton.Anchor = AnchorStyles.Top;
             deleteButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            deleteButton.Location = new Point(90, 725);
+            deleteButton.Location = new Point(90, 760);
             deleteButton.Margin = new Padding(4, 3, 4, 3);
             deleteButton.Name = "deleteButton";
             deleteButton.Size = new Size(280, 35);
@@ -198,7 +197,6 @@ namespace hltb
             timeHour.Text = "0";
             timeHour.TextChanged += TimeHourCTextChanged;
             timeHour.KeyPress += TimeHourCKeyPress;
-            timeHour.Leave += timeHour_Leave;
             // 
             // timeMinute
             // 
@@ -210,7 +208,6 @@ namespace hltb
             timeMinute.Text = "0";
             timeMinute.TextChanged += TimeHourCTextChanged;
             timeMinute.KeyPress += TimeHourCKeyPress;
-            timeMinute.Leave += timeMinute_Leave;
             // 
             // completitionLabel
             // 
@@ -233,7 +230,6 @@ namespace hltb
             competitionDay.Name = "competitionDay";
             competitionDay.Size = new Size(54, 24);
             competitionDay.TabIndex = 15;
-            competitionDay.SelectionChangeCommitted += competitionDateChanged;
             // 
             // competitionMonth
             // 
@@ -244,7 +240,6 @@ namespace hltb
             competitionMonth.Name = "competitionMonth";
             competitionMonth.Size = new Size(54, 24);
             competitionMonth.TabIndex = 16;
-            competitionMonth.SelectionChangeCommitted += competitionDateChanged;
             // 
             // competitionYear
             // 
@@ -254,13 +249,27 @@ namespace hltb
             competitionYear.Size = new Size(70, 24);
             competitionYear.TabIndex = 17;
             competitionYear.Text = "0";
-            competitionYear.Leave += competitionDateChanged;
+            // 
+            // saveButton
+            // 
+            saveButton.Anchor = AnchorStyles.Top;
+            saveButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            saveButton.Location = new Point(90, 719);
+            saveButton.Margin = new Padding(4, 3, 4, 3);
+            saveButton.Name = "saveButton";
+            saveButton.Size = new Size(280, 35);
+            saveButton.TabIndex = 18;
+            saveButton.Text = "Save changes";
+            saveButton.UseVisualStyleBackColor = true;
+            saveButton.Click += saveButton_Click;
             // 
             // CurrentTitleContol
             // 
+            this.Dock = DockStyle.Fill; // auto size
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SteelBlue;
+            Controls.Add(saveButton);
             Controls.Add(competitionYear);
             Controls.Add(competitionMonth);
             Controls.Add(competitionDay);
@@ -307,5 +316,6 @@ namespace hltb
         private ComboBox competitionDay;
         private ComboBox competitionMonth;
         private TextBox competitionYear;
+        private Button saveButton;
     }
 }

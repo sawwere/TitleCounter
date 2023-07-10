@@ -21,11 +21,9 @@ namespace hltb
     {
         private Panel list_panel = new Panel();
 
-        private Dictionary<mode, EFGenericRepository<Content>> repositories;
         private EFGenericRepository<Game> gameRepository;
         private EFGenericRepository<Film> filmRepository;
         private List<Content> contents;
-        private Content cur_content;
         private AddContent add_content = new AddContent();
 
         private mode currentMode = mode.GAMES;
@@ -93,16 +91,18 @@ namespace hltb
         public void RefreshTitles(mode _mode)
         {
             contents = new List<Content>();
-            
+
             switch (currentMode)
             {
-                case mode.GAMES: {
+                case mode.GAMES:
+                    {
                         contents = gameRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
-                        break; 
+                        break;
                     }
-                case mode.FILMS: {
+                case mode.FILMS:
+                    {
                         contents = filmRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
-                        break; 
+                        break;
                     }
             }
             switch (filter)
@@ -110,26 +110,26 @@ namespace hltb
                 case filterCategory.YEAR:
                     {
                         string cur_year = YearSortBox.SelectedItem.ToString();
-                        AddButtons(contents.Where(x => x.DateRelease.Year.ToString() == cur_year).Select(x=> x as Content).ToList());
+                        AddButtons(contents.Where(x => x.DateRelease.Year.ToString() == cur_year).ToList());
                         break;
                     }
 
                 case filterCategory.SCORE:
                     {
                         string cur_score = ScoreSortBox.SelectedItem.ToString();
-                        AddButtons(contents.Where(x => x.Score.ToString() == cur_score).Select(x => x as Content).ToList());
+                        AddButtons(contents.Where(x => x.Score.ToString() == cur_score).ToList());
                         break;
                     }
                 case filterCategory.STATUS:
                     {
                         string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
-                        AddButtons(contents.Where(x => x.Status.Name == cur_status).Select(x => x as Content).ToList());
+                        AddButtons(contents.Where(x => x.Status.Name == cur_status).ToList());
                         break;
                     }
                 case filterCategory.NAME:
                     {
                         char cur_letter = NameSortBox.SelectedItem.ToString().First();
-                        AddButtons(contents.Where(x => x.Title.ToString().First() == cur_letter).Select(x => x as Content).ToList());
+                        AddButtons(contents.Where(x => x.Title.ToString().First() == cur_letter).ToList());
                         break;
                     }
                 case filterCategory.GENRE:
@@ -171,12 +171,11 @@ namespace hltb
         {
             CheckDataFiles();
 
-            repositories = new Dictionary<mode, EFGenericRepository<Content>>();
             gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
             filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
 
             contents = new List<Content>();
-            contents = gameRepository.GetWithInclude(x=>x.Status).Select(x=> x as Content).ToList();
+            contents = gameRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
 
             ResetYears();
             UpdateStatisticsLabel();
@@ -267,8 +266,8 @@ namespace hltb
         {
             currentTitlePanel.Controls.Clear();
             var button = (Button)sender;
-            cur_content = contents.FirstOrDefault(x => x.Id == (long)button.Tag);
-            currentTitlePanel.Controls.Add(new CurrentTitleContol(cur_content, currentMode));
+            CurrentContentContol ccc = new CurrentContentContol((long)button.Tag, currentMode);
+            currentTitlePanel.Controls.Add(ccc);
             this.Controls.Add(currentTitlePanel);
         }
         private void AddButtons(List<Content> titles, int y = 5)

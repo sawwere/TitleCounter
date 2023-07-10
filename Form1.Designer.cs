@@ -133,7 +133,7 @@ namespace hltb
             // 
             statisticsLabel.Anchor = AnchorStyles.Bottom;
             statisticsLabel.AutoSize = true;
-            statisticsLabel.Location = new Point(727, 600);
+            statisticsLabel.Location = new Point(735, 740);
             statisticsLabel.Name = "statisticsLabel";
             statisticsLabel.Size = new Size(35, 13);
             statisticsLabel.TabIndex = 16;
@@ -195,7 +195,7 @@ namespace hltb
             ModeBox.FormattingEnabled = true;
             ModeBox.ItemHeight = 16;
             ModeBox.Items.AddRange(new object[] { "Games", "Films", "TvSeries" });
-            ModeBox.Location = new Point(12, 172);
+            ModeBox.Location = new Point(12, 242);
             ModeBox.Name = "ModeBox";
             ModeBox.Size = new Size(66, 52);
             ModeBox.TabIndex = 23;
@@ -253,10 +253,11 @@ namespace hltb
             // 
             // currentTitlePanel
             // 
-            currentTitlePanel.Dock = DockStyle.Right;
-            currentTitlePanel.Location = new Point(984, 0);
+            currentTitlePanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            currentTitlePanel.AutoSize = true;
+            currentTitlePanel.Location = new Point(1000, 0);
             currentTitlePanel.Name = "currentTitlePanel";
-            currentTitlePanel.Size = new Size(400, 661);
+            currentTitlePanel.Size = new Size(400, 800);
             currentTitlePanel.TabIndex = 29;
             // 
             // ByNameButton
@@ -328,9 +329,8 @@ namespace hltb
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
-            AutoScroll = true;
             BackColor = SystemColors.ActiveCaption;
-            ClientSize = new Size(1384, 661);
+            ClientSize = new Size(1400, 801);
             Controls.Add(displayButtonsButton);
             Controls.Add(displayImagesButton);
             Controls.Add(displayLinesButton);

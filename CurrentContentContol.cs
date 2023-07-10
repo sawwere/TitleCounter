@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Diagnostics;
 using System.Text;
 
 namespace hltb
 {
-    public partial class CurrentTitleContol : UserControl
+    public partial class CurrentContentContol : UserControl
     {
         private Content content;
         private mode currentMode;
@@ -53,25 +54,28 @@ namespace hltb
             Controls.Add(episodesLabel);
         }
 
-        public CurrentTitleContol(Content content, mode cm)
+        public CurrentContentContol(long id, mode cm)
         {
             InitializeComponent();
 
+            content = new Content();
+
             switch (cm)
             {
-                case mode.GAMES: { this.content = gameRepository.FindById(content.Id); break; }
-                case mode.FILMS: { this.content = filmRepository.FindById(content.Id); break; }
+                case mode.GAMES: { content = gameRepository.FindById(id); break; }
+                case mode.FILMS: { content = filmRepository.FindById(id); break; }
             }
 
             currentMode = cm;
-            titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\" 
-                + currentMode.ToString().ToLower() + "\\" 
+            titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\"
+                + currentMode.ToString().ToLower() + "\\"
                 + content.FixedTitle + ".jpg");
             nameLabel.Text = GetFullName();
 
             timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
 
             timeHour.Text = (content.Time / 60).ToString();
+            timeHourLabel.Top = timeHour.Top = timeMinute.Top = timeMinuteLabel.Top = timeLabel.Top;
             timeMinute.Text = (content.Time % 60).ToString();
             switch (currentMode)
             {
@@ -90,22 +94,23 @@ namespace hltb
             scoreLabel.Location = new Point(nameLabel.Left, releaseLabel.Bottom + 5);
             scoreLabel.Width = 75;
 
-            score_c.Text = content.Score.ToString();
             score_c.Width = 75;
             score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            score_c.SelectedItem = ((int)content.Score);
             score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
 
             statusLabel.Text = "Status:";
             statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Bottom + 5); ;
             statusLabel.Width = 75;
 
-            status_c.Text = content.Status.Name.ToLower();
             status_c.Width = 192;
             status_c.Items.AddRange(new object[] {
             "Completed",
             "Backlog",
             "Retired",
             "In progress"});
+            // TODO statusId?
+            status_c.SelectedIndex = (int)content.StatusId;
             status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
             completitionLabel.Location = new Point(statusLabel.Left, statusLabel.Bottom + 5);
@@ -155,7 +160,6 @@ namespace hltb
                 //    }
                 //}
             }
-            deleteButton.Text = "Delete this title";
             //deleteButton.Location = new Point(statusLabel.Left, 600);
         }
 
@@ -168,7 +172,9 @@ namespace hltb
         {
             var textbox = (TextBox)sender;
             char symb = e.KeyChar;
-            if (!int.TryParse(textbox.Text + symb.ToString(), out int hours) && (e.KeyChar != 8))
+            if (!int.TryParse(textbox.Text + symb.ToString(), out int hours)
+                && (e.KeyChar != 8)
+                && (currentMode == mode.GAMES))
             {
                 e.Handled = true;
             }
@@ -208,53 +214,17 @@ namespace hltb
         private void deleteButton_Click(object sender, EventArgs eventArgs)
         {
             Controls.Clear();
-            (this.Parent.Parent as Mainform).RemoveContent(content, currentMode);
+            ((Mainform)this.Parent.Parent).RemoveContent(content, currentMode);
             content = new Content();
         }
 
         private void nameLabel_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(content.LinkUrl);
-        }
-
-        private void score_c_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var combobox = (ComboBox)sender;
-            var s = (int)combobox.SelectedItem;
-            content.Score = s;
-            UpdateContent();
-        }
-
-        private void status_c_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var status = status_c.SelectedItem.ToString();
-            TitleStatus ts = TitleStatus.BACKLOG;
-            System.Enum.TryParse(status.ToUpper(), out ts);
-            content.StatusId = (int)ts;
-            UpdateContent();
-        }
-
-        private void timeMinute_Leave(object sender, EventArgs e)
-        {
-            int minutes = int.Parse(timeMinute.Text);
-            content.Time = (content.Time / 60) * 60 + minutes;
-            UpdateContent();
-        }
-
-        private void timeHour_Leave(object sender, EventArgs e)
-        {
-            int hours = int.Parse(timeHour.Text);
-            content.Time = content.Time % 60 + hours * 60;
-            UpdateContent();
-        }
-
-        private void competitionDateChanged(object sender, EventArgs e)
-        {
-            int day = competitionDay.SelectedIndex + 1;
-            int month = competitionMonth.SelectedIndex + 1;
-            int year = int.Parse(competitionYear.Text);
-            content.DateCompleted = new DateOnly(year, month, day);
-            UpdateContent();
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = content.LinkUrl,
+                UseShellExecute = true
+            });
         }
 
         private void UpdateContent()
@@ -264,7 +234,32 @@ namespace hltb
                 case mode.GAMES: { gameRepository.Update(content as Game); break; }
                 case mode.FILMS: { filmRepository.Update(content as Film); break; }
             }
-            (this.TopLevelControl as Mainform).RefreshTitles(currentMode);
+            ((Mainform)this.TopLevelControl).RefreshTitles(currentMode);
+        }
+
+        /// <summary>
+        /// Save all changes of the current content to the database
+        /// </summary>
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            // hours, minutes
+            int hours = int.Parse(timeHour.Text);
+            int minutes = int.Parse(timeMinute.Text);
+            content.Time = hours * 60 + minutes;
+            // score
+            content.Score = (int)score_c.SelectedItem;
+            // status
+            var status = status_c.SelectedItem.ToString();
+            TitleStatus ts = TitleStatus.BACKLOG;
+            System.Enum.TryParse(status.ToUpper(), out ts);
+            content.StatusId = (int)ts;
+            // competition date
+            int day = competitionDay.SelectedIndex + 1;
+            int month = competitionMonth.SelectedIndex + 1;
+            int year = int.Parse(competitionYear.Text);
+            content.DateCompleted = new DateOnly(year, month, day);
+
+            UpdateContent();
         }
     }
 }
