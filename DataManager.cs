@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace hltb
 {
-    public static class DataFiles
+    public static class DataManager
     {
         public static readonly string PATH = Directory.GetCurrentDirectory();
         

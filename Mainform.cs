@@ -10,7 +10,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Windows.Forms;
 
-using static hltb.DataFiles;
+using static hltb.DataManager;
 
 #pragma warning disable CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.
 namespace hltb
@@ -18,6 +18,8 @@ namespace hltb
     public enum mode { GAMES, FILMS, TVSERIES };
     public enum filterCategory { YEAR, SCORE, STATUS, NAME, GENRE };
     public enum displayOption { BUTTONS, LINES, IMAGES };
+
+
     public partial class Mainform : Form
     {
         private Panel list_panel = new Panel();
@@ -31,11 +33,29 @@ namespace hltb
         private filterCategory filter = filterCategory.YEAR;
         private displayOption currentDisplayOption = displayOption.BUTTONS;
 
+        public Type ModeToType(mode _mode)
+        {
+            switch (_mode)
+            {
+                case mode.GAMES:
+                    {
+                        return typeof(Game);
+                    }
+                case mode.FILMS:
+                    {
+                        return typeof(Film);
+                    }
+                case mode.TVSERIES:
+                    {
+                        return typeof(TVSeries);
+                    }
+            }
+            throw new ArgumentException("Incorrect mode");
+        }
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
             SaveContent(contents, mode.GAMES);
-            File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
         }
 
         void UpdateStatisticsLabel()
@@ -207,7 +227,7 @@ namespace hltb
                     + namebox.Text + ";;" 
                     + statusbox.Text + ";;" 
                     + scorebox.SelectedItem;
-                string pathToFind = DataFiles.PATH;
+                string pathToFind = DataManager.PATH;
                 for (int i = 0; i < 3; i++)
                 {
                     int pos = pathToFind.LastIndexOf("\\");
@@ -215,7 +235,7 @@ namespace hltb
                 }
                 Process p = Process.Start(new ProcessStartInfo
                 {
-                    FileName = DataFiles.GetPythonPath(),
+                    FileName = DataManager.GetPythonPath(),
                     Arguments = pathToFind + "/python_part/find.py \"" + request + "\"",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
@@ -237,7 +257,7 @@ namespace hltb
             var response_parts = response.Split(";;");
             char operationCode = response_parts[0][0];
             string json_string = response_parts[1];
-            var content = DataFiles.GetFromJson(json_string, currentMode);
+            var content = DataManager.GetFromJson(json_string, currentMode);
             
             if (operationCode == '0')
             {
@@ -280,7 +300,6 @@ namespace hltb
                             break;
                         }
                 }
-                //contents.Add(GetContent(currentMode, true).First());
             }
         }
 
@@ -345,7 +364,7 @@ namespace hltb
 
                 if (currentDisplayOption == displayOption.IMAGES)
                 {
-                    button.BackgroundImage = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + g.FixedTitle + ".jpg");
+                    button.BackgroundImage = new Bitmap(DataManager.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + g.FixedTitle + ".jpg");
                     button.BackgroundImageLayout = ImageLayout.Stretch;
                     button.ForeColor = Color.Transparent;
                 }

@@ -40,20 +40,6 @@ namespace hltb
             return res.ToString();
         }
 
-        private void SeasonsCSelectedIndexChanged(object sender, EventArgs eventArgs)
-        {
-            var e = GetFullName();
-            var combobox = (ComboBox)sender;
-            var s = combobox.SelectedItem.ToString();
-            Controls.RemoveByKey("episodesLabel");
-            Label episodesLabel = new Label();
-            episodesLabel.Name = "episodesLabel";
-            //episodesLabel.Text = $"Episodes count: {(content as TVSeries).Seasons[int.Parse(combobox.SelectedItem.ToString())]}";
-            episodesLabel.Width = 125;
-            episodesLabel.Location = new Point(combobox.Left + combobox.Width, combobox.Top);
-            Controls.Add(episodesLabel);
-        }
-
         public CurrentContentContol(long id, mode cm)
         {
             InitializeComponent();
@@ -67,7 +53,7 @@ namespace hltb
             }
 
             currentMode = cm;
-            titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\"
+            titlePicture.Image = new Bitmap(DataManager.PATH + "\\data\\images\\"
                 + currentMode.ToString().ToLower() + "\\"
                 + content.FixedTitle + ".jpg");
             nameLabel.Text = GetFullName();
@@ -121,6 +107,10 @@ namespace hltb
             competitionMonth.Location = new Point(competitionDay.Right + 10, completitionLabel.Top);
             competitionYear.Text = content.DateCompleted.Year.ToString();
             competitionYear.Location = new Point(competitionMonth.Right + 10, completitionLabel.Top);
+
+            noteTextBox.Top = completitionLabel.Bottom + 15;
+            if (content.Note is not null)
+                noteTextBox.Text = content.Note;
             {
                 //if (currentMode != mode.GAMES)
                 //{
@@ -131,33 +121,6 @@ namespace hltb
                 //    genresLabel.Text = str.ToString();
                 //    genresLabel.Font = new Font("Microsoft Tai Le", 16, FontStyle.Bold);
                 //    Controls.Add(genresLabel);
-
-                //    if (content is TVSeries tVSeries)
-                //    {
-                //        Label seasonsLabel = new Label();
-                //        seasonsLabel.Text = "Select Season:";
-                //        seasonsLabel.Font = new Font("Microsoft Tai Le", 16, FontStyle.Bold);
-                //        Graphics g = CreateGraphics();
-                //        seasonsLabel.Width = (int)Math.Ceiling(g.MeasureString(seasonsLabel.Text + " ", seasonsLabel.Font).Width) + 10;
-                //        Console.WriteLine(seasonsLabel.Width);
-                //        seasonsLabel.Location = new Point(nameLabel.Left, genresLabel.Bottom + 5);
-                //        Controls.Add(seasonsLabel);
-
-                //        ComboBox seasons_c = new ComboBox();
-                //        seasons_c.Location = new Point(seasonsLabel.Right + 5, seasonsLabel.Top);
-                //        seasons_c.Width = status_c.Width;
-                //        seasons_c.Font = new Font("Microsoft Tai Le", 14, FontStyle.Bold);
-                //        int i = 0;
-                //        var a = new object[tVSeries.Seasons.Count];
-                //        foreach (var season in tVSeries.Seasons)
-                //        {
-                //            a[i] = season.Key;
-                //            i++;
-                //        }
-                //        seasons_c.Items.AddRange(a);
-                //        seasons_c.SelectedIndexChanged += SeasonsCSelectedIndexChanged;
-                //        Controls.Add(seasons_c);
-                //    }
                 //}
             }
             //deleteButton.Location = new Point(statusLabel.Left, 600);
@@ -259,6 +222,8 @@ namespace hltb
             int month = competitionMonth.SelectedIndex + 1;
             int year = int.Parse(competitionYear.Text);
             content.DateCompleted = new DateOnly(year, month, day);
+            // note
+            content.Note = noteTextBox.Text;
 
             UpdateContent();
         }
