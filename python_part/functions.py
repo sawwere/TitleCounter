@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import os
 from howlongtobeatpy import HowLongToBeat
-from sqlalchemy import false, true
 from Game import Game
 from Film import Film
 from TVSeries import TVSeries
+import os
 import json
 import requests
 from bs4 import BeautifulSoup
-import time
+import re
 
 missed_games = list()
 
@@ -45,13 +44,11 @@ def print_status(status, process):
 def sortBySim(game):
     return game.similarity
 
-
 # Get list of the potential games fron HLTB
 def find_games(name):
     results = HowLongToBeat().search(game_name=name, similarity_case_sensitive=False)
     results.sort(key=sortBySim)
     return results
-
     
 # Choose the most similar game by name
 def choose_game(name):
@@ -59,30 +56,79 @@ def choose_game(name):
 
     if results is not None and len(results) > 0:
         r = results[-1]
-        res = Game(r.game_name, r.game_image_url,
-                   r.game_web_link, r.main_story,
-                   r.similarity, year=r.release_world)
-        #print(name)
+        res = Game(title=r.game_name, 
+                   image_url=r.game_image_url,
+                   link_url=r.game_web_link, 
+                   time=r.main_story*60,
+                   similarity=r.similarity, 
+                   date_release=str(r.release_world)+"-01-01")
+        res.date_release = find_date_release(res.link_url)
         return res
     else: 
         missed_games.append(name)
-        #print("ERROR", name)
         return Game()
+    
+
+def month_to_int(string_month):
+    return {
+        'January': 1,
+        'February': 2,
+        'March': 3,
+        'April': 4,
+        'May': 5,
+        'June': 6,
+        'July': 7,
+        'August': 8,
+        'September': 9,
+        'October': 10,
+        'November': 11,
+        'December': 12
+    }[string_month]
+
+def string_into_date(string):
+    r = re.match(r"([A-Za-z]+) (\d{2}), (\d{4})", string)
+    month = r.group(1)
+    day = r.group(2)
+    year = r.group(3)
+    return year+'-'+str(month_to_int(month))+'-'+day
 
 
-# Filter games list to remove None objects
-def remove_none_games(games):
-    result = list()
-    for g in games:
-        if not (g.name == "None"):
-            result.append(g)
-    return result
+def find_date_release(web_link):
+    date_release = "1900-01-01"
+    try:
+        r = requests.get(web_link, headers=headers)
+        with open('hltb.html', 'wb') as f:
+            f.write(r.text.encode('utf-8'))
+        f = open('hltb.html')
+        soup = BeautifulSoup(f, features="html.parser")
+        # get text from html
+        text = soup.get_text()
 
-def save_missed_games():
-    file_name = 'MissedGames.txt'
-    file = open(file_name, 'w')
-    for g in missed_games:
-        file.write(g+'\n')
+        na = text.find("NA:")
+        eu = text.find("EU:")
+        jp = text.find("JP:")
+        up = text.find("Updated:")
+
+        if jp == -1:
+            jp = up
+        if eu == -1:
+            eu = up
+        na_date = eu_date = jp_date = date_release
+
+        if na != -1:
+            na_date = text[na+4:eu]
+        if eu != up:
+            eu_date = text[eu+4:jp]
+        if jp != up:
+            jp_date = text[jp+4:up]
+
+        dates = [na_date, eu_date, jp_date]
+        dates.sort()
+        date_release = dates[0]
+        os.remove('hltb.html')
+    except:
+        pass
+    return string_into_date(date_release)
 
 # Create json file of titles
 def create_json(titles, tp, f=True):
@@ -99,19 +145,7 @@ def create_json(titles, tp, f=True):
     file.close
     if f:
         print_status('f', 'create_json')
-"""
-# Add titles to json file
-def append_json(title, tp):
-    print_status('s', 'append_json')
-    filename = 'images/' + tp + '/' + tp + '_sheet.json'
-    file = open(filename, 'a', encoding='utf-8')
-    data = list()
-    data.append(title.to_dict())
-    
-    json.dump(data, file, indent=4)
-    file.close
-    print_status('f', 'append_json')
-"""
+
 # Get titles from json file
 def read_json(tp, f = True):
     if f:
@@ -165,15 +199,17 @@ def has_proh_symb(string):
     if '<' in string:
         result += '<'
     return result   
+
+
+restricted_symbols = {':', '/', chr(92), '"', '*', '?', '|', '>', '<'}
     
 # Remove prohibited symbols from the String
-def replace_symbols(string, symbols):
-    for s in symbols:
-        result = ''
-        parts = string.split(s)
-        for p in parts:
-            result += p
-    return result
+def set_fixed_name(content):
+    fixed_title = ""
+    for s in content.title:
+        if not s in restricted_symbols:
+            fixed_title += s
+    content.fixed_title = fixed_title
 
 # download images for list of titles
 def download_images(titles, tp, f=True):
@@ -188,27 +224,18 @@ def download_images(titles, tp, f=True):
         print_status('f', 'download_images')
 
 # Download image for 1 title
-def download_image(title, tp):
+def download_image(content, tp):
     try:
-        image = requests.get(title.image_url, headers=headers)
+        image = requests.get(content.image_url, headers=headers)
 
-        temp_name = title.name
-        symb = has_proh_symb(temp_name)
-        if symb != '':
-            temp_name = replace_symbols(temp_name, symb)
-            #print(temp_name + '  |||  CHANGED FROM "'+game.name+'"')
-        else:
-            pass
-            #print(temp_name)
-        path = path_to_data + 'images\\' + tp + '/' + temp_name + '.jpg'
-        title.has_image = true
-        title.image_name = temp_name + '.jpg'
+        path = path_to_data + 'images\\' + tp + '/' + content.fixed_title + '.jpg'
 
         with open(path, 'wb') as f:
             f.write(image.content)
+        return image.content
     except:
-        title.has_image = false
-        title.image_name = "noimage.png"
+        print("ERROR downloading image")
+        return None
 
 
 def print_json(tp):

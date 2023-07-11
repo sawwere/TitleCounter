@@ -30,11 +30,11 @@ namespace hltb
         private void InitializeComponent()
         {
             nameLabel = new Label();
-            titlePicture = new PictureBox();
+            contentPicture = new PictureBox();
             addButton = new Button();
             button2 = new Button();
             statusLabel = new Label();
-            ((System.ComponentModel.ISupportInitialize)titlePicture).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)contentPicture).BeginInit();
             SuspendLayout();
             // 
             // nameLabel
@@ -49,15 +49,15 @@ namespace hltb
             nameLabel.TabIndex = 11;
             nameLabel.Text = "Name";
             // 
-            // titlePicture
+            // contentPicture
             // 
-            titlePicture.Location = new Point(68, 14);
-            titlePicture.Margin = new Padding(4, 3, 4, 3);
-            titlePicture.Name = "titlePicture";
-            titlePicture.Size = new Size(280, 415);
-            titlePicture.SizeMode = PictureBoxSizeMode.StretchImage;
-            titlePicture.TabIndex = 10;
-            titlePicture.TabStop = false;
+            contentPicture.Location = new Point(68, 14);
+            contentPicture.Margin = new Padding(4, 3, 4, 3);
+            contentPicture.Name = "contentPicture";
+            contentPicture.Size = new Size(280, 415);
+            contentPicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            contentPicture.TabIndex = 10;
+            contentPicture.TabStop = false;
             // 
             // addButton
             // 
@@ -105,22 +105,21 @@ namespace hltb
             Controls.Add(button2);
             Controls.Add(addButton);
             Controls.Add(nameLabel);
-            Controls.Add(titlePicture);
+            Controls.Add(contentPicture);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Margin = new Padding(4, 3, 4, 3);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "AddContent";
             Text = "AddTitle";
-            VisibleChanged += AddTitle_VisibleChanged;
-            ((System.ComponentModel.ISupportInitialize)titlePicture).EndInit();
+            ((System.ComponentModel.ISupportInitialize)contentPicture).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
         private Label nameLabel;
-        private PictureBox titlePicture;
+        private PictureBox contentPicture;
         private Button addButton;
         private Button button2;
         private Label statusLabel;

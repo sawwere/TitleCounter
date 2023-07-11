@@ -54,7 +54,7 @@ namespace hltb
             // titlePicture
             // 
             titlePicture.Anchor = AnchorStyles.Top;
-            titlePicture.Location = new Point(90, 3);
+            titlePicture.Location = new Point(92, 3);
             titlePicture.Margin = new Padding(4, 3, 4, 3);
             titlePicture.Name = "titlePicture";
             titlePicture.Size = new Size(280, 415);
@@ -158,7 +158,7 @@ namespace hltb
             // 
             deleteButton.Anchor = AnchorStyles.Top;
             deleteButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            deleteButton.Location = new Point(90, 760);
+            deleteButton.Location = new Point(92, 760);
             deleteButton.Margin = new Padding(4, 3, 4, 3);
             deleteButton.Name = "deleteButton";
             deleteButton.Size = new Size(280, 35);
@@ -254,7 +254,7 @@ namespace hltb
             // 
             saveButton.Anchor = AnchorStyles.Top;
             saveButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            saveButton.Location = new Point(90, 719);
+            saveButton.Location = new Point(92, 719);
             saveButton.Margin = new Padding(4, 3, 4, 3);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(280, 35);
@@ -263,9 +263,8 @@ namespace hltb
             saveButton.UseVisualStyleBackColor = true;
             saveButton.Click += saveButton_Click;
             // 
-            // CurrentTitleContol
+            // CurrentContentContol
             // 
-            this.Dock = DockStyle.Fill; // auto size
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SteelBlue;
@@ -289,8 +288,8 @@ namespace hltb
             Controls.Add(nameLabel);
             Controls.Add(titlePicture);
             Margin = new Padding(4, 3, 4, 3);
-            Name = "CurrentTitleContol";
-            Size = new Size(467, 808);
+            Name = "CurrentContentContol";
+            Size = new Size(470, 800);
             ((System.ComponentModel.ISupportInitialize)titlePicture).EndInit();
             ResumeLayout(false);
             PerformLayout();

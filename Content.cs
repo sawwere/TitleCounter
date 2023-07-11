@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-
+﻿
 namespace hltb
 {
     public enum TitleStatus { COMPLETED, BACKLOG, RETIRED, IN_PROGRESS};
@@ -34,20 +32,6 @@ namespace hltb
         public Content()
         {
 
-        }
-
-        public Content(string title, string image_url, string link, double time, int score, int year, Status status)
-        {
-            Title = title;
-            ImageUrl = image_url;
-            LinkUrl = link;
-            Time = (int)time;
-            Score = score;
-            DateRelease = new DateOnly();
-            DateCompleted = new DateOnly();
-            
-            Status = status;
-            //StatusId = Status.Id;
         }
     }
 }

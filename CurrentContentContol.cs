@@ -210,9 +210,10 @@ namespace hltb
         //    return str.ToString();
         //}
 
-        //TODO Erase deleted title's image
+
         private void deleteButton_Click(object sender, EventArgs eventArgs)
         {
+            //TODO Erase deleted title's image
             Controls.Clear();
             ((Mainform)this.Parent.Parent).RemoveContent(content, currentMode);
             content = new Content();

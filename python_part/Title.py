@@ -1,7 +1,7 @@
 from sqlalchemy import false
 
 
-class Title():
+class Content():
     def __init__(self, name="None",
                  image_url="https://kitairu.net/images/noimage.png",
                  link="https://yandex.ru/",

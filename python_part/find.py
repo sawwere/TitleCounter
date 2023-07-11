@@ -1,54 +1,59 @@
 import sys
+import base64
 from turtle import title
 from functions import *
 
 
 
-string = sys.argv[1].split('#')
-#string = "Hollow Knight#Backlog#6#games".split('#')
-#string = "Hobbit#Backlog#3#films".split('#')
-#string = "House of cards#Backlog#7#tvseries".split('#')
+string = sys.argv[1]
+#string = "games;;Halo 3;;backlog;;6"
+#string = "films;;Hobbit;;backlog;;3"
+#string = "House of cards#Backlog#7#tvseries"
 
-def check(tp):
+
+def check(query_string):
+    query_parts = query_string.split(';;')
+    tp = query_parts[0]
     flag = True
-    result = "SUCCS"
+    op_status = 0
+    json_string = ""
+
     if tp == "games":
-        a = choose_game(string[0])
-        titles = read_json("games", False)
+        content = choose_game(query_parts[1])
+        #titles = read_json("games", False)
     elif tp == "films":
-        a = Film(string[0])
-        titles = read_json("films", False)
+        content = Film(query_parts[0])
+        #titles = read_json("films", False)
     elif tp == "tvseries":
         try:
-            a = TVSeries(string[0])
+            content = TVSeries(query_parts[1])
         except:
-            result = "ERROR t"
-            return (result, string[0])
+            op_status = 3  # incorrect mode
+            return (op_status, query_parts[1])
         else:
-            titles = read_json("tvseries", False)
-
-    for t in titles:
-        if t.to_dict()["name"] == a.name:
-            flag = False
-            result = "ERROR a"
-            break
-    if a.name == "None":
+            pass
+            #titles = read_json("tvseries", False)
+    set_fixed_name(content)
+    json_string = json.dumps(content.to_dict())
+    if content.title == "None":
         flag = False
-        result = "ERROR f"
+        op_status = 1 # not found
+    
+    # temp = list()
+    # temp.append(content)
+    # create_json(temp, "temp", False)
+    # download_image(content, tp)
+    # if flag:
+    #     content.status = string[1]
+    #     content.score = int(string[2])
+    #     return (op_status, content.name)
+    # else:
+    #     return (op_status, string[0])
+    base64_image = base64.b64encode(download_image(content, "games"))
+    return (op_status, json_string, base64_image)
 
-    temp = list()
-    temp.append(a)
-    create_json(temp, "temp", False)
-    download_image(a, tp)
-    if flag:
-        a.status = string[1]
-        a.score = int(string[2])
-        return (result, a.name)
-    else:
-        return (result, string[0])
-
-res = check(string[3])
-print(res[0], res[1], sep="#")
+res = check(string)
+print(res[0], res[1], res[2], sep=";;")
 
 
 

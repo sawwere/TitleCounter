@@ -13,46 +13,52 @@ namespace hltb
 {
     public partial class AddContent : Form
     {
-        Content content;
-        mode currentMode;
-
-        private string GetSafeName()
-        {
-            char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
-            return new string(content.Title.Where(x => !proh.Contains(x)).ToArray());
-
-        }
         public AddContent()
         {
             InitializeComponent();
         }
 
-        private void AddTitle_VisibleChanged(object sender, EventArgs e)
+        public void RecieveResponse(string title, string rp2)
         {
-            switch (Owner.Controls["ModeBox"].Text)
+            // delete first two symbols and '/r/n at the end
+            string base64_image = rp2.Substring(2, rp2.Length - 5);
+            var decoded = System.Convert.FromBase64String(base64_image);
+            using (var ms = new MemoryStream(decoded))
             {
-                case "Games":
-                    {
-                        currentMode = mode.GAMES;
-                        break;
-                    }
-                case "Films":
-                    {
-                        currentMode = mode.FILMS;
-                        break;
-                    }
-                case "TVSeries":
-                    {
-                        currentMode = mode.TVSERIES;
-                        break;
-                    }
-                default: break;
+                contentPicture.Image = new Bitmap(ms);
             }
-            content = DataFiles.GetContent(currentMode, true).First();
-            nameLabel.Text = content.Title;
-            string safeName = GetSafeName();
-            titlePicture.Image = new Bitmap(DataFiles.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + safeName + ".jpg");
+            nameLabel.Text =  title;
+        }
 
+        /// <summary>
+        /// Change statusLabel text according to search operation result
+        /// Set addButton visible if operationCode = 0 allowing to add new content
+        /// </summary>
+        /// <returns>String splitted into rows</returns>
+        public void SetStatus(char operationCode)
+        {
+            statusLabel.Text = "Status";
+            if (operationCode != '0')
+            {
+                addButton.Visible = false;
+                switch (operationCode)
+                {
+                    case '1':
+                        statusLabel.Text += (": title has not found");
+                        break;
+                    case '2':
+                        statusLabel.Text += (": title is already in the list");
+                        break;
+                    case '3':
+                        statusLabel.Text += (": incorrect type. Choose correct mode");
+                        break;
+                }
+            }
+            else
+            {
+                addButton.Visible = true;
+                statusLabel.Text += ": Found succesfuly";
+            }
         }
     }
 }

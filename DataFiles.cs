@@ -78,6 +78,26 @@ namespace hltb
             return titles;
         }
 
+        public static Content GetFromJson(string json_string, mode currentMode)
+        {
+            switch (currentMode)
+            {
+                case mode.GAMES:
+                    {
+                        return JsonConvert.DeserializeObject<Game>(json_string);
+                    }
+                case mode.FILMS:
+                    {
+                        return JsonConvert.DeserializeObject<Film>(json_string);
+                    }
+                case mode.TVSERIES:
+                    {
+                        return null;
+                    }
+            }
+            return null;
+        }
+
         public static void SaveContent(List<Content> titles, mode md)
         {
             using (TitleCounterContext db = new TitleCounterContext())

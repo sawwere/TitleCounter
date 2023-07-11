@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Windows.Forms;
 
@@ -139,6 +140,7 @@ namespace hltb
                         break;
                     }
             }
+            UpdateStatisticsLabel();
         }
 
         public void RemoveContent(Content title, mode md)
@@ -157,7 +159,6 @@ namespace hltb
                         break;
                     }
             }
-            UpdateStatisticsLabel();
             RefreshTitles(currentMode);
         }
 
@@ -165,18 +166,15 @@ namespace hltb
         {
             InitializeComponent();
             AddOwnedForm(add_content);
+            gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
+            filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
+            contents = new List<Content>();
+            contents = gameRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             CheckDataFiles();
-
-            gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
-            filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
-
-            contents = new List<Content>();
-            contents = gameRepository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
-
             ResetYears();
             UpdateStatisticsLabel();
 
@@ -205,7 +203,10 @@ namespace hltb
             }
             else
             {
-                string title = namebox.Text + "#" + statusbox.Text + "#" + scorebox.SelectedItem + '#' + currentMode.ToString().ToLower();
+                string request = currentMode.ToString().ToLower() + ";;" 
+                    + namebox.Text + ";;" 
+                    + statusbox.Text + ";;" 
+                    + scorebox.SelectedItem;
                 string pathToFind = DataFiles.PATH;
                 for (int i = 0; i < 3; i++)
                 {
@@ -215,52 +216,73 @@ namespace hltb
                 Process p = Process.Start(new ProcessStartInfo
                 {
                     FileName = DataFiles.GetPythonPath(),
-                    Arguments = pathToFind + "/python_part/find.py \"" + title + "\"",
+                    Arguments = pathToFind + "/python_part/find.py \"" + request + "\"",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     WindowStyle = ProcessWindowStyle.Hidden
                 });
-                var t = p.StandardOutput.ReadToEnd();
-                var r = t.Split('#');
-                Console.WriteLine(r[0]);
-
-                if (r[0].StartsWith("ERROR"))
-                {
-                    add_content.Controls["addButton"].Visible = false;
-                    switch (r[0].Last())
-                    {
-                        case 'a':
-                            add_content.Controls["statusLabel"].Text += (": title is already in the list");
-                            break;
-                        case 'f':
-                            add_content.Controls["statusLabel"].Text += (": title has not found");
-                            break;
-                        case 't':
-                            add_content.Controls["statusLabel"].Text += (": incorrect type. Choose correct mode");
-                            break;
-                    }
-                }
-                else if (r[0] == "SUCCS")
-                {
-                    add_content.Controls["addButton"].Visible = true;
-                    add_content.Controls["statusLabel"].Text += ": Found succesfuly";
-                }
-
-
-                if (add_content.ShowDialog() == DialogResult.OK)
-                {
-                    namebox.Text = "";
-                    statusbox.SelectedIndex = 1;
-                    scorebox.SelectedIndex = 0;
-                    contents.Add(GetContent(currentMode, true).First());
-                }
-                File.Delete(DataFiles.PATH + "\\data\\temp_sheet.json");
-                add_content.Controls["statusLabel"].Text = "Status";
+                ProccessSearchResponse(p.StandardOutput.ReadToEnd());
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
         }
 
+        public bool IsDublicate(Content content)
+        {
+            return true;
+        }
+
+        private void ProccessSearchResponse(string response)
+        {
+            var response_parts = response.Split(";;");
+            char operationCode = response_parts[0][0];
+            string json_string = response_parts[1];
+            var content = DataFiles.GetFromJson(json_string, currentMode);
+            
+            if (operationCode == '0')
+            {
+                switch (currentMode)
+                {
+                    case mode.GAMES:
+                        {
+                            if (gameRepository.Get(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
+                                operationCode = '2';
+                            break;
+                        }
+                    case mode.FILMS:
+                        {
+                            if (filmRepository.Get(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
+                                operationCode = '2';
+                            break;
+                        }
+                }
+            }
+
+            // send operation code to add_content Control, perform preparations
+            add_content.SetStatus(operationCode);
+            
+            add_content.RecieveResponse(content.Title, response_parts[2]);
+            if (add_content.ShowDialog() == DialogResult.OK)
+            {
+                namebox.Text = "";
+                statusbox.SelectedIndex = 1;
+                scorebox.SelectedIndex = 0;
+                switch (currentMode)
+                {
+                    case mode.GAMES:
+                        {
+                            gameRepository.Create(content as Game);
+                            break;
+                        }
+                    case mode.FILMS:
+                        {
+                            filmRepository.Create(content as Film);
+                            break;
+                        }
+                }
+                //contents.Add(GetContent(currentMode, true).First());
+            }
+        }
 
         private void ButtonOnClick(object sender, EventArgs eventArgs)
         {

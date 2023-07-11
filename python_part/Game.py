@@ -1,53 +1,61 @@
 class Game:
-    def __init__(self, name = "None",
-                image_url = "https://kitairu.net/images/noimage.png", 
-                link="https://yandex.ru/",
-                time = 0.0, 
-                similarity = 0.0, 
-                score=0, 
-                year=-1,
-                status = "Backlog"):
-        self.name = name
+    def __init__(self, 
+                 title = "None",
+                 fixed_title = "None",
+                 image_url = "https://kitairu.net/images/noimage.png",
+                 link_url = "https://howlongtobeat.com",
+                 time = 0, 
+                 status_id = 0,
+                 date_release = "1900-01-01",
+                 date_completed = "1900-01-01",
+                 note = "",
+                 platform = "",
+                 score = 0,
+                 similarity = 0.0
+                 ):
+        self.title = title
+        self.fixed_title = fixed_title
         self.image_url = image_url
-        self.link = link
+        self.link_url = link_url
         
         mt = str(time)
         if (type(time) == str):
             
             if ("\u00bd" in mt):
-                self.time = float(mt[:-1])+0.5
+                self.time = int(mt[:-1])+0.5
             else:
-                self.time = float(mt)
+                self.time = int(mt)
         else:
             self.time = time
-        self.similarity = similarity
-        self.score = score
-        self.year = year
-        self.status = status
 
-    def save_to_sheet(self):
-        file_name = "game_temp.txt"
-        file = open(file_name, 'a')
-        file.write(self.name+';'+self.image_url+';'+self.link
-                +';'+self.time+';'+self.similarity+';'+self.score
-                +';'+self.year+';'+self.status)
-        file.close
+        self.status_id = status_id
+        self.date_release = date_release
+        self.date_completed = date_completed
+        self.note = note
+        self.platform = platform
+        self.score = score
+        self.similarity = similarity
 
     def print(self):
-        print(self.name, self.image_url, self.link,
-              self.time, self.similarity, self.score, self.year, self.status)
+        print(self.title, self.fixed_title, self.image_url, self.link_url,
+              self.time, self.status_id, self.date_release, self.date_completed, self.score)
 
     def to_string(self):
-        return str(self.name + ' ' + self.image_url + ' ' + self.link
-                   + ' ' + self.time + ' ' + self.similarity
-                   + ' ' + self.score + ' ' + self.year + ' ' + self.status)
+        return str(self.title + ' ' + self.fixed_title 
+                   + ' ' + self.image_url + ' ' + self.link_url
+                   + ' ' + self.time + ' ' 
+                   + ' ' + self.score + ' ' + self.date_release + ' ' + self.status_id)
 
     def to_dict(self):
-        return {"name": self.name,
-                "image_url": self.image_url,
-                "link": self.link,
-                "time": self.time,
-                "similarity": self.similarity,
-                "score": self.score,
-                "year": self.year,
-                "status": self.status}
+        return {"Title": self.title,
+                "FixedTitle": self.fixed_title,
+                "ImageUrl": self.image_url,
+                "linkUrl": self.link_url,
+                "Time": self.time,
+                "StatusId": self.status_id,
+                "DateRelease": self.date_release,
+                "DateCompleted": self.date_completed,
+                "Note": self.note,
+                "Platform": self.platform,
+                "Score": self.score
+                }

@@ -47,7 +47,7 @@ public partial class TitleCounterContext : DbContext
                 .HasDefaultValueSql("'None'::character varying")
                 .HasColumnName("fixed_title");
             entity.Property(e => e.ImageUrl)
-                .HasDefaultValueSql("'https://howlongtobeat.com'::text")
+                .HasDefaultValueSql("'https://kitairu.net/images/noimage.png'::text")
                 .HasColumnName("image_url");
             entity.Property(e => e.LinkUrl)
                 .HasDefaultValueSql("'https://howlongtobeat.com'::text")
@@ -93,7 +93,7 @@ public partial class TitleCounterContext : DbContext
                 .HasDefaultValueSql("'None'::character varying")
                 .HasColumnName("fixed_title");
             entity.Property(e => e.ImageUrl)
-                .HasDefaultValueSql("'https://howlongtobeat.com'::text")
+                .HasDefaultValueSql("'https://kitairu.net/images/noimage.png'::text")
                 .HasColumnName("image_url");
             entity.Property(e => e.LinkUrl)
                 .HasDefaultValueSql("'https://howlongtobeat.com'::text")
