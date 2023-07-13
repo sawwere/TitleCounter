@@ -89,7 +89,7 @@ namespace hltb
             // 
             statusbox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
             statusbox.FormattingEnabled = true;
-            statusbox.Items.AddRange(new object[] { "COMPLETED", "BACKLOG", "RETIRED" });
+            statusbox.Items.AddRange(new object[] { "COMPLETED", "BACKLOG", "RETIRED", "IN PROGRESS" });
             statusbox.Location = new Point(507, 25);
             statusbox.Name = "statusbox";
             statusbox.Size = new Size(121, 24);
@@ -242,7 +242,7 @@ namespace hltb
             // 
             StatusSortBox.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
             StatusSortBox.FormattingEnabled = true;
-            StatusSortBox.Items.AddRange(new object[] { "Backlog", "Completed", "Retired", "In progress" });
+            StatusSortBox.Items.AddRange(new object[] { "Completed", "Backlog", "Retired", "In progress" });
             StatusSortBox.Location = new Point(507, 104);
             StatusSortBox.Name = "StatusSortBox";
             StatusSortBox.Size = new Size(121, 24);

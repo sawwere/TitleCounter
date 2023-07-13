@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Microsoft.Win32;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace hltb
 {
@@ -76,6 +77,36 @@ namespace hltb
                     }
             }
             return titles;
+        }
+
+        public static void SaveImage(mode _mode, Content content, byte[] decodedImage)
+        {
+            File.WriteAllBytes($"{PATH}\\data\\images\\{_mode.ToString().ToLower()}\\{content.Id} {content.FixedTitle}.jpg", decodedImage);
+        }
+
+        public static void DeleteImage(mode _mode, Content content)
+        {
+            File.Delete($"{PATH}\\data\\images\\{_mode.ToString().ToLower()}\\{content.Id} {content.FixedTitle}.jpg");
+        }
+
+        public static string SearchNewContent(mode _mode, string title, long statusId, int score = 0)
+        {
+            string request = $"{_mode.ToString().ToLower()};;{title};;{statusId};;{score}";
+            string pathToFind = PATH;
+            for (int i = 0; i < 3; i++)
+            {
+                int pos = pathToFind.LastIndexOf("\\");
+                pathToFind = pathToFind.Remove(pos, pathToFind.Length - pos);
+            }
+            Process p = Process.Start(new ProcessStartInfo
+            {
+                FileName = GetPythonPath(),
+                Arguments = pathToFind + "/python_part/find.py \"" + request + "\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            });
+            return p.StandardOutput.ReadToEnd();
         }
 
         public static Content GetFromJson(string json_string, mode currentMode)

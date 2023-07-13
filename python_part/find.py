@@ -4,17 +4,17 @@ from turtle import title
 from functions import *
 
 
+# <mode>;;<title>;;<status_id>;;<score>
 
 string = sys.argv[1]
-#string = "games;;Halo 3;;backlog;;6"
-#string = "films;;Hobbit;;backlog;;3"
-#string = "House of cards#Backlog#7#tvseries"
+#string = "games;;LittleBigPlanet 2;;1;;6"
+#string = "films;;Hobbit;;1;;3"
+#string = "tvseries;;House of cards;;1#7"
 
 
 def check(query_string):
     query_parts = query_string.split(';;')
     tp = query_parts[0]
-    flag = True
     op_status = 0
     json_string = ""
 
@@ -34,11 +34,12 @@ def check(query_string):
             pass
             #titles = read_json("tvseries", False)
     set_fixed_name(content)
-    json_string = json.dumps(content.to_dict())
-    if content.title == "None":
-        flag = False
-        op_status = 1 # not found
     
+    if content.title == "None":
+        op_status = 1 # not found
+    else:
+        content.status_id = int(query_parts[2])
+        content.score = int(query_parts[3])    
     # temp = list()
     # temp.append(content)
     # create_json(temp, "temp", False)
@@ -49,6 +50,7 @@ def check(query_string):
     #     return (op_status, content.name)
     # else:
     #     return (op_status, string[0])
+    json_string = json.dumps(content.to_dict())
     base64_image = base64.b64encode(download_image(content, "games"))
     return (op_status, json_string, base64_image)
 

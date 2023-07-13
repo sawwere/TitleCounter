@@ -5,7 +5,7 @@ class Game:
                  image_url = "https://kitairu.net/images/noimage.png",
                  link_url = "https://howlongtobeat.com",
                  time = 0, 
-                 status_id = 0,
+                 status_id = 1,
                  date_release = "1900-01-01",
                  date_completed = "1900-01-01",
                  note = "",

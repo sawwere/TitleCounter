@@ -24,6 +24,7 @@ namespace hltb
     {
         private Panel list_panel = new Panel();
 
+        private EFGenericRepository<Status> statusRepository;
         private EFGenericRepository<Game> gameRepository;
         private EFGenericRepository<Film> filmRepository;
         private List<Content> contents;
@@ -52,6 +53,7 @@ namespace hltb
             }
             throw new ArgumentException("Incorrect mode");
         }
+
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
@@ -163,19 +165,19 @@ namespace hltb
             UpdateStatisticsLabel();
         }
 
-        public void RemoveContent(Content title, mode md)
+        public void RemoveContent(mode _mode, long id)
         {
-            contents.Remove(title);
-            switch (currentMode)
+            //contents.Remove(title);
+            switch (_mode)
             {
                 case mode.GAMES:
                     {
-                        gameRepository.Remove(title as Game);
+                        gameRepository.Remove(gameRepository.FindById(id));
                         break;
                     }
                 case mode.FILMS:
                     {
-                        filmRepository.Remove(title as Film);
+                        filmRepository.Remove(filmRepository.FindById(id));
                         break;
                     }
             }
@@ -186,6 +188,7 @@ namespace hltb
         {
             InitializeComponent();
             AddOwnedForm(add_content);
+            statusRepository = new EFGenericRepository<Status>(new TitleCounterContext());
             gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
             filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
             contents = new List<Content>();
@@ -223,33 +226,15 @@ namespace hltb
             }
             else
             {
-                string request = currentMode.ToString().ToLower() + ";;" 
-                    + namebox.Text + ";;" 
-                    + statusbox.Text + ";;" 
-                    + scorebox.SelectedItem;
-                string pathToFind = DataManager.PATH;
-                for (int i = 0; i < 3; i++)
-                {
-                    int pos = pathToFind.LastIndexOf("\\");
-                    pathToFind = pathToFind.Remove(pos, pathToFind.Length - pos);
-                }
-                Process p = Process.Start(new ProcessStartInfo
-                {
-                    FileName = DataManager.GetPythonPath(),
-                    Arguments = pathToFind + "/python_part/find.py \"" + request + "\"",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                });
-                ProccessSearchResponse(p.StandardOutput.ReadToEnd());
+                // TODO statusId ?
+                string response = SearchNewContent(currentMode, 
+                    namebox.Text, 
+                    statusbox.SelectedIndex, 
+                    int.Parse(scorebox.SelectedItem.ToString()));
+                ProccessSearchResponse(response);
             }
             operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
-        }
-
-        public bool IsDublicate(Content content)
-        {
-            return true;
         }
 
         private void ProccessSearchResponse(string response)
@@ -258,7 +243,10 @@ namespace hltb
             char operationCode = response_parts[0][0];
             string json_string = response_parts[1];
             var content = DataManager.GetFromJson(json_string, currentMode);
-            
+            // delete first two symbols and '/r/n at the end
+            string base64_image = response_parts[2].Substring(2, response_parts[2].Length - 5);
+            var decodedImage = System.Convert.FromBase64String(base64_image);
+
             if (operationCode == '0')
             {
                 switch (currentMode)
@@ -277,11 +265,10 @@ namespace hltb
                         }
                 }
             }
-
             // send operation code to add_content Control, perform preparations
             add_content.SetStatus(operationCode);
-            
-            add_content.RecieveResponse(content.Title, response_parts[2]);
+
+            add_content.RecieveResponse(content.Title, decodedImage);
             if (add_content.ShowDialog() == DialogResult.OK)
             {
                 namebox.Text = "";
@@ -300,6 +287,7 @@ namespace hltb
                             break;
                         }
                 }
+                DataManager.SaveImage(currentMode, content, decodedImage);
             }
         }
 
@@ -307,7 +295,7 @@ namespace hltb
         {
             currentTitlePanel.Controls.Clear();
             var button = (Button)sender;
-            CurrentContentContol ccc = new CurrentContentContol((long)button.Tag, currentMode);
+            CurrentContentContol ccc = new CurrentContentContol(currentMode, contents.First(x=>x.Id == (long)button.Tag));
             currentTitlePanel.Controls.Add(ccc);
             this.Controls.Add(currentTitlePanel);
         }
@@ -364,7 +352,9 @@ namespace hltb
 
                 if (currentDisplayOption == displayOption.IMAGES)
                 {
-                    button.BackgroundImage = new Bitmap(DataManager.PATH + "\\data\\images\\" + currentMode.ToString().ToLower() + "\\" + g.FixedTitle + ".jpg");
+                    button.BackgroundImage = new Bitmap(DataManager.PATH + "\\data\\images\\" 
+                        + currentMode.ToString().ToLower() + "\\" 
+                        + g.Id + " " + g.FixedTitle + ".jpg");
                     button.BackgroundImageLayout = ImageLayout.Stretch;
                     button.ForeColor = Color.Transparent;
                 }

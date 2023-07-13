@@ -18,12 +18,9 @@ namespace hltb
             InitializeComponent();
         }
 
-        public void RecieveResponse(string title, string rp2)
+        public void RecieveResponse(string title, byte[] decodedImage)
         {
-            // delete first two symbols and '/r/n at the end
-            string base64_image = rp2.Substring(2, rp2.Length - 5);
-            var decoded = System.Convert.FromBase64String(base64_image);
-            using (var ms = new MemoryStream(decoded))
+            using (var ms = new MemoryStream(decodedImage))
             {
                 contentPicture.Image = new Bitmap(ms);
             }

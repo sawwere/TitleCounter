@@ -9,6 +9,7 @@ namespace hltb
     {
         private Content content;
         private mode currentMode;
+        private EFGenericRepository<Status> statusRepository;
         private EFGenericRepository<Game> gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
         private EFGenericRepository<Film> filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
 
@@ -40,22 +41,17 @@ namespace hltb
             return res.ToString();
         }
 
-        public CurrentContentContol(long id, mode cm)
+        public CurrentContentContol(mode cm, Content content)
         {
             InitializeComponent();
+            statusRepository = new EFGenericRepository<Status>(new TitleCounterContext());
 
-            content = new Content();
-
-            switch (cm)
-            {
-                case mode.GAMES: { content = gameRepository.FindById(id); break; }
-                case mode.FILMS: { content = filmRepository.FindById(id); break; }
-            }
+            this.content = content;
 
             currentMode = cm;
             titlePicture.Image = new Bitmap(DataManager.PATH + "\\data\\images\\"
                 + currentMode.ToString().ToLower() + "\\"
-                + content.FixedTitle + ".jpg");
+                + content.Id + " " + content.FixedTitle + ".jpg");
             nameLabel.Text = GetFullName();
 
             timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
@@ -90,12 +86,7 @@ namespace hltb
             statusLabel.Width = 75;
 
             status_c.Width = 192;
-            status_c.Items.AddRange(new object[] {
-            "Completed",
-            "Backlog",
-            "Retired",
-            "In progress"});
-            // TODO statusId?
+            status_c.Items.AddRange(statusRepository.Get().OrderBy(x => x.Id).Select(x=>x.Name).ToArray() );
             status_c.SelectedIndex = (int)content.StatusId;
             status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
@@ -176,9 +167,15 @@ namespace hltb
 
         private void deleteButton_Click(object sender, EventArgs eventArgs)
         {
-            //TODO Erase deleted title's image
             Controls.Clear();
-            ((Mainform)this.Parent.Parent).RemoveContent(content, currentMode);
+            
+            ((Mainform)this.Parent.Parent).RemoveContent(currentMode, content.Id);
+            // TODO Image delete
+            Image img = titlePicture.Image;
+            titlePicture = null;
+            img.Dispose();
+            //DataManager.DeleteImage(currentMode, content);
+
             content = new Content();
         }
 
@@ -214,9 +211,7 @@ namespace hltb
             content.Score = (int)score_c.SelectedItem;
             // status
             var status = status_c.SelectedItem.ToString();
-            TitleStatus ts = TitleStatus.BACKLOG;
-            System.Enum.TryParse(status.ToUpper(), out ts);
-            content.StatusId = (int)ts;
+            content.StatusId = statusRepository.Get(x=>x.Name==status).First().Id;
             // competition date
             int day = competitionDay.SelectedIndex + 1;
             int month = competitionMonth.SelectedIndex + 1;

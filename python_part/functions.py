@@ -69,20 +69,20 @@ def choose_game(name):
         return Game()
     
 
-def month_to_int(string_month):
+def month_to_num(string_month):
     return {
-        'January': 1,
-        'February': 2,
-        'March': 3,
-        'April': 4,
-        'May': 5,
-        'June': 6,
-        'July': 7,
-        'August': 8,
-        'September': 9,
-        'October': 10,
-        'November': 11,
-        'December': 12
+        'January': '01',
+        'February': '02',
+        'March': '03',
+        'April': '04',
+        'May': '05',
+        'June': '06',
+        'July': '07',
+        'August': '08',
+        'September': '09',
+        'October': '10',
+        'November': '11',
+        'December': '12'
     }[string_month]
 
 def string_into_date(string):
@@ -90,7 +90,7 @@ def string_into_date(string):
     month = r.group(1)
     day = r.group(2)
     year = r.group(3)
-    return year+'-'+str(month_to_int(month))+'-'+day
+    return year+'-'+month_to_num(month)+'-'+day
 
 
 def find_date_release(web_link):
@@ -101,6 +101,7 @@ def find_date_release(web_link):
             f.write(r.text.encode('utf-8'))
         f = open('hltb.html')
         soup = BeautifulSoup(f, features="html.parser")
+        f.close()
         # get text from html
         text = soup.get_text()
 
@@ -113,22 +114,22 @@ def find_date_release(web_link):
             jp = up
         if eu == -1:
             eu = up
-        na_date = eu_date = jp_date = date_release
-
+        dates = []
         if na != -1:
-            na_date = text[na+4:eu]
+            dates.append(text[na+4:eu])
         if eu != up:
-            eu_date = text[eu+4:jp]
+            dates.append(text[eu+4:jp])
         if jp != up:
-            jp_date = text[jp+4:up]
+            dates.append(text[jp+4:up])
 
-        dates = [na_date, eu_date, jp_date]
+        #dates = [na_date, eu_date, jp_date]
         dates.sort()
         date_release = dates[0]
         os.remove('hltb.html')
+        return string_into_date(date_release)
     except:
-        pass
-    return string_into_date(date_release)
+        return date_release
+    
 
 # Create json file of titles
 def create_json(titles, tp, f=True):
@@ -230,8 +231,8 @@ def download_image(content, tp):
 
         path = path_to_data + 'images\\' + tp + '/' + content.fixed_title + '.jpg'
 
-        with open(path, 'wb') as f:
-            f.write(image.content)
+        # with open(path, 'wb') as f:
+        #     f.write(image.content)
         return image.content
     except:
         print("ERROR downloading image")
