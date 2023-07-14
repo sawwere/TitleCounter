@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace hltb;
+namespace hltb.Models;
 
 public partial class Game : Content
 {

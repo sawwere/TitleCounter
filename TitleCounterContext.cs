@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using hltb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -29,6 +30,7 @@ public partial class TitleCounterContext : DbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+            optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
         }
     }
 

@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
 using System.Diagnostics;
+using hltb.Models;
 
 namespace hltb
 {

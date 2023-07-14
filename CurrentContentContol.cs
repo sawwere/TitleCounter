@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using hltb.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 using System.Text;

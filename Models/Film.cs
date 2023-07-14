@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace hltb;
+namespace hltb.Models;
 
 public partial class Film : Content
 {
