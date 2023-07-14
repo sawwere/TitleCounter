@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace hltb;
 
@@ -22,8 +23,14 @@ public partial class TitleCounterContext : DbContext
     public virtual DbSet<Status> Statuses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TitleCounter;Username=postgres;Password=1234");
+    {
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
