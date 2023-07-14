@@ -88,7 +88,7 @@ namespace hltb
 
             status_c.Width = 192;
             status_c.Items.AddRange(statusRepository.Get().OrderBy(x => x.Id).Select(x=>x.Name).ToArray() );
-            status_c.SelectedIndex = (int)content.StatusId;
+            status_c.SelectedIndex = (int)content.StatusId - 1;
             status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
             completitionLabel.Location = new Point(statusLabel.Left, statusLabel.Bottom + 5);

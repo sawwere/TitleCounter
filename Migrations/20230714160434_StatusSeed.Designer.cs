@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using hltb;
@@ -11,9 +12,11 @@ using hltb;
 namespace hltb.Migrations
 {
     [DbContext(typeof(TitleCounterContext))]
-    partial class TitleCounterContextModelSnapshot : ModelSnapshot
+    [Migration("20230714160434_StatusSeed")]
+    partial class StatusSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

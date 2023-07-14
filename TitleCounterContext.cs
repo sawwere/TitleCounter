@@ -140,6 +140,11 @@ public partial class TitleCounterContext : DbContext
                 .HasMaxLength(16)
                 .HasColumnName("name");
         });
+        modelBuilder.Entity<Status>().HasData(
+            new Status { Id = 1, Name = "completed" },
+            new Status { Id = 2, Name = "backlog" },
+            new Status { Id = 3, Name = "retired" },
+            new Status { Id = 4, Name = "in progress" });
 
         OnModelCreatingPartial(modelBuilder);
     }

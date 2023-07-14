@@ -230,7 +230,7 @@ namespace hltb
                 // TODO statusId ?
                 string response = SearchNewContent(currentMode, 
                     namebox.Text, 
-                    statusbox.SelectedIndex, 
+                    statusbox.SelectedIndex + 1, // db enumerates from 1
                     int.Parse(scorebox.SelectedItem.ToString()));
                 ProccessSearchResponse(response);
             }
@@ -388,7 +388,10 @@ namespace hltb
                 i++;
             }
             YearSortBox.Items.AddRange(a);
-            YearSortBox.SelectedIndex = 0;
+            if (YearSortBox.Items.Count > 0)
+            {
+                YearSortBox.SelectedIndex = 0;
+            }
         }
         private void ResetGenres()
         {
@@ -440,7 +443,7 @@ namespace hltb
             StatusSortBox.Visible = false;
             GenreSortBox.Visible = false;
 
-            YearSortBox.SelectedIndex = 0;
+            //YearSortBox.SelectedIndex = 0;
 
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
