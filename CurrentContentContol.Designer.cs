@@ -49,6 +49,7 @@ namespace hltb
             competitionYear = new TextBox();
             saveButton = new Button();
             noteTextBox = new TextBox();
+            competiotionButtonToday = new Button();
             ((System.ComponentModel.ISupportInitialize)titlePicture).BeginInit();
             SuspendLayout();
             // 
@@ -275,11 +276,22 @@ namespace hltb
             noteTextBox.Size = new Size(412, 79);
             noteTextBox.TabIndex = 19;
             // 
+            // competiotionButtonToday
+            // 
+            competiotionButtonToday.Location = new Point(376, 591);
+            competiotionButtonToday.Name = "competiotionButtonToday";
+            competiotionButtonToday.Size = new Size(75, 23);
+            competiotionButtonToday.TabIndex = 20;
+            competiotionButtonToday.Text = "Today";
+            competiotionButtonToday.UseVisualStyleBackColor = true;
+            competiotionButtonToday.Click += competiotionButtonToday_Click;
+            // 
             // CurrentContentContol
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SteelBlue;
+            Controls.Add(competiotionButtonToday);
             Controls.Add(noteTextBox);
             Controls.Add(saveButton);
             Controls.Add(competitionYear);
@@ -330,5 +342,6 @@ namespace hltb
         private TextBox competitionYear;
         private Button saveButton;
         private TextBox noteTextBox;
+        private Button competiotionButtonToday;
     }
 }

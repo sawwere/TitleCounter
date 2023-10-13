@@ -87,7 +87,7 @@ namespace hltb
             statusLabel.Width = 75;
 
             status_c.Width = 192;
-            status_c.Items.AddRange(statusRepository.Get().OrderBy(x => x.Id).Select(x=>x.Name).ToArray() );
+            status_c.Items.AddRange(statusRepository.Get().OrderBy(x => x.Id).Select(x => x.Name).ToArray());
             status_c.SelectedIndex = (int)content.StatusId - 1;
             status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
@@ -99,6 +99,8 @@ namespace hltb
             competitionMonth.Location = new Point(competitionDay.Right + 10, completitionLabel.Top);
             competitionYear.Text = content.DateCompleted.Year.ToString();
             competitionYear.Location = new Point(competitionMonth.Right + 10, completitionLabel.Top);
+            competiotionButtonToday.Location = new Point(competitionYear.Right + 10, competitionYear.Top);
+
 
             noteTextBox.Top = completitionLabel.Bottom + 15;
             if (content.Note is not null)
@@ -169,7 +171,7 @@ namespace hltb
         private void deleteButton_Click(object sender, EventArgs eventArgs)
         {
             Controls.Clear();
-            
+
             ((Mainform)this.Parent.Parent).RemoveContent(currentMode, content.Id);
             // TODO Image delete
             Image img = titlePicture.Image;
@@ -212,7 +214,7 @@ namespace hltb
             content.Score = (int)score_c.SelectedItem;
             // status
             var status = status_c.SelectedItem.ToString();
-            content.StatusId = statusRepository.Get(x=>x.Name==status).First().Id;
+            content.StatusId = statusRepository.Get(x => x.Name == status).First().Id;
             // competition date
             int day = competitionDay.SelectedIndex + 1;
             int month = competitionMonth.SelectedIndex + 1;
@@ -222,6 +224,14 @@ namespace hltb
             content.Note = noteTextBox.Text;
 
             UpdateContent();
+        }
+
+        private void competiotionButtonToday_Click(object sender, EventArgs e)
+        {
+            var today = DateTime.Today;
+            competitionDay.SelectedIndex = today.Day - 1;
+            competitionMonth.SelectedIndex = today.Month - 1;
+            competitionYear.Text = today.Year.ToString();
         }
     }
 }

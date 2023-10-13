@@ -16,6 +16,7 @@ public partial class TitleCounterContext : DbContext
     public TitleCounterContext(DbContextOptions<TitleCounterContext> options)
         : base(options)
     {
+        Database.EnsureCreated();
     }
 
     public virtual DbSet<Film> Films { get; set; }
