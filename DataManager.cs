@@ -99,6 +99,7 @@ namespace hltb
                 int pos = pathToFind.LastIndexOf("\\");
                 pathToFind = pathToFind.Remove(pos, pathToFind.Length - pos);
             }
+
             Process p = Process.Start(new ProcessStartInfo
             {
                 FileName = GetPythonPath(),
@@ -110,7 +111,7 @@ namespace hltb
             return p.StandardOutput.ReadToEnd();
         }
 
-        public static Content GetFromJson(string json_string, mode currentMode)
+        public static Content? GetFromJson(string json_string, mode currentMode)
         {
             switch (currentMode)
             {

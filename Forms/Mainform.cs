@@ -244,6 +244,10 @@ namespace hltb
             char operationCode = response_parts[0][0];
             string json_string = response_parts[1];
             var content = DataManager.GetFromJson(json_string, currentMode);
+            if (content is null)
+            {
+                throw new ArgumentNullException("Invalid Json Deserialize");
+            }
             // delete first two symbols and '/r/n at the end
             string base64_image = response_parts[2].Substring(2, response_parts[2].Length - 5);
             var decodedImage = System.Convert.FromBase64String(base64_image);
