@@ -1,10 +1,9 @@
 import imdb
-from imdb.Movie import Movie
 
 
 class TVSeries():
-    def __init__(self, name = "None",
-                        rus_name = "Нету",
+    def __init__(self, title = "None",
+                        rus_title = "Нету",
                         image_url="https://kitairu.net/images/noimage.png",
                         link="https://yandex.ru/",    
                         time = 0,                   
@@ -14,11 +13,11 @@ class TVSeries():
                         genres=list(),
                         seasons=list()):
         if time == 0:
-            self.imdb = imdb.IMDb()
-            self.movie = self.imdb.search_movie(name)[0]
+            self.imdb = imdb.Cinemagoer()
+            self.movie = self.imdb.search_movie(title)[0]
             self.imdb.update(self.movie, info='main')
-            self.name = self.movie['title']
-            self.rus_name = self.movie['original title']
+            self.title = self.movie['title']
+            self.rus_title = self.movie['original title']
             self.image_url = self.movie['cover url']
             self.link = 'https://www.imdb.com/title/tt' + self.movie['imdbID']
             self.time = int(self.movie['runtime'][0])
@@ -33,8 +32,8 @@ class TVSeries():
             for s in self.movie['episodes']:
                 self.seasons[s] = len(self.movie['episodes'][s])
         else:
-            self.name = name
-            self.rus_name = rus_name
+            self.title = title
+            self.rus_title = rus_title
             self.image_url = image_url
             self.link = link
             self.time = time
@@ -47,7 +46,7 @@ class TVSeries():
         
 
     def print(self):
-        print(self.name, self.rus_name, self.image_url,
+        print(self.title, self.rus_title, self.image_url,
               self.link, self.time, self.score, self.year, self.status)
         for g in self.genres:
             print(g)
@@ -55,7 +54,7 @@ class TVSeries():
             print(s)
         
     def to_string(self):
-        result = str(self.name + ' ' + self.rus_name + ' ' 
+        result = str(self.title + ' ' + self.rus_title + ' ' 
                          + ' ' + self.image_url + ' ' + self.link 
                          + ' ' + self.time + ' ' + self.score + ' ' + self.year 
                          + ' ' + self.status)
@@ -64,8 +63,8 @@ class TVSeries():
         return result
 
     def to_dict(self):
-        return {"name" : self.name,
-                "rus_name" : self.rus_name,
+        return {"title" : self.title,
+                "rus_title" : self.rus_title,
                 "image_url" : self.image_url,
                 "link" : self.link,
                 "time" : self.time,

@@ -159,17 +159,17 @@ def read_json(tp, f = True):
         if f:
             print(d)
         if tp == 'games':
-            result.append(Game(name=d['Name'], image_url=d['Image_Url'], link=d['Link'], 
+            result.append(Game(title=d['Name'], image_url=d['Image_Url'], link=d['Link'], 
                 time=d['Time'], similarity=d['Similarity'], 
                 score=d['Score'], year=d['Year'], status=d['Status']))
         elif tp == 'films':
-            result.append(Film(name=d['Name'], rus_name=d['Rus_Name'], 
+            result.append(Film(title=d['Name'], rus_title=d['Rus_Name'], 
                                 image_url=d['Image_Url'], link=d['Link'],
                                 time=d['Time'], score=d['Score'],
                                 year=d['Year'], status=d['Status'],
                                 genres=d["Genres"]))
         elif tp =='tvseries':
-            result.append(TVSeries(name=d['Name'], rus_name=d['Rus_Name'],
+            result.append(TVSeries(title=d['Name'], rus_title=d['Rus_Name'],
                                    image_url=d['Image_Url'], link=d['Link'],
                                    time=d['Time'], score=d['Score'],
                                    year=d['Year'], status=d['Status'],

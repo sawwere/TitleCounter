@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
 using System.Diagnostics;
 using hltb.Models;
+using Microsoft.VisualBasic.ApplicationServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Collections;
+using hltb.Models.Outdated;
 
 namespace hltb
 {
@@ -21,55 +25,84 @@ namespace hltb
             if (tmp)
                 json_string = File.ReadAllText(PATH + "\\data\\temp_sheet.json");
             else
-                json_string = File.ReadAllText(PATH + "\\data\\" + md.ToString().ToLower() + "_sheet.json");
+                json_string = File.ReadAllText("C:\\Users\\sawer\\Desktop\\folder\\list\\net6.0-windows\\data\\" + md.ToString().ToLower() + "_sheet.json");
 
             var titles = new List<Content>();
             switch (md)
             {
                 case mode.GAMES:
                     {
+
+                        var games = JsonConvert.DeserializeObject<List<GameJson>>(json_string);
+                        using (TitleCounterContext db = new TitleCounterContext())
+                        {
+                            foreach (var game in games)
+                            {
+                                Console.WriteLine(777777777777);
+                                var ls = db.Statuses.ToList();
+                                foreach (var ss in ls)
+                                {
+                                    Console.WriteLine(ss);
+
+                                }
+                                hltb.Models.Status stat = db.Statuses.ToList().First(x => x.Name == game.Status);
+                                // создаем два объекта Game
+                                Game Game1 = new Game
+                                {
+                                    Title = game.Name,
+                                    FixedTitle = game.Name,
+                                    ImageUrl = game.Image_Url,
+                                    LinkUrl = game.Link,
+                                    Time = ((int)game.Time),
+                                    Score = game.Score,
+                                };
+                                stat.Games.Add(Game1);
+                                // добавляем их в бд
+                                db.Games.Add(Game1);
+
+                                db.SaveChanges();
+                            }
+                        }
+
+                        //return titles;// games.Select(x => x as Content).ToList();
+                        //// TODO
                         using (TitleCounterContext db = new TitleCounterContext())
                         {
                             var Games = db.Games.Include(x => x.Status).ToList();
                             return Games.Select(x => x as Content).ToList();
                         }
-                        //var games = JsonConvert.DeserializeObject<List<GameJson>>(json_string);
-                        //using (TitleCounterContext db = new TitleCounterContext())
-                        //{
-                        //    foreach (var game in games)
-                        //    {
-                        //        Console.WriteLine(777777777777);
-                        //        var ls = db.Statuses.ToList();
-                        //        foreach (var ss in ls)
-                        //        {
-                        //            Console.WriteLine(ss);
-
-                        //        }
-                        //        Status stat = db.Statuses.ToList().First(x => x.Name == game.Status);
-                        //        // создаем два объекта Game
-                        //        Game Game1 = new Game
-                        //        {
-                        //            Title = game.Name,
-                        //            FixedTitle = game.Name,
-                        //            ImageUrl = game.Image_Url,
-                        //            LinkUrl = game.Link,
-                        //            Time = ((int)game.Time),
-                        //            Score = game.Score,
-                        //        };
-                        //        stat.Games.Add(Game1);
-                        //        // добавляем их в бд
-                        //        db.Games.Add(Game1);
-
-                        //        db.SaveChanges();
-                        //    }
-                        //}
-
-                        //return titles;// games.Select(x => x as Content).ToList();
-                        //// TODO
-
                     }
                 case mode.FILMS:
                     {
+                        var films = JsonConvert.DeserializeObject<List<FilmJson>>(json_string);
+                        using (TitleCounterContext db = new TitleCounterContext())
+                        {
+                            foreach (var film in films)
+                            {
+                                Console.WriteLine(777777777777);
+                                var ls = db.Statuses.ToList();
+                                foreach (var ss in ls)
+                                {
+                                    Console.WriteLine(ss);
+
+                                }
+                                hltb.Models.Status stat = db.Statuses.ToList().First(x => x.Name == film.Status);
+                                Film _film = new Film
+                                {
+                                    Title = film.Name,
+                                    FixedTitle = film.Name,
+                                    ImageUrl = film.Image_Url,
+                                    LinkUrl = film.Link,
+                                    Time = ((int)film.Time),
+                                    Score = film.Score,
+                                };
+                                stat.Films.Add(_film);
+                                // добавляем их в бд
+                                db.Films.Add(_film);
+
+                                db.SaveChanges();
+                            }
+                        }
                         return titles;
                     }
                 case mode.TVSERIES:
@@ -102,12 +135,12 @@ namespace hltb
 
             Process p = Process.Start(new ProcessStartInfo
             {
-                FileName = GetPythonPath(),
+                FileName = @"T:\\Programs\\Python39\\python.exe",// GetPythonPath(),
                 Arguments = pathToFind + "/python_part/find.py \"" + request + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 WindowStyle = ProcessWindowStyle.Hidden
-            });
+            }) ;
             return p.StandardOutput.ReadToEnd();
         }
 
@@ -177,16 +210,17 @@ namespace hltb
                     {
                         try
                         {
-                            string pythonExePath = productKey.OpenSubKey("InstallPath").GetValue("ExecutablePath").ToString();
+                            string? pythonExePath = productKey.OpenSubKey("InstallPath").GetValue("ExecutablePath")?.ToString();
 
                             if (pythonExePath != null && pythonExePath != "")
                             {
-                                //Console.WriteLine("Got python version; " + v + " at path; " + pythonExePath);
+                                Console.WriteLine("Got python version; " + v + " at path; " + pythonExePath);
                                 pythonLocations.Add(v.ToString(), pythonExePath);
                             }
                         }
-                        catch
+                        catch (System.NullReferenceException ex) 
                         {
+                            Console.WriteLine(ex.Message);
                             //Install path doesn't exist
                         }
                     }
