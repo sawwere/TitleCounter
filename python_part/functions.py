@@ -7,10 +7,6 @@ from TVSeries import TVSeries
 import json
 import requests
 
-import re
-
-
-path_to_data = "F:\\my_programs\\c#\\desk\\TitleCounter\\bin\\Debug\\net6.0-windows\\data\\"
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -44,7 +40,7 @@ def find_games(name):
     results.sort(key=sortBySim)
     return results
     
-def choose_game(name):
+async def choose_game(name):
     results = find_games(name)
     if results is not None and len(results) > 0:
         r = results[-1]
@@ -71,7 +67,7 @@ def get_fixed_name(string):
 
 
 # Download image for 1 title
-def download_image(image_url):
+async def download_image(image_url):
     try:
         image = requests.get(image_url, headers=headers)
         return image.content
@@ -82,7 +78,7 @@ def download_image(image_url):
 
 
 # Create json file of titles
-def create_json(titles, tp, f=True):
+def create_json(path_to_data, titles, tp, f=True):
     if f:
         print_status('s', 'create_json')    
     filename = path_to_data + tp + '_sheet.json'

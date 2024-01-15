@@ -15,7 +15,7 @@ class Film():
                        status_id = 2):
         if time == 0:
             self.imdb = imdb.Cinemagoer()
-            self.movie = self.imdb.search_movie('matrix')[0]
+            self.movie = self.imdb.search_movie(title)[0]
             self.imdb.update(self.movie, info='main')
             self.title = self.movie['title']
             self.fixed_title = fixed_title

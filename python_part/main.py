@@ -17,9 +17,9 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.route('/find/games', methods=['GET'])
-def get_game():
+async def get_game():
     name = request.args.get('title', default = "None", type = str)
-    game = choose_game(name)
+    game = await choose_game(name)
     if game is None:
         abort(404)
     game.fixed_title = get_fixed_name(game.title)
@@ -27,7 +27,7 @@ def get_game():
     return jsonify(game.to_dict())
 
 @app.route('/find/films', methods=['GET'])
-def get_film():
+async def get_film():
     name = request.args.get('title', default = "None", type = str)
     game = Film(name)
     if game is None:
@@ -37,9 +37,10 @@ def get_film():
     return jsonify(game.to_dict())
 
 @app.route('/find/image', methods=['GET'])
-def get_image():
+async def get_image():
     image_url = request.args.get('image_url', default = "https://kitairu.net/images/noimage.png", type = str)
-    base64_image = base64.b64encode(download_image(image_url))
+    string = await download_image(image_url)
+    base64_image = base64.b64encode(string)
     if base64_image is None:
         abort(404)
     return base64_image.decode()

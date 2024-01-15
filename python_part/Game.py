@@ -73,11 +73,8 @@ class Game:
         date_release = "1900-01-01"
         try:
             r = requests.get(web_link, headers=headers)
-            with open('hltb.html', 'wb') as f:
-                f.write(r.text.encode('utf-8'))
-            f = open('hltb.html')
-            soup = BeautifulSoup(f, features="html.parser")
-            f.close()
+            
+            soup = BeautifulSoup(r.text.encode('utf-8'), features="html.parser")
             # get text from html
             text = soup.get_text()
 
@@ -101,7 +98,6 @@ class Game:
             #dates = [na_date, eu_date, jp_date]
             dates.sort()
             date_release = dates[0]
-            os.remove('hltb.html')
             return self.string_into_date(date_release)
         except:
             return date_release
