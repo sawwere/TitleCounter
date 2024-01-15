@@ -1,4 +1,5 @@
 ﻿using hltb.Models;
+using hltb.Models.Outdated;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -7,8 +8,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using static hltb.DataManager;
@@ -34,7 +38,10 @@ namespace hltb
         private mode currentMode = mode.GAMES;
         private filterCategory filter = filterCategory.YEAR;
         private displayOption currentDisplayOption = displayOption.BUTTONS;
-
+        private static HttpClient sharedClient = new()
+        {
+            BaseAddress = new Uri("http://127.0.0.1:5000"),
+        };
         public Type ModeToType(mode _mode)
         {
             switch (_mode)
@@ -218,7 +225,26 @@ namespace hltb
             e.Handled = true;
         }
 
-        private void addtitle_MouseDown(object sender, MouseEventArgs e)
+        static async Task<byte[]> GetImageAsync(HttpClient httpClient, string imageUrl)
+        {
+            var response = await httpClient.GetStringAsync($"find/image?image_url={imageUrl}");
+            return System.Convert.FromBase64String(response); ;
+        }
+
+        private async Task<Content> GetContentAsync(string title)
+        {
+            var response = await sharedClient.GetStringAsync($"find/{currentMode.ToString().ToLower()}?title={title}");
+            var content = DataManager.GetFromJson(response, mode.GAMES);
+            if (content is null)
+            {
+                throw new ArgumentNullException("Invalid Json Deserialize");
+            }
+            content.StatusId = statusbox.SelectedIndex + 1;
+            content.Score = scorebox.SelectedItem == null ? 0 : int.Parse(scorebox.SelectedItem.ToString());
+            return content;
+        }
+
+        private async void addtitle_MouseDown(object sender, MouseEventArgs e)
         {
             StringBuilder status = new StringBuilder();
             if (namebox.Text == "")
@@ -227,73 +253,58 @@ namespace hltb
             }
             else
             {
-                // TODO statusId ?
-                string response = SearchNewContent(currentMode, 
-                    namebox.Text, 
-                    statusbox.SelectedIndex + 1, // db enumerates from 1
-                    int.Parse(scorebox.SelectedItem.ToString()));
-                ProccessSearchResponse(response);
+#pragma warning disable CS4014
+                var content = await GetContentAsync(namebox.Text);
+                var decodedImage = await Task.Run(() => GetImageAsync(sharedClient, content.ImageUrl));
+#pragma warning restore CS4014
+                char operationCode = '0';
+                if (operationCode == '0')
+                {
+                    switch (currentMode)
+                    {
+                        case mode.GAMES:
+                            {
+                                if (gameRepository.Get(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
+                                    operationCode = '2';
+                                break;
+                            }
+                        case mode.FILMS:
+                            {
+                                if (filmRepository.Get(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
+                                    operationCode = '2';
+                                break;
+                            }
+                    }
+                }
+                // send operation code to add_content Control, perform preparations
+                add_content.SetStatus(operationCode);
+
+                add_content.RecieveResponse(content.Title, decodedImage);
+                if (add_content.ShowDialog() == DialogResult.OK)
+                {
+                    namebox.Text = "";
+                    statusbox.SelectedIndex = 1;
+                    scorebox.SelectedIndex = 0;
+                    switch (currentMode)
+                    {
+                        case mode.GAMES:
+                            {
+                                gameRepository.Create(content as Game);
+                                break;
+                            }
+                        case mode.FILMS:
+                            {
+                                filmRepository.Create(content as Film);
+                                break;
+                            }
+                    }
+                    DataManager.SaveImage(currentMode, content, decodedImage);
+                }
+
+
             }
-            operationLabel.Text = status.ToString();
+            //operationLabel.Text = status.ToString();
             UpdateStatisticsLabel();
-        }
-
-        private void ProccessSearchResponse(string response)
-        {
-            var response_parts = response.Split(";;");
-            char operationCode = response_parts[0][0];
-            string json_string = response_parts[1];
-            var content = DataManager.GetFromJson(json_string, currentMode);
-            if (content is null)
-            {
-                throw new ArgumentNullException("Invalid Json Deserialize");
-            }
-            // delete first two symbols and '/r/n at the end
-            string base64_image = response_parts[2].Substring(2, response_parts[2].Length - 5);
-            var decodedImage = System.Convert.FromBase64String(base64_image);
-
-            if (operationCode == '0')
-            {
-                switch (currentMode)
-                {
-                    case mode.GAMES:
-                        {
-                            if (gameRepository.Get(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
-                                operationCode = '2';
-                            break;
-                        }
-                    case mode.FILMS:
-                        {
-                            if (filmRepository.Get(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
-                                operationCode = '2';
-                            break;
-                        }
-                }
-            }
-            // send operation code to add_content Control, perform preparations
-            add_content.SetStatus(operationCode);
-
-            add_content.RecieveResponse(content.Title, decodedImage);
-            if (add_content.ShowDialog() == DialogResult.OK)
-            {
-                namebox.Text = "";
-                statusbox.SelectedIndex = 1;
-                scorebox.SelectedIndex = 0;
-                switch (currentMode)
-                {
-                    case mode.GAMES:
-                        {
-                            gameRepository.Create(content as Game);
-                            break;
-                        }
-                    case mode.FILMS:
-                        {
-                            filmRepository.Create(content as Film);
-                            break;
-                        }
-                }
-                DataManager.SaveImage(currentMode, content, decodedImage);
-            }
         }
 
         private void ButtonOnClick(object sender, EventArgs eventArgs)
