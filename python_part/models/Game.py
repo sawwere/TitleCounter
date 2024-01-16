@@ -7,43 +7,44 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
 class Game:
-    def __init__(self, 
-                 title = "None",
-                 fixed_title = "None",
-                 image_url = "https://kitairu.net/images/noimage.png",
-                 link_url = "https://howlongtobeat.com",
-                 time = 0, 
-                 status_id = 2,
-                 date_release = "1900-01-01",
-                 date_completed = "1900-01-01",
-                 note = "",
-                 platform = "",
-                 score = 0,
-                 similarity = 0.0
+    def __init__(self,
+                 Id = -1, 
+                 Title = "None",
+                 FixedTitle = "None",
+                 ImageUrl = "https://kitairu.net/images/noimage.png",
+                 LinkUrl = "https://howlongtobeat.com",
+                 Time = 0, 
+                 StatusId = 2,
+                 DateRelease = "1900-01-01",
+                 DateCompleted = "1900-01-01",
+                 Note = "",
+                 Platform = "",
+                 Score = 0,
+                 Similarity = 0.0
                  ):
-        self.id = -1
-        self.title = title
-        self.fixed_title = fixed_title
-        self.image_url = image_url
-        self.link_url = link_url
+        self.Id = Id
+        self.title = Title
+        self.FixedTitle = FixedTitle
+        self.ImageUrl = ImageUrl
+        self.LinkUrl = LinkUrl
         
-        mt = str(time)
-        if (type(time) == str):
+        mt = str(Time)
+        if (type(Time) == str):
             
             if ("\u00bd" in mt):
                 self.time = int(mt[:-1])+0.5
             else:
                 self.time = int(mt)
         else:
-            self.time = time
+            self.time = Time
 
-        self.status_id = status_id
-        self.date_release = self.find_date_release(link_url)
-        self.date_completed = date_completed
-        self.note = note
-        self.platform = platform
-        self.score = score
-        self.similarity = similarity
+        self.status_id = StatusId
+        self.DateRelease = self.find_DateRelease(LinkUrl)
+        self.DateCompleted = DateCompleted
+        self.note = Note
+        self.platform = Platform
+        self.score = Score
+        self.similarity = Similarity
 
     def month_to_num(self, string_month):
         return {
@@ -63,14 +64,16 @@ class Game:
 
     def string_into_date(self, string):
         r = re.match(r"([A-Za-z]+) (\d{2}), (\d{4})", string)
+        if r is None:
+            return "1900-01-01"
         month = r.group(1)
         day = r.group(2)
         year = r.group(3)
         return year+'-'+self.month_to_num(month)+'-'+day
 
 
-    def find_date_release(self, web_link):
-        date_release = "1900-01-01"
+    def find_DateRelease(self, web_link):
+        DateRelease = "1900-01-01"
         try:
             r = requests.get(web_link, headers=headers)
             
@@ -97,31 +100,31 @@ class Game:
 
             #dates = [na_date, eu_date, jp_date]
             dates.sort()
-            date_release = dates[0]
-            return self.string_into_date(date_release)
+            DateRelease = dates[0]
+            return self.string_into_date(DateRelease)
         except:
-            return date_release
+            return DateRelease
 
     def print(self):
-        print(self.title, self.fixed_title, self.image_url, self.link_url,
-              self.time, self.status_id, self.date_release, self.date_completed, self.score)
+        print(self.title, self.FixedTitle, self.ImageUrl, self.LinkUrl,
+              self.time, self.status_id, self.DateRelease, self.DateCompleted, self.score)
 
     def to_string(self):
-        return str(self.title + ' ' + self.fixed_title 
-                   + ' ' + self.image_url + ' ' + self.link_url
+        return str(self.title + ' ' + self.FixedTitle 
+                   + ' ' + self.ImageUrl + ' ' + self.LinkUrl
                    + ' ' + self.time + ' ' 
-                   + ' ' + self.score + ' ' + self.date_release + ' ' + self.status_id)
+                   + ' ' + self.score + ' ' + self.DateRelease + ' ' + self.status_id)
 
     def to_dict(self):
-        return {"Id":self.id,
+        return {"Id":self.Id,
                 "Title": self.title,
-                "FixedTitle": self.fixed_title,
-                "ImageUrl": self.image_url,
-                "LinkUrl": self.link_url,
+                "FixedTitle": self.FixedTitle,
+                "ImageUrl": self.ImageUrl,
+                "LinkUrl": self.LinkUrl,
                 "Time": self.time,
                 "StatusId": self.status_id,
-                "DateRelease": self.date_release,
-                "DateCompleted": self.date_completed,
+                "DateRelease": self.DateRelease,
+                "DateCompleted": self.DateCompleted,
                 "Note": self.note,
                 "Platform": self.platform,
                 "Score": self.score

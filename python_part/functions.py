@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from howlongtobeatpy import HowLongToBeat
-from Game import Game
-from Film import Film
-from TVSeries import TVSeries
+from models.Game import Game
+from models.Film import Film
+from models.TVSeries import TVSeries
 import json
 import requests
 
@@ -44,12 +44,12 @@ async def choose_game(name):
     results = find_games(name)
     if results is not None and len(results) > 0:
         r = results[-1]
-        res = Game(title=r.game_name, 
-                   image_url=r.game_image_url,
-                   link_url=r.game_web_link, 
-                   time=r.main_story*60,
-                   similarity=r.similarity, 
-                   date_release=str(r.release_world)+"-01-01")
+        res = Game(Title=r.game_name, 
+                   ImageUrl=r.game_image_url,
+                   LinkUrl=r.game_web_link, 
+                   Time=r.main_story*60,
+                   Similarity=r.similarity, 
+                   DateRelease=str(r.release_world)+"-01-01")
         #res.date_release = find_date_release(res.link_url)
         return res
     else: 

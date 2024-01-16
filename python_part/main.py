@@ -5,9 +5,9 @@ from flask import make_response
 import base64
 
 from functions import *
-from Film import Film
-from Game import Game
-from TVSeries import TVSeries
+from models.Film import Film
+from models.Game import Game
+from models.TVSeries import TVSeries
 
 
 app = Flask(__name__)
