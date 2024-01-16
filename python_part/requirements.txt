@@ -1,4 +1,4 @@
 cinemagoer
-flask
+flask[async]
 howlongtobeatpy
 beautifulsoup4
