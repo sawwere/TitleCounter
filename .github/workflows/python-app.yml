@@ -36,4 +36,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Do test
       run: |
-        python -u -m unittest python_part/tests/test_find_game.py
+        cd python_part
+        python -u -m unittest tests/test_find_game.py
