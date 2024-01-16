@@ -1,5 +1,4 @@
 ﻿using hltb.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
@@ -9,10 +8,8 @@ namespace hltb
     public partial class CurrentContentContol : UserControl
     {
         private Content content;
-        private mode currentMode;
+        Mainform parent;
         private EFGenericRepository<Status> statusRepository;
-        private EFGenericRepository<Game> gameRepository = new EFGenericRepository<Game>(new TitleCounterContext());
-        private EFGenericRepository<Film> filmRepository = new EFGenericRepository<Film>(new TitleCounterContext());
 
         /// <summary>
         /// Divide title into rows and concat with RusName for films
@@ -42,16 +39,16 @@ namespace hltb
             return res.ToString();
         }
 
-        public CurrentContentContol(mode cm, Content content)
+        public CurrentContentContol(Mainform owner,Content content)
         {
             InitializeComponent();
+            parent = owner;
             statusRepository = new EFGenericRepository<Status>(new TitleCounterContext());
 
             this.content = content;
-
-            currentMode = cm;
+            var str = parent.modeState.ToString();
             titlePicture.Image = new Bitmap(DataManager.PATH + "\\data\\images\\"
-                + currentMode.ToString().ToLower() + "\\"
+                + str + "\\"
                 + content.Id + " " + content.FixedTitle + ".jpg");
             nameLabel.Text = GetFullName();
 
@@ -60,16 +57,7 @@ namespace hltb
             timeHour.Text = (content.Time / 60).ToString();
             timeHourLabel.Top = timeHour.Top = timeMinute.Top = timeMinuteLabel.Top = timeLabel.Top;
             timeMinute.Text = (content.Time % 60).ToString();
-            switch (currentMode)
-            {
-                case mode.GAMES:
-                    break;
-                // TODO Restrict updating time
-                case mode.FILMS:
-                    break;
-                case mode.TVSERIES:
-                    break;
-            }
+
             releaseLabel.Text = $"Release:  {content.DateRelease.Day}.{content.DateRelease.Month}.{content.DateRelease.Year}";
             releaseLabel.Location = new Point(nameLabel.Left, timeLabel.Bottom + 5);
             releaseLabel.Width = 200;
@@ -131,7 +119,7 @@ namespace hltb
             char symb = e.KeyChar;
             if (!int.TryParse(textbox.Text + symb.ToString(), out int hours)
                 && (e.KeyChar != 8)
-                && (currentMode == mode.GAMES))
+                && (parent.modeState is State<Game>))
             {
                 e.Handled = true;
             }
@@ -172,7 +160,7 @@ namespace hltb
         {
             Controls.Clear();
 
-            ((Mainform)this.Parent.Parent).RemoveContent(currentMode, content.Id);
+            ((Mainform)this.Parent.Parent).RemoveContent(content.Id);
             // TODO Image delete
             Image img = titlePicture.Image;
             titlePicture = null;
@@ -193,12 +181,8 @@ namespace hltb
 
         private void UpdateContent()
         {
-            switch (currentMode)
-            {
-                case mode.GAMES: { gameRepository.Update(content as Game); break; }
-                case mode.FILMS: { filmRepository.Update(content as Film); break; }
-            }
-            ((Mainform)this.TopLevelControl).RefreshTitles(currentMode);
+            parent.modeState.Update(content);
+            ((Mainform)this.TopLevelControl).RefreshTitles();
         }
 
         /// <summary>

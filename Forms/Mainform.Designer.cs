@@ -105,7 +105,7 @@ namespace hltb
             YearSortBox.Size = new Size(135, 24);
             YearSortBox.TabIndex = 8;
             YearSortBox.Text = "Year";
-            YearSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
+            YearSortBox.SelectionChangeCommitted += YearSortBox_SelectionChangeCommitted;
             // 
             // ByYearButton
             // 
@@ -224,7 +224,7 @@ namespace hltb
             ScoreSortBox.TabIndex = 26;
             ScoreSortBox.Text = "Score";
             ScoreSortBox.Visible = false;
-            ScoreSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
+            ScoreSortBox.SelectionChangeCommitted += YearSortBox_SelectionChangeCommitted;
             // 
             // GenreSortBox
             // 
@@ -236,7 +236,7 @@ namespace hltb
             GenreSortBox.TabIndex = 27;
             GenreSortBox.Text = "Genre";
             GenreSortBox.Visible = false;
-            GenreSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
+            GenreSortBox.SelectionChangeCommitted += YearSortBox_SelectionChangeCommitted;
             // 
             // StatusSortBox
             // 
@@ -249,7 +249,7 @@ namespace hltb
             StatusSortBox.TabIndex = 28;
             StatusSortBox.Text = "Status";
             StatusSortBox.Visible = false;
-            StatusSortBox.SelectedValueChanged += YearSortBox_SelectedValueChanged;
+            StatusSortBox.SelectionChangeCommitted += YearSortBox_SelectionChangeCommitted;
             // 
             // currentTitlePanel
             // 
@@ -282,7 +282,7 @@ namespace hltb
             NameSortBox.TabIndex = 31;
             NameSortBox.Text = "Name starts with";
             NameSortBox.Visible = false;
-            NameSortBox.SelectedIndexChanged += YearSortBox_SelectedValueChanged;
+            NameSortBox.SelectionChangeCommitted += YearSortBox_SelectionChangeCommitted;
             // 
             // refreshButton
             // 
