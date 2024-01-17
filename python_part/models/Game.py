@@ -7,8 +7,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
 class Game:
-    def __init__(self,
-                 Id = -1, 
+    def __init__(self, 
                  Title = "None",
                  FixedTitle = "None",
                  ImageUrl = "https://kitairu.net/images/noimage.png",
@@ -22,7 +21,6 @@ class Game:
                  Score = 0,
                  Similarity = 0.0
                  ):
-        self.Id = Id
         self.title = Title
         self.FixedTitle = FixedTitle
         self.ImageUrl = ImageUrl
@@ -116,16 +114,10 @@ class Game:
                    + ' ' + self.score + ' ' + self.DateRelease + ' ' + self.status_id)
 
     def to_dict(self):
-        return {"Id":self.Id,
+        return {
                 "Title": self.title,
-                "FixedTitle": self.FixedTitle,
                 "ImageUrl": self.ImageUrl,
                 "LinkUrl": self.LinkUrl,
                 "Time": self.time,
-                "StatusId": self.status_id,
-                "DateRelease": self.DateRelease,
-                "DateCompleted": self.DateCompleted,
-                "Note": self.note,
-                "Platform": self.platform,
-                "Score": self.score
+                "DateRelease": self.DateRelease
                 }

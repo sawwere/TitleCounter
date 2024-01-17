@@ -100,7 +100,7 @@ namespace hltb
             File.Delete($"{PATH}\\data\\images\\{_mode.ToString().ToLower()}\\{content.Id} {content.FixedTitle}.jpg");
         }
 
-        private static string GetSafeName(string name)
+        public static string GetSafeName(string name)
         {
             char[] proh = { '<', '>', ':', '"', '"', '/', '\\', '|', '?', '*' };
             return new string(name.Where(x => !proh.Contains(x)).ToArray());

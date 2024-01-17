@@ -1,4 +1,6 @@
 ﻿using hltb.Models;
+using hltb.Models.Outdated;
+using Newtonsoft.Json;
 using System.Data;
 using System.Text;
 
@@ -152,7 +154,7 @@ namespace hltb
         private void MainForm_Load(object sender, EventArgs e)
         {
             CheckDataFiles();
-            ResetYears();
+            //ResetYears();
             UpdateStatisticsLabel();
 
             ModeBox.SelectedItem = ModeBox.Items[0];
@@ -179,7 +181,7 @@ namespace hltb
 
         private async Task<Content> GetContentAsync(string title)
         {
-            var response = await sharedClient.GetStringAsync($"find/{modeState.ToString()}?title={title}");
+            var response = await sharedClient.GetStringAsync($"find/games?title={title}");
             var content = modeState.GetFromJson(response);
             if (content is null)
             {
@@ -187,6 +189,7 @@ namespace hltb
             }
             content.StatusId = statusbox.SelectedIndex + 1;
             content.Score = scorebox.SelectedItem == null ? 0 : int.Parse(scorebox.SelectedItem.ToString());
+            content.FixedTitle = GetSafeName(content.Title);
             return content;
         }
 

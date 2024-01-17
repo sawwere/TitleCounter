@@ -22,19 +22,19 @@ async def get_game():
     game = await choose_game(name)
     if game is None:
         abort(404)
-    game.fixed_title = get_fixed_name(game.title)
+    game.FixedTitle = get_fixed_name(game.title)
 
     return jsonify(game.to_dict())
 
 @app.route('/find/films', methods=['GET'])
 async def get_film():
     name = request.args.get('title', default = "None", type = str)
-    game = Film(name)
-    if game is None:
+    film = Film(name)
+    if film is None:
         abort(404)
-    game.fixed_title = get_fixed_name(game.title)
+    film.FixedTitle = get_fixed_name(film.title)
 
-    return jsonify(game.to_dict())
+    return jsonify(film.to_dict())
 
 @app.route('/find/image', methods=['GET'])
 async def get_image():
@@ -45,7 +45,7 @@ async def get_image():
         abort(404)
     return base64_image.decode()
 
-#curl -i "http://localhost:5000/find/games?title=a&status=1&score=0"
+#curl -i "http://localhost:5000/find/films?title=matrix"
 #curl -i "http://localhost:5000/find/image?image_url=https://howlongtobeat.com/games/100639_a.jpg"
 if __name__ == '__main__':
     app.run(debug=True)

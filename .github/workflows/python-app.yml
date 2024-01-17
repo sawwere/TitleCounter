@@ -38,3 +38,4 @@ jobs:
       run: |
         cd python_part
         python -u -m unittest tests/test_find_game.py
+        python -u -m unittest tests/test_find_film.py

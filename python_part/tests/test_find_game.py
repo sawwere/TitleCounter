@@ -32,7 +32,6 @@ class TestCase(unittest.TestCase):
             rv = c.get('/find/games?title=a')
             obj = rv.json
             game = Game(**obj)
-            assert game.DateCompleted == "1900-01-01"
             assert game.DateRelease == "2021-10-14"
             assert game.title == "a"
             assert game.time == 108
