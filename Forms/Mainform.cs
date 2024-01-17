@@ -24,6 +24,7 @@ namespace hltb
 
         public ModeState modeState;
         private filterCategory filter = filterCategory.YEAR;
+        private Dictionary<filterCategory, ComboBox> mapFilterToComboBox = new Dictionary<filterCategory, ComboBox>();
         private displayOption currentDisplayOption = displayOption.BUTTONS;
         private static HttpClient sharedClient = new()
         {
@@ -99,7 +100,7 @@ namespace hltb
 
         public void RefreshTitles()
         {
-            //modeState.Load();
+            modeState.Load();
             switch (filter)
             {
                 case filterCategory.YEAR:
@@ -154,23 +155,16 @@ namespace hltb
         private void MainForm_Load(object sender, EventArgs e)
         {
             CheckDataFiles();
-            //ResetYears();
             UpdateStatisticsLabel();
-
-            ModeBox.SelectedItem = ModeBox.Items[0];
+            mapFilterToComboBox.Add(filterCategory.YEAR, YearSortBox);
+            mapFilterToComboBox.Add(filterCategory.SCORE, ScoreSortBox);
+            mapFilterToComboBox.Add(filterCategory.NAME, NameSortBox);
+            mapFilterToComboBox.Add(filterCategory.STATUS, StatusSortBox);
 
             statusbox.SelectedIndex = 1;
             scorebox.SelectedIndex = 0;
 
-            Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
-        }
-        private void statusbox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-        }
-        private void scorebox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
+            Application.ApplicationExit += new EventHandler(OnApplicationExit);
         }
 
         static async Task<byte[]> GetImageAsync(HttpClient httpClient, string imageUrl)
@@ -181,7 +175,7 @@ namespace hltb
 
         private async Task<Content> GetContentAsync(string title)
         {
-            var response = await sharedClient.GetStringAsync($"find/games?title={title}");
+            var response = await sharedClient.GetStringAsync($"find/{modeState.ToString().ToLower()}s?title={title}");
             var content = modeState.GetFromJson(response);
             if (content is null)
             {
@@ -371,99 +365,17 @@ namespace hltb
             NameSortBox.Items.AddRange(a);
             NameSortBox.SelectedIndex = 0;
         }
-        private void ByYearButton_Click(object sender, EventArgs e)
+        private void FilterButton_Click(object sender, EventArgs e)
         {
-            filter = filterCategory.YEAR;
-
-            YearSortBox.Visible = true;
-            ScoreSortBox.Visible = false;
-            NameSortBox.Visible = false;
-            StatusSortBox.Visible = false;
-            GenreSortBox.Visible = false;
-
-            list_panel.Controls.Clear();
-            currentTitlePanel.Controls.Clear();
-        }
-
-        private void ByScoreButton_Click(object sender, EventArgs e)
-        {
-            filter = filterCategory.SCORE;
-            YearSortBox.Visible = false;
-            ScoreSortBox.Visible = true;
-            NameSortBox.Visible = false;
-            StatusSortBox.Visible = false;
-            GenreSortBox.Visible = false;
-
-            ScoreSortBox.SelectedIndex = 0;
-
-            list_panel.Controls.Clear();
-            currentTitlePanel.Controls.Clear();
-        }
-        private void ByGenreButton_Click(object sender, EventArgs e)
-        {
-            filter = filterCategory.GENRE;
-            YearSortBox.Visible = false;
-            ScoreSortBox.Visible = false;
-            NameSortBox.Visible = false;
-            StatusSortBox.Visible = false;
-            GenreSortBox.Visible = true;
-
-            list_panel.Controls.Clear();
-            currentTitlePanel.Controls.Clear();
-        }
-        private void ByStatusButton_Click(object sender, EventArgs e)
-        {
-            filter = filterCategory.STATUS;
-
-            YearSortBox.Visible = false;
-            ScoreSortBox.Visible = false;
-            NameSortBox.Visible = false;
-            StatusSortBox.Visible = true;
-            GenreSortBox.Visible = false;
-
-            StatusSortBox.SelectedIndex = 0;
-
-            list_panel.Controls.Clear();
-            currentTitlePanel.Controls.Clear();
-        }
-        private void ByNameButton_Click(object sender, EventArgs e)
-        {
-            filter = filterCategory.NAME;
-
-            YearSortBox.Visible = false;
-            ScoreSortBox.Visible = false;
-            NameSortBox.Visible = true;
-            StatusSortBox.Visible = false;
-            GenreSortBox.Visible = false;
-
-            list_panel.Controls.Clear();
-            currentTitlePanel.Controls.Clear();
-        }
-
-        private void ModeBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-
-            string nmode = ModeBox.SelectedItem.ToString().ToLower();
-            if (nmode == modeState.ToString())
-                return;
-            list_panel.Controls.Clear();
-            currentTitlePanel.Controls.Clear();
-            switch (nmode)
+            filter = (filterCategory)int.Parse((sender as Button)!.Tag.ToString()!);
+            foreach (ComboBox cb in mapFilterToComboBox.Values)
             {
-                case "games":
-                    ByGenreButton.Visible = false;
-                    ChangeState(new State<Game>(this));
-                    break;
-                // TODO
-                case "films":
-                    ByGenreButton.Visible = true;
-                    ChangeState(new State<Film>(this));
-                    break;
-                case "tvseries":
-                    ByGenreButton.Visible = true;
-                    break;
+                cb.Visible = false;
             }
-            ByYearButton_Click(sender, e);
+            mapFilterToComboBox[filter].Visible = true;
+
+            list_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
@@ -471,27 +383,42 @@ namespace hltb
             RefreshTitles();
         }
 
-        private void displayImagesButton_Click(object sender, EventArgs e)
+        private void displayOptionsButton_Click(object sender, EventArgs e)
         {
-            currentDisplayOption = displayOption.IMAGES;
-            RefreshTitles();
-        }
-
-        private void displayLinesButton_Click(object sender, EventArgs e)
-        {
-            currentDisplayOption = displayOption.LINES;
-            RefreshTitles();
-        }
-
-        private void displayButtonsButton_Click(object sender, EventArgs e)
-        {
-            currentDisplayOption = displayOption.BUTTONS;
+            currentDisplayOption = (displayOption)int.Parse((sender as Button)!.Tag.ToString()!);
             RefreshTitles();
         }
 
         private void YearSortBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             RefreshTitles();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+#pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
+            mode nmode = (mode)(sender as Button).Tag;
+#pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
+            if (nmode.ToString().ToLower() == modeState.ToString())
+                return;
+            list_panel.Controls.Clear();
+            currentTitlePanel.Controls.Clear();
+            switch (nmode)
+            {
+                case mode.GAMES:
+                    ByGenreButton.Visible = false;
+                    ChangeState(new State<Game>(this));
+                    break;
+                // TODO
+                case mode.FILMS:
+                    ByGenreButton.Visible = true;
+                    ChangeState(new State<Film>(this));
+                    break;
+                case mode.TVSERIES:
+                    ByGenreButton.Visible = true;
+                    break;
+            }
+            FilterButton_Click(ByYearButton, e);
         }
     }
 }

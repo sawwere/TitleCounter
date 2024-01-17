@@ -65,7 +65,7 @@ namespace hltb
 
         public override string ToString()
         {
-            return typeof(T).ToString();
+            return typeof(T).ToString().Split('.').Last();
         }
     }
 }

@@ -73,9 +73,21 @@ namespace hltb.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap refresh_icon1 {
+        internal static System.Drawing.Bitmap game_icon {
             get {
-                object obj = ResourceManager.GetObject("refresh-icon1", resourceCulture);
+                object obj = ResourceManager.GetObject("game_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap film_icon
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("film_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace hltb.Models
 {
-    public enum TitleStatus { COMPLETED, BACKLOG, RETIRED, IN_PROGRESS };
+    public enum TitleStatus { COMPLETED = 1, BACKLOG, RETIRED, IN_PROGRESS };
 
     public class Content
     {

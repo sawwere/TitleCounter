@@ -47,9 +47,8 @@ namespace hltb
 
             this.content = content;
             var str = parent.modeState.ToString();
-            titlePicture.Image = new Bitmap(DataManager.PATH + "\\data\\images\\"
-                + str + "\\"
-                + content.Id + " " + content.FixedTitle + ".jpg");
+            var tmp = $@"{DataManager.PATH}\data\images\{str}\{content.Id} {content.FixedTitle}.jpg";
+            titlePicture.Image = new Bitmap($@"{DataManager.PATH}\data\images\\{str}\{content.Id} {content.FixedTitle}.jpg");
             nameLabel.Text = GetFullName();
 
             timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
