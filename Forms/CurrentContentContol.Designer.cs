@@ -29,9 +29,12 @@ namespace hltb
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             titlePicture = new PictureBox();
             nameLabel = new Label();
-            copyButton = new Button();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            redirectToolStripMenuItem = new ToolStripMenuItem();
+            copyToolStripMenuItem = new ToolStripMenuItem();
             timeLabel = new Label();
             releaseLabel = new Label();
             scoreLabel = new Label();
@@ -51,24 +54,27 @@ namespace hltb
             noteTextBox = new TextBox();
             competiotionButtonToday = new Button();
             ((System.ComponentModel.ISupportInitialize)titlePicture).BeginInit();
+            contextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // titlePicture
             // 
-            titlePicture.Anchor = AnchorStyles.Top;
-            titlePicture.Location = new Point(92, 3);
+            titlePicture.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            titlePicture.Location = new Point(56, 0);
             titlePicture.Margin = new Padding(4, 3, 4, 3);
             titlePicture.Name = "titlePicture";
             titlePicture.Size = new Size(280, 415);
-            titlePicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            titlePicture.SizeMode = PictureBoxSizeMode.CenterImage;
             titlePicture.TabIndex = 0;
             titlePicture.TabStop = false;
             // 
             // nameLabel
             // 
             nameLabel.AutoSize = true;
+            nameLabel.BackColor = Color.DimGray;
+            nameLabel.ContextMenuStrip = contextMenuStrip1;
             nameLabel.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            nameLabel.ForeColor = Color.Black;
+            nameLabel.ForeColor = Color.SeaShell;
             nameLabel.Location = new Point(26, 440);
             nameLabel.Margin = new Padding(4, 0, 4, 0);
             nameLabel.Name = "nameLabel";
@@ -77,22 +83,37 @@ namespace hltb
             nameLabel.Text = "Name";
             nameLabel.Click += nameLabel_Click;
             // 
-            // copyButton
+            // contextMenuStrip1
             // 
-            copyButton.Location = new Point(376, 440);
-            copyButton.Margin = new Padding(4, 3, 4, 3);
-            copyButton.Name = "copyButton";
-            copyButton.Size = new Size(88, 27);
-            copyButton.TabIndex = 2;
-            copyButton.Text = "Copy";
-            copyButton.UseVisualStyleBackColor = true;
-            copyButton.Click += copyButton_Click;
+            contextMenuStrip1.BackColor = Color.FromArgb(64, 64, 64);
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { redirectToolStripMenuItem, copyToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.ShowImageMargin = false;
+            contextMenuStrip1.Size = new Size(93, 48);
+            // 
+            // redirectToolStripMenuItem
+            // 
+            redirectToolStripMenuItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            redirectToolStripMenuItem.ForeColor = Color.SeaShell;
+            redirectToolStripMenuItem.Name = "redirectToolStripMenuItem";
+            redirectToolStripMenuItem.Size = new Size(92, 22);
+            redirectToolStripMenuItem.Text = "Redirect";
+            redirectToolStripMenuItem.Click += nameLabel_Click;
+            // 
+            // copyToolStripMenuItem
+            // 
+            copyToolStripMenuItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            copyToolStripMenuItem.ForeColor = Color.SeaShell;
+            copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            copyToolStripMenuItem.Size = new Size(92, 22);
+            copyToolStripMenuItem.Text = "Copy";
+            copyToolStripMenuItem.Click += copyButton_Click;
             // 
             // timeLabel
             // 
             timeLabel.AutoSize = true;
             timeLabel.Font = new Font("Microsoft Tai Le", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            timeLabel.ForeColor = Color.Black;
+            timeLabel.ForeColor = Color.SeaShell;
             timeLabel.Location = new Point(26, 471);
             timeLabel.Margin = new Padding(4, 0, 4, 0);
             timeLabel.Name = "timeLabel";
@@ -104,7 +125,7 @@ namespace hltb
             // 
             releaseLabel.AutoSize = true;
             releaseLabel.Font = new Font("Microsoft Tai Le", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            releaseLabel.ForeColor = Color.Black;
+            releaseLabel.ForeColor = Color.SeaShell;
             releaseLabel.Location = new Point(26, 502);
             releaseLabel.Margin = new Padding(4, 0, 4, 0);
             releaseLabel.Name = "releaseLabel";
@@ -116,7 +137,7 @@ namespace hltb
             // 
             scoreLabel.AutoSize = true;
             scoreLabel.Font = new Font("Microsoft Tai Le", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            scoreLabel.ForeColor = Color.Black;
+            scoreLabel.ForeColor = Color.SeaShell;
             scoreLabel.Location = new Point(26, 533);
             scoreLabel.Margin = new Padding(4, 0, 4, 0);
             scoreLabel.Name = "scoreLabel";
@@ -126,19 +147,22 @@ namespace hltb
             // 
             // score_c
             // 
+            score_c.BackColor = Color.FromArgb(42, 42, 42);
+            score_c.DropDownStyle = ComboBoxStyle.DropDownList;
             score_c.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            score_c.ForeColor = Color.SeaShell;
             score_c.FormattingEnabled = true;
             score_c.Location = new Point(125, 533);
             score_c.Margin = new Padding(4, 3, 4, 3);
             score_c.Name = "score_c";
-            score_c.Size = new Size(140, 23);
+            score_c.Size = new Size(114, 23);
             score_c.TabIndex = 6;
             // 
             // statusLabel
             // 
             statusLabel.AutoSize = true;
             statusLabel.Font = new Font("Microsoft Tai Le", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            statusLabel.ForeColor = Color.Black;
+            statusLabel.ForeColor = Color.SeaShell;
             statusLabel.Location = new Point(26, 564);
             statusLabel.Margin = new Padding(4, 0, 4, 0);
             statusLabel.Name = "statusLabel";
@@ -148,25 +172,31 @@ namespace hltb
             // 
             // status_c
             // 
+            status_c.BackColor = Color.FromArgb(42, 42, 42);
+            status_c.DropDownStyle = ComboBoxStyle.DropDownList;
             status_c.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            status_c.ForeColor = Color.SeaShell;
             status_c.FormattingEnabled = true;
             status_c.Location = new Point(125, 564);
             status_c.Margin = new Padding(4, 3, 4, 3);
             status_c.Name = "status_c";
-            status_c.Size = new Size(140, 23);
+            status_c.Size = new Size(114, 23);
             status_c.TabIndex = 8;
             // 
             // deleteButton
             // 
-            deleteButton.Anchor = AnchorStyles.Top;
+            deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            deleteButton.BackColor = Color.Gray;
+            deleteButton.FlatStyle = FlatStyle.Popup;
             deleteButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            deleteButton.Location = new Point(92, 760);
+            deleteButton.ForeColor = Color.SeaShell;
+            deleteButton.Location = new Point(56, 754);
             deleteButton.Margin = new Padding(4, 3, 4, 3);
             deleteButton.Name = "deleteButton";
             deleteButton.Size = new Size(280, 35);
             deleteButton.TabIndex = 9;
             deleteButton.Text = "Delete title";
-            deleteButton.UseVisualStyleBackColor = true;
+            deleteButton.UseVisualStyleBackColor = false;
             deleteButton.Click += deleteButton_Click;
             // 
             // timeHourLabel
@@ -191,7 +221,9 @@ namespace hltb
             // 
             // timeHour
             // 
+            timeHour.BackColor = Color.FromArgb(42, 42, 42);
             timeHour.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            timeHour.ForeColor = Color.SeaShell;
             timeHour.Location = new Point(106, 471);
             timeHour.Name = "timeHour";
             timeHour.Size = new Size(55, 21);
@@ -202,7 +234,9 @@ namespace hltb
             // 
             // timeMinute
             // 
+            timeMinute.BackColor = Color.FromArgb(42, 42, 42);
             timeMinute.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            timeMinute.ForeColor = Color.SeaShell;
             timeMinute.Location = new Point(196, 471);
             timeMinute.Name = "timeMinute";
             timeMinute.Size = new Size(55, 21);
@@ -215,38 +249,46 @@ namespace hltb
             // 
             completitionLabel.AutoSize = true;
             completitionLabel.Font = new Font("Microsoft Tai Le", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            completitionLabel.ForeColor = Color.Black;
+            completitionLabel.ForeColor = Color.SeaShell;
             completitionLabel.Location = new Point(26, 593);
             completitionLabel.Margin = new Padding(4, 0, 4, 0);
             completitionLabel.Name = "completitionLabel";
-            completitionLabel.Size = new Size(119, 21);
+            completitionLabel.Size = new Size(102, 21);
             completitionLabel.TabIndex = 14;
-            completitionLabel.Text = "Completition: ";
+            completitionLabel.Text = "Completed: ";
             // 
             // competitionDay
             // 
+            competitionDay.BackColor = Color.FromArgb(42, 42, 42);
+            competitionDay.DropDownStyle = ComboBoxStyle.DropDownList;
             competitionDay.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            competitionDay.ForeColor = Color.SeaShell;
             competitionDay.FormattingEnabled = true;
             competitionDay.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" });
-            competitionDay.Location = new Point(173, 593);
+            competitionDay.Location = new Point(125, 593);
             competitionDay.Name = "competitionDay";
             competitionDay.Size = new Size(54, 23);
             competitionDay.TabIndex = 15;
             // 
             // competitionMonth
             // 
+            competitionMonth.BackColor = Color.FromArgb(42, 42, 42);
+            competitionMonth.DropDownStyle = ComboBoxStyle.DropDownList;
             competitionMonth.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            competitionMonth.ForeColor = Color.SeaShell;
             competitionMonth.FormattingEnabled = true;
             competitionMonth.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" });
-            competitionMonth.Location = new Point(240, 593);
+            competitionMonth.Location = new Point(185, 593);
             competitionMonth.Name = "competitionMonth";
             competitionMonth.Size = new Size(54, 23);
             competitionMonth.TabIndex = 16;
             // 
             // competitionYear
             // 
+            competitionYear.BackColor = Color.FromArgb(42, 42, 42);
             competitionYear.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            competitionYear.Location = new Point(300, 593);
+            competitionYear.ForeColor = Color.SeaShell;
+            competitionYear.Location = new Point(245, 595);
             competitionYear.Name = "competitionYear";
             competitionYear.Size = new Size(70, 21);
             competitionYear.TabIndex = 17;
@@ -254,44 +296,55 @@ namespace hltb
             // 
             // saveButton
             // 
-            saveButton.Anchor = AnchorStyles.Top;
+            saveButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            saveButton.BackColor = Color.Gray;
+            saveButton.FlatStyle = FlatStyle.Popup;
             saveButton.Font = new Font("Microsoft Tai Le", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            saveButton.Location = new Point(92, 719);
+            saveButton.ForeColor = Color.SeaShell;
+            saveButton.Location = new Point(56, 713);
             saveButton.Margin = new Padding(4, 3, 4, 3);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(280, 35);
             saveButton.TabIndex = 18;
             saveButton.Text = "Save changes";
-            saveButton.UseVisualStyleBackColor = true;
+            saveButton.UseVisualStyleBackColor = false;
             saveButton.Click += saveButton_Click;
             // 
             // noteTextBox
             // 
+            noteTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            noteTextBox.BackColor = Color.FromArgb(42, 42, 42);
             noteTextBox.Font = new Font("Microsoft Tai Le", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            noteTextBox.Location = new Point(26, 634);
+            noteTextBox.ForeColor = Color.SeaShell;
+            noteTextBox.Location = new Point(12, 622);
             noteTextBox.MaxLength = 255;
             noteTextBox.Multiline = true;
             noteTextBox.Name = "noteTextBox";
             noteTextBox.PlaceholderText = "Enter your note";
-            noteTextBox.Size = new Size(412, 79);
+            noteTextBox.Size = new Size(368, 85);
             noteTextBox.TabIndex = 19;
             // 
             // competiotionButtonToday
             // 
-            competiotionButtonToday.Location = new Point(376, 591);
+            competiotionButtonToday.BackColor = Color.Gray;
+            competiotionButtonToday.FlatAppearance.BorderSize = 0;
+            competiotionButtonToday.FlatStyle = FlatStyle.Flat;
+            competiotionButtonToday.ForeColor = Color.SeaShell;
+            competiotionButtonToday.Location = new Point(321, 593);
             competiotionButtonToday.Name = "competiotionButtonToday";
-            competiotionButtonToday.Size = new Size(75, 23);
+            competiotionButtonToday.Size = new Size(72, 23);
             competiotionButtonToday.TabIndex = 20;
             competiotionButtonToday.Text = "Today";
-            competiotionButtonToday.UseVisualStyleBackColor = true;
+            competiotionButtonToday.UseVisualStyleBackColor = false;
             competiotionButtonToday.Click += competiotionButtonToday_Click;
             // 
             // CurrentContentContol
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            BackColor = Color.SteelBlue;
+            BackColor = Color.DimGray;
             Controls.Add(competiotionButtonToday);
             Controls.Add(noteTextBox);
             Controls.Add(saveButton);
@@ -310,13 +363,14 @@ namespace hltb
             Controls.Add(scoreLabel);
             Controls.Add(releaseLabel);
             Controls.Add(timeLabel);
-            Controls.Add(copyButton);
             Controls.Add(nameLabel);
             Controls.Add(titlePicture);
+            ForeColor = Color.SeaShell;
             Margin = new Padding(4, 3, 4, 3);
             Name = "CurrentContentContol";
-            Size = new Size(470, 800);
+            Size = new Size(396, 792);
             ((System.ComponentModel.ISupportInitialize)titlePicture).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -325,7 +379,6 @@ namespace hltb
 
         private PictureBox titlePicture;
         private Label nameLabel;
-        private Button copyButton;
         private Label timeLabel;
         private Label releaseLabel;
         private Label scoreLabel;
@@ -344,5 +397,8 @@ namespace hltb
         private Button saveButton;
         private TextBox noteTextBox;
         private Button competiotionButtonToday;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem redirectToolStripMenuItem;
+        private ToolStripMenuItem copyToolStripMenuItem;
     }
 }

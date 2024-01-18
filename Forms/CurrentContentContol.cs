@@ -21,27 +21,31 @@ namespace hltb
             var ss = content.Title.Split(' ');
             foreach (var part in ss)
             {
-                if ((res.Length % 30 + part.Length + 1) >= 30)
-                    res.Append('\n');
+                if ((res.Length % 27 + part.Length + 3) >= 29)
+                {
+                    res.Append("...");
+                    break;
+                }
                 res.Append(part + ' ');
             }
 
-            if (content is Film f && f.RusTitle != null)
-            {
-                res.Append(" || ");
-                foreach (var part in f.RusTitle.Split(' '))
-                {
-                    if ((res.Length % 30 + part.Length + 1) >= 30)
-                        res.Append('\n');
-                    res.Append(part + ' ');
-                }
-            }
+            //if (content is Film f && f.RusTitle != null)
+            //{
+            //    res.Append(" || ");
+            //    foreach (var part in f.RusTitle.Split(' '))
+            //    {
+            //        if ((res.Length % 30 + part.Length + 1) >= 30)
+            //            res.Append('\n');
+            //        res.Append(part + ' ');
+            //    }
+            //}
             return res.ToString();
         }
 
         public CurrentContentContol(Mainform owner,Content content)
         {
             InitializeComponent();
+            this.Dock = DockStyle.Fill;
             parent = owner;
             statusRepository = new EFGenericRepository<Status>(new TitleCounterContext());
 
@@ -51,60 +55,47 @@ namespace hltb
             titlePicture.Image = new Bitmap($@"{DataManager.PATH}\data\images\\{str}\{content.Id} {content.FixedTitle}.jpg");
             nameLabel.Text = GetFullName();
 
-            timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
+            //timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
 
             timeHour.Text = (content.Time / 60).ToString();
-            timeHourLabel.Top = timeHour.Top = timeMinute.Top = timeMinuteLabel.Top = timeLabel.Top;
+            //timeHourLabel.Top = timeHour.Top = timeMinute.Top = timeMinuteLabel.Top = timeLabel.Top;
             timeMinute.Text = (content.Time % 60).ToString();
 
             releaseLabel.Text = $"Release:  {content.DateRelease.Day}.{content.DateRelease.Month}.{content.DateRelease.Year}";
-            releaseLabel.Location = new Point(nameLabel.Left, timeLabel.Bottom + 5);
+            //releaseLabel.Location = new Point(nameLabel.Left, timeLabel.Bottom + 5);
             releaseLabel.Width = 200;
 
-            scoreLabel.Location = new Point(nameLabel.Left, releaseLabel.Bottom + 5);
+            //scoreLabel.Location = new Point(nameLabel.Left, releaseLabel.Bottom + 5);
             scoreLabel.Width = 75;
 
             score_c.Width = 75;
             score_c.Items.AddRange(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             score_c.SelectedItem = ((int)content.Score);
-            score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
+            //score_c.Location = new Point(scoreLabel.Left + 80, scoreLabel.Top);
 
             statusLabel.Text = "Status:";
-            statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Bottom + 5); ;
+            //statusLabel.Location = new Point(nameLabel.Left, scoreLabel.Bottom + 5); ;
             statusLabel.Width = 75;
 
             status_c.Width = 192;
             status_c.Items.AddRange(statusRepository.Get().OrderBy(x => x.Id).Select(x => x.Name).ToArray());
             status_c.SelectedIndex = (int)content.StatusId - 1;
-            status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
+            //status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
-            completitionLabel.Location = new Point(statusLabel.Left, statusLabel.Bottom + 5);
+            //completitionLabel.Location = new Point(statusLabel.Left, statusLabel.Bottom + 5);
 
             competitionDay.Text = content.DateCompleted.Day.ToString();
-            competitionDay.Location = new Point(completitionLabel.Right + 10, completitionLabel.Top);
+            //competitionDay.Location = new Point(completitionLabel.Right + 10, completitionLabel.Top);
             competitionMonth.Text = content.DateCompleted.Month.ToString();
-            competitionMonth.Location = new Point(competitionDay.Right + 10, completitionLabel.Top);
+            //competitionMonth.Location = new Point(competitionDay.Right + 10, completitionLabel.Top);
             competitionYear.Text = content.DateCompleted.Year.ToString();
-            competitionYear.Location = new Point(competitionMonth.Right + 10, completitionLabel.Top);
-            competiotionButtonToday.Location = new Point(competitionYear.Right + 10, competitionYear.Top);
+            //competitionYear.Location = new Point(competitionMonth.Right + 10, completitionLabel.Top);
+            //competiotionButtonToday.Location = new Point(competitionYear.Right + 10, competitionYear.Top);
 
 
             noteTextBox.Top = completitionLabel.Bottom + 15;
             if (content.Note is not null)
                 noteTextBox.Text = content.Note;
-            {
-                //if (currentMode != mode.GAMES)
-                //{
-                //    Label genresLabel = new Label();
-                //    genresLabel.Location = new Point(nameLabel.Left, statusLabel.Bottom + 5);
-                //    string str = BuildStingGenres(content as Film);
-                //    genresLabel.Width = 22500;
-                //    genresLabel.Text = str.ToString();
-                //    genresLabel.Font = new Font("Microsoft Tai Le", 16, FontStyle.Bold);
-                //    Controls.Add(genresLabel);
-                //}
-            }
-            //deleteButton.Location = new Point(statusLabel.Left, 600);
         }
 
         private void copyButton_Click(object sender, EventArgs e)
@@ -132,28 +123,6 @@ namespace hltb
                 textbox.Text = "0";
             }
         }
-        // TODO
-        //public string BuildStingGenres<T>(T m) where T : Film
-        //{
-        //    StringBuilder str = new StringBuilder();
-        //    str.Append("Genres:");
-        //    int len = str.Length;
-        //    foreach (var gen in m.Genres)
-        //    {
-        //        if ((len + gen.Length + 2) / 40 < 1)
-        //        {
-        //            str.Append(" " + gen + ";");
-        //            len = str.Length;
-        //        }
-        //        else
-        //        {
-        //            str.Append("\n              " + gen + ";");
-        //            len = str.Length - len;
-        //        }
-        //    }
-        //    return str.ToString();
-        //}
-
 
         private void deleteButton_Click(object sender, EventArgs eventArgs)
         {
