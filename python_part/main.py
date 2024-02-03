@@ -22,7 +22,6 @@ async def get_game():
     game = await choose_game(name)
     if game is None:
         abort(404)
-    game.FixedTitle = get_fixed_name(game.title)
 
     return jsonify(game.to_dict())
 
@@ -32,7 +31,6 @@ async def get_film():
     film = Film(name)
     if film is None:
         abort(404)
-    film.FixedTitle = get_fixed_name(film.title)
 
     return jsonify(film.to_dict())
 

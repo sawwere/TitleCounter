@@ -262,7 +262,7 @@ namespace hltb
             tvseriesModeButton.Name = "tvseriesModeButton";
             tvseriesModeButton.Size = new Size(64, 64);
             tvseriesModeButton.TabIndex = 2;
-            tvseriesModeButton.Tag = "2";
+            tvseriesModeButton.Tag = "TVSeries";
             tvseriesModeButton.TextImageRelation = TextImageRelation.ImageAboveText;
             tvseriesModeButton.UseVisualStyleBackColor = true;
             // 
@@ -276,7 +276,7 @@ namespace hltb
             filmsModeButton.Name = "filmsModeButton";
             filmsModeButton.Size = new Size(64, 64);
             filmsModeButton.TabIndex = 1;
-            filmsModeButton.Tag = "1";
+            filmsModeButton.Tag = "Film";
             filmsModeButton.TextImageRelation = TextImageRelation.ImageAboveText;
             filmsModeButton.UseVisualStyleBackColor = true;
             filmsModeButton.Click += button1_Click;
@@ -291,7 +291,7 @@ namespace hltb
             gamesModeButton.Name = "gamesModeButton";
             gamesModeButton.Size = new Size(64, 64);
             gamesModeButton.TabIndex = 0;
-            gamesModeButton.Tag = "0";
+            gamesModeButton.Tag = "Game";
             gamesModeButton.TextImageRelation = TextImageRelation.ImageAboveText;
             gamesModeButton.UseVisualStyleBackColor = true;
             gamesModeButton.Click += button1_Click;

@@ -95,9 +95,9 @@ namespace hltb
             File.WriteAllBytes($"{PATH}\\data\\images\\{_mode.ToString()}\\{content.Id} {content.FixedTitle}.jpg", decodedImage);
         }
 
-        public static void DeleteImage(mode _mode, Content content)
+        public static void DeleteImage(ModeState _mode, Content content)
         {
-            File.Delete($"{PATH}\\data\\images\\{_mode.ToString().ToLower()}\\{content.Id} {content.FixedTitle}.jpg");
+            File.Delete($"{PATH}\\data\\images\\{_mode.ToString()}\\{content.Id} {content.FixedTitle}.jpg");
         }
 
         public static string GetSafeName(string name)

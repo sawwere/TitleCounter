@@ -209,21 +209,21 @@ namespace hltb
         private void button1_Click(object sender, EventArgs e)
         {
 #pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
-            mode nmode = (mode)int.Parse((sender as Button)!.Tag.ToString()!);
+            string nmode = (sender as Button)!.Tag.ToString()!;
 #pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
-            if (nmode.ToString().ToLower() == modeState.ToString())
+            if (nmode.ToLower() == modeState.ToString())
                 return;
             list_panel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
             switch (nmode)
             {
-                case mode.GAMES:
+                case "Game":
                     ChangeState(new State<Game>(this));
                     break;
-                case mode.FILMS:
+                case "Film":
                     ChangeState(new State<Film>(this));
                     break;
-                case mode.TVSERIES:
+                case "TVSeries":
                     break;
             }
             //FilterButton_Click(ByYearButton, e);
