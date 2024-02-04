@@ -29,7 +29,7 @@ namespace hltb
 
         public override void Load()
         {
-            contents = repository.GetWithInclude(x => x.Status).Select(x => x as Content).ToList();
+            contents = repository.Get().Select(x => x as Content).ToList();
         }
 
         public override void Save()

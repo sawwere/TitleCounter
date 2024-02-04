@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using hltb;
@@ -11,9 +12,11 @@ using hltb;
 namespace hltb.Migrations
 {
     [DbContext(typeof(TitleCounterContext))]
-    partial class TitleCounterContextModelSnapshot : ModelSnapshot
+    [Migration("20240204174502_RemoveStatusTable")]
+    partial class RemoveStatusTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,9 +82,9 @@ namespace hltb.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("score");
 
-                    b.Property<long>("Status")
-                        .HasColumnType("text")
-                        .HasColumnName("status");
+                    b.Property<long>("StatusId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("status_id");
 
                     b.Property<long?>("Time")
                         .ValueGeneratedOnAdd()
@@ -99,6 +102,8 @@ namespace hltb.Migrations
 
                     b.HasKey("Id")
                         .HasName("films_pkey");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("films", (string)null);
                 });
@@ -158,9 +163,9 @@ namespace hltb.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("score");
 
-                    b.Property<long>("Status")
-                        .HasColumnType("text")
-                        .HasColumnName("status");
+                    b.Property<long>("StatusId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("status_id");
 
                     b.Property<long?>("Time")
                         .ValueGeneratedOnAdd()
@@ -179,7 +184,81 @@ namespace hltb.Migrations
                     b.HasKey("Id")
                         .HasName("games_pkey");
 
+                    b.HasIndex("StatusId");
+
                     b.ToTable("games", (string)null);
+                });
+
+            modelBuilder.Entity("hltb.Models.Status", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("statuses_pkey");
+
+                    b.ToTable("statuses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "completed"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "backlog"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Name = "retired"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Name = "in progress"
+                        });
+                });
+
+            modelBuilder.Entity("hltb.Models.Film", b =>
+                {
+                    b.HasOne("hltb.Models.Status", "Status")
+                        .WithMany("Films")
+                        .HasForeignKey("StatusId")
+                        .IsRequired()
+                        .HasConstraintName("status");
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("hltb.Models.Game", b =>
+                {
+                    b.HasOne("hltb.Models.Status", "Status")
+                        .WithMany("Games")
+                        .HasForeignKey("StatusId")
+                        .IsRequired()
+                        .HasConstraintName("status");
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("hltb.Models.Status", b =>
+                {
+                    b.Navigation("Films");
+
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

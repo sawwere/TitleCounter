@@ -2,6 +2,8 @@ package com.TitleCounter.DataAccess.Models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name="films")
 public class Film {
@@ -30,15 +32,14 @@ public class Film {
     @Column(name = "time")
     private long time;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
-    private Status status;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "date_release")
-    private String date_release;
+    private LocalDate date_release;
 
     @Column(name = "date_completed")
-    private String date_completed;
+    private LocalDate date_completed;
 
     @Column(name = "note")
     private String note;
@@ -110,27 +111,27 @@ public class Film {
         this.time = time;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getDate_release() {
+    public LocalDate getDate_release() {
         return date_release;
     }
 
-    public void setDate_release(String date_release) {
+    public void setDate_release(LocalDate date_release) {
         this.date_release = date_release;
     }
 
-    public String getDate_completed() {
+    public LocalDate getDate_completed() {
         return date_completed;
     }
 
-    public void setDate_completed(String date_completed) {
+    public void setDate_completed(LocalDate date_completed) {
         this.date_completed = date_completed;
     }
 

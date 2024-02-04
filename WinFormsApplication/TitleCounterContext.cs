@@ -23,8 +23,6 @@ public partial class TitleCounterContext : DbContext
 
     public virtual DbSet<Game> Games { get; set; }
 
-    public virtual DbSet<Status> Statuses { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
@@ -70,7 +68,7 @@ public partial class TitleCounterContext : DbContext
                 .HasDefaultValueSql("'None'::character varying")
                 .HasColumnName("rus_title");
             entity.Property(e => e.Score).HasColumnName("score");
-            entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.Time)
                 .HasDefaultValueSql("0")
                 .HasColumnName("time");
@@ -78,11 +76,6 @@ public partial class TitleCounterContext : DbContext
                 .HasMaxLength(63)
                 .HasDefaultValueSql("'None'::character varying")
                 .HasColumnName("title");
-
-            entity.HasOne(d => d.Status).WithMany(p => p.Films)
-                .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("status");
         });
 
         modelBuilder.Entity<Game>(entity =>
@@ -115,7 +108,7 @@ public partial class TitleCounterContext : DbContext
                 .HasMaxLength(63)
                 .HasColumnName("platform");
             entity.Property(e => e.Score).HasColumnName("score");
-            entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.Time)
                 .HasDefaultValueSql("0")
                 .HasColumnName("time");
@@ -123,29 +116,7 @@ public partial class TitleCounterContext : DbContext
                 .HasMaxLength(63)
                 .HasDefaultValueSql("'None'::character varying")
                 .HasColumnName("title");
-
-            entity.HasOne(d => d.Status).WithMany(p => p.Games)
-                .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("status");
         });
-
-        modelBuilder.Entity<Status>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("statuses_pkey");
-
-            entity.ToTable("statuses");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(16)
-                .HasColumnName("name");
-        });
-        modelBuilder.Entity<Status>().HasData(
-            new Status { Id = 1, Name = "completed" },
-            new Status { Id = 2, Name = "backlog" },
-            new Status { Id = 3, Name = "retired" },
-            new Status { Id = 4, Name = "in progress" });
 
         OnModelCreatingPartial(modelBuilder);
     }

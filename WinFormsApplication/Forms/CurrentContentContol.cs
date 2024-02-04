@@ -9,7 +9,6 @@ namespace hltb
     {
         private Content content;
         Mainform parent;
-        private EFGenericRepository<Status> statusRepository;
 
         /// <summary>
         /// Divide title into rows and concat with RusName for films
@@ -47,7 +46,6 @@ namespace hltb
             InitializeComponent();
             this.Dock = DockStyle.Fill;
             parent = owner;
-            statusRepository = new EFGenericRepository<Status>(new TitleCounterContext());
 
             this.content = content;
             var str = parent.modeState.ToString();
@@ -78,8 +76,8 @@ namespace hltb
             statusLabel.Width = 75;
 
             status_c.Width = 192;
-            status_c.Items.AddRange(statusRepository.Get().OrderBy(x => x.Id).Select(x => x.Name).ToArray());
-            status_c.SelectedIndex = (int)content.StatusId - 1;
+            status_c.Items.AddRange(new string[] { "completed", "backlog", "retired", "in progress"});
+            status_c.SelectedIndex = status_c.Items.IndexOf(content.Status);
             //status_c.Location = new Point(statusLabel.Left + 80, statusLabel.Top);
 
             //completitionLabel.Location = new Point(statusLabel.Left, statusLabel.Bottom + 5);
@@ -166,7 +164,7 @@ namespace hltb
             content.Score = (int)score_c.SelectedItem;
             // status
             var status = status_c.SelectedItem.ToString();
-            content.StatusId = statusRepository.Get(x => x.Name == status).First().Id;
+            content.Status = status;
             // competition date
             int day = competitionDay.SelectedIndex + 1;
             int month = competitionMonth.SelectedIndex + 1;

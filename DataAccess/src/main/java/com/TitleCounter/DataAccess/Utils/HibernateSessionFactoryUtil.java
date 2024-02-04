@@ -3,7 +3,6 @@ package com.TitleCounter.DataAccess.Utils;
 
 import com.TitleCounter.DataAccess.Models.Film;
 import com.TitleCounter.DataAccess.Models.Game;
-import com.TitleCounter.DataAccess.Models.Status;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -21,7 +20,6 @@ public class HibernateSessionFactoryUtil
             try
             {
                 Configuration configuration = new Configuration().configure();
-                configuration.addAnnotatedClass(Status.class);
                 configuration.addAnnotatedClass(Game.class);
                 configuration.addAnnotatedClass(Film.class);
                 StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());

@@ -1,6 +1,10 @@
 package com.TitleCounter.DataAccess.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name="games")
@@ -27,15 +31,14 @@ public class Game {
     @Column(name = "time")
     private long time;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
-    private Status status;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "date_release")
-    private String date_release;
+    private LocalDate date_release;
 
     @Column(name = "date_completed")
-    private String date_completed;
+    private LocalDate date_completed;
 
     @Column(name = "note")
     private String note;
@@ -47,7 +50,7 @@ public class Game {
     public Game() {
     }
 
-    public Game(String platform, String title, String fixed_title, String image_url, String link_url, long time, Status status, String date_release, String date_completed, String note, long score) {
+    public Game(String platform, String title, String fixed_title, String image_url, String link_url, long time, String status, LocalDate date_release, LocalDate date_completed, String note, long score) {
         this.platform = platform;
         this.title = title;
         this.fixed_title = fixed_title;
@@ -113,27 +116,27 @@ public class Game {
         this.time = time;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getDate_release() {
+    public LocalDate getDate_release() {
         return date_release;
     }
 
-    public void setDate_release(String date_release) {
+    public void setDate_release(LocalDate date_release) {
         this.date_release = date_release;
     }
 
-    public String getDate_completed() {
+    public LocalDate getDate_completed() {
         return date_completed;
     }
 
-    public void setDate_completed(String date_completed) {
+    public void setDate_completed(LocalDate date_completed) {
         this.date_completed = date_completed;
     }
 

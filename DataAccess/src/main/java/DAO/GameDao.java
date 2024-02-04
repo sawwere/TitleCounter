@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GameDao {
     public Game findById(long id) {
-        return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Game.class, id);
+        return HibernateSessionFactoryUtil.getSessionFactory().openSession().find(Game.class, id);
     }
 
     public void save(Game game) {

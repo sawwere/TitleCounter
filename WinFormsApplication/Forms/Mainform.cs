@@ -17,8 +17,6 @@ namespace hltb
     {
         private Panel list_panel = new Panel();
         private ContentListBuilder list_builder = new ButtonsContentList();
-
-        private EFGenericRepository<Status> statusRepository;
         private AddContent add_content = new AddContent();
 
         public ModeState modeState;
@@ -38,8 +36,8 @@ namespace hltb
         {
             double total = 1, cmpltd = 1, tmcmpltd = 1, tmtotal = 1;
             total = modeState.Contents.Count() + 0.0;
-            cmpltd = modeState.Contents.Where(x => (x.StatusId == (int)TitleStatus.COMPLETED) || (x.StatusId == (int)TitleStatus.RETIRED)).Count();
-            tmcmpltd = modeState.Contents.Where(x => (x.StatusId == (int)TitleStatus.COMPLETED) || (x.StatusId == (int)TitleStatus.RETIRED)).Select(x => (int)x.Time).Sum();
+            cmpltd = modeState.Contents.Where(x => (x.Status == "completed") || (x.Status == "retired:")).Count();
+            tmcmpltd = modeState.Contents.Where(x => (x.Status == "completed") || (x.Status == "retired:")).Select(x => (int)x.Time).Sum();
             tmtotal = modeState.Contents.Select(x => (int)x.Time).Sum();
 
             statisticsLabel.Text = $"Completed: {cmpltd} / {total}  ({(cmpltd / total * 100):F2}%)" + '\n'
@@ -73,7 +71,6 @@ namespace hltb
         {
             InitializeComponent();
             AddOwnedForm(add_content);
-            statusRepository = new EFGenericRepository<Status>(new TitleCounterContext());
             ChangeState(new State<Game>(this));
         }
 
@@ -104,7 +101,7 @@ namespace hltb
                 throw new ArgumentNullException("Invalid Json Deserialize");
             }
             //TODO
-            content.StatusId = 1;
+            content.Status = "backlog";
             content.Score = 0;
             content.FixedTitle = GetSafeName(content.Title);
             return content;
@@ -264,7 +261,7 @@ namespace hltb
         {
             string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
             RefreshTitles();
-            AddButtons(modeState.Contents.Where(x => x.Status.Name == cur_status).ToList());
+            AddButtons(modeState.Contents.Where(x => x.Status == cur_status).ToList());
         }
 
         private void ByNameButton_Click(object sender, EventArgs e)

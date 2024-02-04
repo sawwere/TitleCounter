@@ -16,7 +16,7 @@
 
         public long? Time { get; set; }
 
-        public long StatusId { get; set; }
+        public string Status { get; set; }
 
         public DateOnly DateRelease { get; set; }
 
@@ -25,8 +25,6 @@
         public string? Note { get; set; }
 
         public long Score { get; set; }
-
-        public virtual Status Status { get; set; } = null!;
 
         public Content()
         {
