@@ -41,10 +41,7 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return mav.getViewName();
         }
-        if (!userService.saveUser(userForm)){
-            mav.addObject("usernameError", "Пользователь с таким именем уже существует");
-            return mav.getViewName();
-        }
+
         return "redirect:/";
     }
 }

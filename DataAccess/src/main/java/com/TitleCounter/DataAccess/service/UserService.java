@@ -1,6 +1,6 @@
 package com.TitleCounter.DataAccess.service;
 
-import com.TitleCounter.DataAccess.storage.entity.Role;
+import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.RoleRepository;
 import com.TitleCounter.DataAccess.storage.repository.UserRepository;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,40 +25,41 @@ public class UserService implements UserDetailsService {
         return userFromDb.orElse(new User());
     }
 
+    public User findUserOrElseThrowException(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id '%s' doesn't exist", userId))
+                );
+    }
+
     public List<User> allUsers() {
         return userRepository.findAll();
     }
 
-    public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
+    public User saveUser(User user) {
+        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
 
-        if (userFromDB != null) {
-            return false;
-        }
-
-        user.setRoles(Collections.singleton(roleRepository.findById(1L).get()));
+        if (optionalUser.isPresent())
+            throw new RuntimeException("User already exists");
+        user.setRoles(List.of(roleRepository.findByName("USER").get()));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
         System.out.println(user.getUsername());
-        return true;
+        return user;
     }
 
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
+    public void deleteUser(Long userId) {
+        User user = findUserOrElseThrowException(userId);
+        userRepository.deleteById(userId);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
 
-        if (user == null) {
+        if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        return user;
+        return optionalUser.get();
     }
 }

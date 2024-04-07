@@ -36,5 +36,5 @@ public class Film {
     private LocalDate dateRelease;
 
     @Column(name = "global_score")
-    private Short globalScore;
+    private Float globalScore;
 }

@@ -34,9 +34,8 @@ public class User implements UserDetails {
     @Email
     private String email;
 
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST})
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    private List<Role> roles;
 
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -45,16 +44,6 @@ public class User implements UserDetails {
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<FilmEntry> filmEntry;
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

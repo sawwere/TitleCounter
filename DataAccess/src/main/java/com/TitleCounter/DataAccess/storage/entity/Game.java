@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Getter
@@ -34,7 +33,7 @@ public class Game {
     private LocalDate dateRelease;
 
     @Column(name = "global_score")
-    private Short globalScore;
+    private Float globalScore;
 
 //    @OneToMany(orphanRemoval = true)
 //    @JoinColumn(name = "game_entry_id", referencedColumnName = "id")

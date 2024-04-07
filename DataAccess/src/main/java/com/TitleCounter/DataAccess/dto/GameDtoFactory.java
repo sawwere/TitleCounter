@@ -12,7 +12,8 @@ public class GameDtoFactory {
                 .imageUrl(game.getImageUrl())
                 .link_url(game.getLinkUrl())
                 .time(game.getTime())
-                .date_release(game.getDateRelease())
+                .dateRelease(game.getDateRelease())
+                .globalScore(game.getGlobalScore())
                 .build();
     }
 
@@ -23,7 +24,8 @@ public class GameDtoFactory {
                 .imageUrl(gameDto.getImageUrl())
                 .linkUrl(gameDto.getLink_url())
                 .time(gameDto.getTime())
-                .dateRelease(gameDto.getDate_release())
+                .dateRelease(gameDto.getDateRelease())
+                .globalScore(gameDto.getGlobalScore())
                 .build();
     }
 }

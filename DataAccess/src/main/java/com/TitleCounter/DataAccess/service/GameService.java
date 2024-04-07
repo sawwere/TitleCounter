@@ -37,8 +37,15 @@ public class GameService {
     public Game createGame(@Valid GameDto gameDto) {
         Game game = gameDtoFactory.dtoToEntity(gameDto);
         gameRepository.save(game);
-        logger.info("Created client with id '%d'".formatted(game.getId()));
+        logger.info("Created game with id '%d'".formatted(game.getId()));
         return game;
+    }
+
+    @Transactional
+    public Game updateGame(Long gameId, @Valid GameDto gameDto) {
+        gameDto.setId(gameId);
+        logger.info("Updated game with id '%d'".formatted(gameDto.getId()));
+        return gameRepository.save(gameDtoFactory.dtoToEntity(gameDto));
     }
 
     @Transactional
