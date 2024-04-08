@@ -37,6 +37,7 @@ public class GameService {
     public Game createGame(@Valid GameDto gameDto) {
         Game game = gameDtoFactory.dtoToEntity(gameDto);
         gameRepository.save(game);
+        System.out.println(666);
         logger.info("Created game with id '%d'".formatted(game.getId()));
         return game;
     }

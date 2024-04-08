@@ -1,32 +1,31 @@
-package com.TitleCounter.DataAccess.config;
+package com.TitleCounter.AuthorizationServer.config;
 
-import com.TitleCounter.DataAccess.controller.GameController;
-import com.TitleCounter.DataAccess.service.UserService;
-import com.TitleCounter.DataAccess.storage.entity.User;
-import com.TitleCounter.DataAccess.storage.repository.UserRepository;
+import com.TitleCounter.AuthorizationServer.storage.entity.User;
+import com.TitleCounter.AuthorizationServer.storage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final UserService userService;
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepo) {
@@ -43,31 +42,16 @@ public class WebSecurityConfig {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/news").authenticated()
-                        .requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("SCOPE_addTitles")
-                        .requestMatchers(HttpMethod.DELETE, GameController.DELETE_GAME).hasAuthority("SCOPE_deleteTitles")
-                        .anyRequest().permitAll()
-                )
-                .httpBasic(withDefaults())
-                .formLogin(form -> form
-                        .permitAll()
-                        .defaultSuccessUrl("/"))
-                .logout(logout -> logout
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/login"))
-                .oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
-                ;
-        return http.build();
-    }
 
-    @Autowired
-    void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+    @Bean
+    public SecurityFilterChain defaultSecurityChain(HttpSecurity http) throws Exception {
+        http
+                //.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests((auth) -> auth
+                        .anyRequest().authenticated()
+                )
+                .formLogin(Customizer.withDefaults())
+        ;
+        return http.build();
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,4 +38,8 @@ public class Film {
 
     @Column(name = "global_score")
     private Float globalScore;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "game_entry_id", referencedColumnName = "id")
+    private List<FilmEntry> filmEntries;
 }

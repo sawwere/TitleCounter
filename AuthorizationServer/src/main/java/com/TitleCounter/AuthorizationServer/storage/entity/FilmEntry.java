@@ -1,4 +1,4 @@
-package com.TitleCounter.DataAccess.storage.entity;
+package com.TitleCounter.AuthorizationServer.storage.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -13,8 +13,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "game_entries")
-public class GameEntry {
+@Table(name = "film_entries")
+public class FilmEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,14 +32,9 @@ public class GameEntry {
     @Column(name = "date_completed")
     private Long dateCompleted;
 
-    @Min(0)
-    private Long time;
-
-    private String platform;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Game game;
+    private Film film;
 }

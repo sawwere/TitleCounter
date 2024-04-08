@@ -1,4 +1,4 @@
-package com.TitleCounter.DataAccess.storage.entity;
+package com.TitleCounter.AuthorizationServer.storage.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
