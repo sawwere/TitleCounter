@@ -1,6 +1,8 @@
 package com.TitleCounter.DataAccess.controller;
 import com.TitleCounter.DataAccess.dto.GameDto;
 import com.TitleCounter.DataAccess.dto.GameDtoFactory;
+import com.TitleCounter.DataAccess.dto.GameEntryDto;
+import com.TitleCounter.DataAccess.dto.GameEntryDtoFactory;
 import com.TitleCounter.DataAccess.service.GameService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +18,19 @@ import java.util.stream.Collectors;
 public class GameController
 {
     private final GameService gameService;
+
     private final GameDtoFactory gameDtoFactory;
+    private final GameEntryDtoFactory gameEntryDtoFactory;
 
     public static final String CREATE_GAME = "/api/games";
     public static final String UPDATE_GAME = "/api/games/{game_id}";
     public static final String FIND_GAME = "/api/games/{game_id}";
     public static final String DELETE_GAME = "/api/games/{game_id}";
     public static final String FIND_ALL_GAMES = "/api/games";
+
+    public static final String CREATE_GAME_ENTRY = "/api/users/{username}/games";
+    public static final String DELETE_GAME_ENTRY = "/api/submissions/{submission_id}";
+    public static final String FIND_GAME_ENTRIES = "/api/users/{username}/games";
 
     /**
      * Обрабатывает входящеий запрос на создание нового Game.
@@ -52,12 +60,27 @@ public class GameController
         gameService.deleteGame(gameId);
     }
 
-    /**
-     * Обрабатывает входящеий запрос на получение списка всех существующих в базе данных клиентов.
-     * @return список всех клиентов
-     */
     @GetMapping(FIND_ALL_GAMES)
     public List<GameDto> findAllGames() {
         return gameService.findAll().stream().map(gameDtoFactory::entityToDto).collect(Collectors.toList());
+    }
+
+
+
+    @GetMapping(FIND_GAME_ENTRIES)
+    public List<GameEntryDto> findGameEntriesByUser(@PathVariable(name="username") String username) {
+        return gameService.findGameEntriesByUser(username).map(gameEntryDtoFactory::entityToDto).collect(Collectors.toList());
+    }
+
+    @PostMapping(CREATE_GAME_ENTRY)
+    public GameEntryDto createGameEntry(@PathVariable(name="username") String username,
+                                        @RequestBody GameEntryDto gameEntryDto) {
+        return gameEntryDtoFactory.entityToDto(gameService.createGameEntry(username, gameEntryDto));
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(DELETE_GAME_ENTRY)
+    public void createGameEntry(@PathVariable(name="submission_id") Long gameEntryId) {
+        gameService.deleteGameEntry(gameEntryId);
     }
 }

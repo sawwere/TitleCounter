@@ -38,7 +38,7 @@ public class GameEntry {
     private String platform;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
+    private UserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Game game;

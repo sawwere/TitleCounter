@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,9 +38,10 @@ public class AuthorizationServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        http.exceptionHandling(exceptions ->
-                exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-        );
+//        http.exceptionHandling(exceptions ->
+//                exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+//        );
+        http.formLogin(Customizer.withDefaults());
         return http.build();
     }
 
@@ -48,7 +50,7 @@ public class AuthorizationServerConfig {
         return new InMemoryRegisteredClientRepository(
                 RegisteredClient.withId(UUID.randomUUID().toString())
                         .clientId("title_counter_client")
-                        .clientSecret(passwordEncoder.encode("1111"))
+                        .clientSecret("secret")
                         .clientAuthenticationMethod(
                                 ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)

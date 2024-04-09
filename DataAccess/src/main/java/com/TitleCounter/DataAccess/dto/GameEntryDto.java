@@ -1,21 +1,17 @@
-package com.TitleCounter.DataAccess.storage.entity;
+package com.TitleCounter.DataAccess.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "game_entries")
-public class GameEntry {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class GameEntryDto {
     private Long id;
 
     @Size(max=255)
@@ -28,7 +24,7 @@ public class GameEntry {
     @NotBlank
     private String status;
 
-    @Column(name = "date_completed")
+    @JsonProperty(value = "date_completed")
     private LocalDate dateCompleted;
 
     @Min(0)
@@ -37,10 +33,10 @@ public class GameEntry {
     private String platform;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
+    @JsonProperty(value = "client_id")
+    private Long userId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Game game;
+    @JsonProperty(value = "game_id")
+    private Long gameId;
 }

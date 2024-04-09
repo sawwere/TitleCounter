@@ -52,8 +52,7 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(userId);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User findUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isEmpty()) {
@@ -61,5 +60,10 @@ public class UserService implements UserDetailsService {
         }
 
         return optionalUser.get();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findUserByUsername(username);
     }
 }

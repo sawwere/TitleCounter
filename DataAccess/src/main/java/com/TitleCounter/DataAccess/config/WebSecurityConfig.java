@@ -49,8 +49,14 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/news").authenticated()
-                        .requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("SCOPE_addTitles")
-                        .requestMatchers(HttpMethod.DELETE, GameController.DELETE_GAME).hasAuthority("SCOPE_deleteTitles")
+                        //.requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("SCOPE_addTitles")
+                        .requestMatchers(HttpMethod.DELETE,
+                                GameController.DELETE_GAME)
+                        .hasAuthority("SCOPE_deleteTitles")
+                        .requestMatchers(
+                                GameController.CREATE_GAME_ENTRY, 
+                                GameController.DELETE_GAME_ENTRY)
+                        .authenticated()
                         .anyRequest().permitAll()
                 )
                 .httpBasic(withDefaults())

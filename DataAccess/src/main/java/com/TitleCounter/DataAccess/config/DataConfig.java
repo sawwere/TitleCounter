@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
@@ -38,23 +39,25 @@ public class DataConfig {
                 .build();
         roleRepository.save(user);
 
-        userRepository.save(User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("1111"))
-                .email("zxc@gm.kukuasd")
-                .roles(roleRepository.findAll())
-                .build()
-        );
+        Optional<User> userEntity = userRepository.findByUsername("admin");
+        if (userEntity.isEmpty()) {
+            userRepository.save(User.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("1111"))
+                    .email("zxc@gm.kukuasd")
+                    .roles(roleRepository.findAll())
+                    .build()
+            );
+        }
 
-        gameRepository.save(Game.builder()
-                .id(1L)
-                .time(0L)
-                .title("a")
-                .globalScore(0.0f)
-                .dateRelease(LocalDate.now())
-                .imageUrl("http://localhost")
-                .linkUrl("http://localhost")
-                .build());
+//        gameRepository.save(Game.builder()
+//                .time(0L)
+//                .title("a")
+//                .globalScore(0.0f)
+//                .dateRelease(LocalDate.now())
+//                .imageUrl("http://localhost")
+//                .linkUrl("http://localhost")
+//                .build());
         return (args) -> {
             for (String arg : args) {
                 System.out.println(arg);

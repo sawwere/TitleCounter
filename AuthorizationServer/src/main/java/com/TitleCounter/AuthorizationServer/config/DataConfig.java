@@ -1,7 +1,7 @@
 package com.TitleCounter.AuthorizationServer.config;
 
 import com.TitleCounter.AuthorizationServer.storage.entity.Role;
-import com.TitleCounter.AuthorizationServer.storage.entity.User;
+import com.TitleCounter.AuthorizationServer.storage.entity.UserEntity;
 import com.TitleCounter.AuthorizationServer.storage.repository.RoleRepository;
 import com.TitleCounter.AuthorizationServer.storage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,9 @@ public class DataConfig {
                 .build();
         roleRepository.save(user);
 
-        Optional<User> userEntity = userRepository.findByUsername("admin");
+        Optional<UserEntity> userEntity = userRepository.findByUsername("admin");
         if (userEntity.isEmpty())
-            userRepository.save(User.builder()
+            userRepository.save(UserEntity.builder()
 
                     .username("admin")
                     .password(passwordEncoder.encode("1111"))

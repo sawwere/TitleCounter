@@ -1,6 +1,10 @@
 package com.TitleCounter.DataAccess.controller;
 
+import com.TitleCounter.DataAccess.storage.entity.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class FindController {
@@ -14,4 +18,11 @@ public class FindController {
 //        }
 //        return sb.toString();
 //    }
+    @GetMapping("/news")
+    private ModelAndView news(Authentication authentication) {
+        ModelAndView mav = new ModelAndView("news");
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user.getUsername());
+        return mav;
+    }
 }
