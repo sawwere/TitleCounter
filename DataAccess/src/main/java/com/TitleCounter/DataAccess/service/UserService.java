@@ -1,5 +1,6 @@
 package com.TitleCounter.DataAccess.service;
 
+import com.TitleCounter.DataAccess.dto.UserRegistrationDto;
 import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.RoleRepository;
@@ -35,11 +36,19 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User saveUser(User user) {
-        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-
+    public User createUser(UserRegistrationDto userRegistrationDto) {
+        Optional<User> optionalUser = userRepository.findByUsername(userRegistrationDto.getUsername());
         if (optionalUser.isPresent())
             throw new RuntimeException("User already exists");
+//        optionalUser = userRepository.findByEmail(userRegistrationDto.getEmail());
+//        if (optionalUser.isPresent())
+//            throw new RuntimeException("User already exists");
+
+        User user = User.builder()
+                .email(userRegistrationDto.getEmail())
+                .password(userRegistrationDto.getPassword())
+                .username(userRegistrationDto.getUsername())
+                .build();
         user.setRoles(List.of(roleRepository.findByName("USER").get()));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);

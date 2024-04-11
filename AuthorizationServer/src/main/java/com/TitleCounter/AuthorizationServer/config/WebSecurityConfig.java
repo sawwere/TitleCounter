@@ -1,6 +1,6 @@
 package com.TitleCounter.AuthorizationServer.config;
 
-import com.TitleCounter.AuthorizationServer.storage.entity.UserEntity;
+import com.TitleCounter.AuthorizationServer.storage.entity.User;
 import com.TitleCounter.AuthorizationServer.storage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +23,13 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepo) {
         return username -> {
-            Optional<UserEntity> user = userRepo.findByUsername(username);
-            if (user.isPresent())
+            Optional<User> user = userRepo.findByUsername(username);
+            if (user.isPresent()) {
+                System.out.println(user.get().getPassword());
                 return user.get();
+            }
             else
-                throw new UsernameNotFoundException("UserEntity ‘" + username + "’ not found");
+                throw new UsernameNotFoundException("User ‘" + username + "’ not found");
         };
     }
 
@@ -39,9 +41,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityChain(HttpSecurity http) throws Exception {
         http
-                //.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
         ;

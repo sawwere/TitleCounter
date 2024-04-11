@@ -5,6 +5,8 @@ import com.TitleCounter.DataAccess.storage.entity.GameEntry;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class GameEntryDtoFactory {
     public GameEntryDto entityToDto(GameEntry gameEntry) {
@@ -32,6 +34,17 @@ public class GameEntryDtoFactory {
                 .platform(gameEntryDto.getPlatform())
                 .game(Game.builder().id(gameEntryDto.getGameId()).build())
                 .user(User.builder().id(gameEntryDto.getUserId()).build())
+                .build();
+    }
+
+    public GameEntryDto makeDefault(Long gameId, Long userId) {
+        return  GameEntryDto.builder()
+                .score(0L)
+                .status("COMPLETED")
+                .dateCompleted(LocalDate.now())
+                .time(0L)
+                .gameId(gameId)
+                .userId(userId)
                 .build();
     }
 }

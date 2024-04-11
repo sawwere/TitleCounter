@@ -1,6 +1,6 @@
 package com.TitleCounter.DataAccess.config;
 
-import com.TitleCounter.DataAccess.controller.GameController;
+import com.TitleCounter.DataAccess.controller.api.GameController;
 import com.TitleCounter.DataAccess.service.UserService;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.UserRepository;
@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 import java.util.Optional;
 
@@ -46,9 +47,14 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                //.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/news").authenticated()
+                        .requestMatchers("/", "/error",
+                                "/login", "/registration",
+                                "/games/*", "/users/**",
+                                "/css/**", "/images/**").permitAll()
+                        .requestMatchers("/games/*/submit").authenticated()
+                        //.requestMatchers(HttpMethod.GET).permitAll()
                         //.requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("SCOPE_addTitles")
                         .requestMatchers(HttpMethod.DELETE,
                                 GameController.DELETE_GAME)
@@ -57,17 +63,25 @@ public class WebSecurityConfig {
                                 GameController.CREATE_GAME_ENTRY, 
                                 GameController.DELETE_GAME_ENTRY)
                         .authenticated()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults())
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/login")
+                        .maximumSessions(1))
+                //.httpBasic(withDefaults())
                 .formLogin(form -> form
-                        .permitAll()
-                        .defaultSuccessUrl("/"))
+                        .defaultSuccessUrl("/")
+                        .permitAll())
                 .logout(logout -> logout
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/login"))
-                .oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
+                        .logoutSuccessUrl("/"))
+                .rememberMe(x->x
+                       .rememberMeParameter("remember-me-new")
+                        .alwaysRemember(false)
+                        .userDetailsService(userService)
+                        .tokenValiditySeconds(60*60*24))
+                //.oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
                 ;
         return http.build();
     }

@@ -7,11 +7,15 @@
 
 <body>
 <div>
-    <form th:action="@{/register}" th:object="${userForm}", method="post">
+    <form th:action="@{/registration}" th:object="${userForm}", method="post">
         <h2>Регистрация</h2>
         <div>
             <input type="text" th:field="*{username}" placeholder="Username"
                         autofocus="true">
+        </div>
+        <div>
+            <input type="email" th:field="*{email}" placeholder="Email"
+                   autofocus="true">
         </div>
         <div>
             <input type="password" th:field=="*{password}" placeholder="Password">
@@ -23,7 +27,7 @@
         </div>
         <button type="submit">Зарегистрироваться</button>
     </form>
-    <a href="/">Главная</a>
+    <a th:href="@{/login}" th:text="Login">login</a>
 </div>
 </body>
 </html>

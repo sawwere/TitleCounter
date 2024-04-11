@@ -33,7 +33,7 @@ public class FilmEntry {
     private Long dateCompleted;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private UserEntity userEntity;
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Film film;

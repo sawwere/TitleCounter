@@ -1,4 +1,4 @@
-package com.TitleCounter.DataAccess.controller;
+package com.TitleCounter.DataAccess.controller.api;
 import com.TitleCounter.DataAccess.dto.GameDto;
 import com.TitleCounter.DataAccess.dto.GameDtoFactory;
 import com.TitleCounter.DataAccess.dto.GameEntryDto;

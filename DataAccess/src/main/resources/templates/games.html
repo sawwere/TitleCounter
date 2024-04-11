@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/layout}">
+<head>
+    <title>Games</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <table class="table">
+            <caption>
+                Список карт
+            </caption>
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">title</th>
+                <th scope="col">Дата выпуска</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="game: ${games}">
+                <td th:text="${game.id}"></td>
+                <td th:text="${game.title}"></td>
+                <td th:text="${game.dateRelease}"></td>
+                <td>
+                    <a th:href="@{/games/{id}(id=${game.id})}">Check</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

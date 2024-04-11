@@ -1,4 +1,4 @@
-package com.TitleCounter.DataAccess.controller;
+package com.TitleCounter.DataAccess.controller.api;
 
 import com.TitleCounter.DataAccess.storage.entity.User;
 import org.springframework.security.core.Authentication;
@@ -18,11 +18,4 @@ public class FindController {
 //        }
 //        return sb.toString();
 //    }
-    @GetMapping("/news")
-    private ModelAndView news(Authentication authentication) {
-        ModelAndView mav = new ModelAndView("news");
-        User user = (User) authentication.getPrincipal();
-        System.out.println(user.getUsername());
-        return mav;
-    }
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -69,5 +70,20 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User that = (User) o;
+        return username.equals(that.username) &&
+                email.equals(that.email) &&
+                password.equals(that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, email, password);
     }
 }

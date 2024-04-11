@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <div class="client-info">
+        <p>Информация о <td th:text="${user.username}"></td>
+        <p>id: <td th:text="${user.id}"></td>
+        <p>title: <td th:text="${user.username}"></td>
+        <p>linkUrl: <td th:text="${user.email}"></td>
+    </div>
+    <a th:href="@{/users/{username}/games(username=${user.username})}" th:text="Submit">submit</a>
+</div>
+</body>
+</html>

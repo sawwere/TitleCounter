@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -30,7 +32,7 @@ public class GameEntry {
     private String status;
 
     @Column(name = "date_completed")
-    private Long dateCompleted;
+    private LocalDate dateCompleted;
 
     @Min(0)
     private Long time;
@@ -38,7 +40,7 @@ public class GameEntry {
     private String platform;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private UserEntity userEntity;
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Game game;

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ExpirationManager</title>
 </head>
 <body>
-<a href="/register">Зарегистрироваться</a>
-<a href="/login">Login</a>
-<a href="/logout">Logout</a>
-<a href="/news"> News</a>
+<div layout:fragment="content">
+    <div class="container">
+        <p>Автоматическая рассылка уведомление клиентам банка о завершении срока действий их банковских карт
+
+    </div>
+</div>
 </body>
 </html>

@@ -103,5 +103,11 @@ public class GameService {
         return gameEntries;
     }
 
+    @Transactional
+    public List<Game> findGamesByUser(String username) {
+        User user = userService.findUserByUsername(username);
+        Stream<GameEntry> gameEntries = findGameEntriesByUser(username);
 
+        return gameEntries.map(x->x.getGame()).toList();
+    }
 }
