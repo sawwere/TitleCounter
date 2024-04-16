@@ -1,8 +1,5 @@
 package com.TitleCounter.DataAccess.controller.api;
-import com.TitleCounter.DataAccess.dto.GameDto;
-import com.TitleCounter.DataAccess.dto.GameDtoFactory;
-import com.TitleCounter.DataAccess.dto.GameEntryDto;
-import com.TitleCounter.DataAccess.dto.GameEntryDtoFactory;
+import com.TitleCounter.DataAccess.dto.*;
 import com.TitleCounter.DataAccess.service.GameService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,13 +65,27 @@ public class GameController
 
 
     @GetMapping(FIND_GAME_ENTRIES)
-    public List<GameEntryDto> findGameEntriesByUser(@PathVariable(name="username") String username) {
-        return gameService.findGameEntriesByUser(username).map(gameEntryDtoFactory::entityToDto).collect(Collectors.toList());
+    public List<GameEntryResponseDto> findGameEntriesByUser(@PathVariable(name="username") String username) {
+        return gameService
+                .findGameEntriesByUser(username)
+                .stream()
+                .map(gameEntryDtoFactory::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(FIND_GAME_ENTRIES+"2")
+    public GameEntryResponseDto findGameEntriesByUser2(@PathVariable(name="username") String username) {
+        return gameService
+                .findGameEntriesByUser(username)
+                .stream()
+                .map(gameEntryDtoFactory::entityToDto)
+                .collect(Collectors.toList())
+                .get(0);
     }
 
     @PostMapping(CREATE_GAME_ENTRY)
-    public GameEntryDto createGameEntry(@PathVariable(name="username") String username,
-                                        @RequestBody GameEntryDto gameEntryDto) {
+    public GameEntryResponseDto createGameEntry(@PathVariable(name="username") String username,
+                                        @RequestBody GameEntryCreationDto gameEntryDto) {
         return gameEntryDtoFactory.entityToDto(gameService.createGameEntry(username, gameEntryDto));
     }
 

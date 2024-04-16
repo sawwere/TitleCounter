@@ -11,8 +11,12 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameEntryDto {
+public class GameEntryCreationDto {
     private Long id;
+
+    @Size(min = 1, max = 64)
+    @JsonProperty(value = "custom_title")
+    private String customTitle;
 
     @Size(max=255)
     private String note;
@@ -33,7 +37,7 @@ public class GameEntryDto {
     private String platform;
 
     @NotNull
-    @JsonProperty(value = "client_id")
+    @JsonProperty(value = "user_id")
     private Long userId;
 
     @NotNull

@@ -2,7 +2,7 @@ package com.TitleCounter.DataAccess.service;
 
 import com.TitleCounter.DataAccess.dto.GameDto;
 import com.TitleCounter.DataAccess.dto.GameDtoFactory;
-import com.TitleCounter.DataAccess.dto.GameEntryDto;
+import com.TitleCounter.DataAccess.dto.GameEntryCreationDto;
 import com.TitleCounter.DataAccess.dto.GameEntryDtoFactory;
 import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.Game;
@@ -79,10 +79,11 @@ public class GameService {
     }
 
     @Transactional
-    public GameEntry createGameEntry(String username, GameEntryDto gameEntryDto) {
+    public GameEntry createGameEntry(String username, GameEntryCreationDto gameEntryDto) {
         GameEntry gameEntry = gameEntryDtoFactory.dtoToEntity(gameEntryDto);
         Game gameEntity = findGameOrElseThrowException(gameEntryDto.getGameId());
         gameEntry.setGame(gameEntity);
+        gameEntry.setCustomTitle(gameEntity.getTitle());
 
         User user = userService.findUserByUsername(username);
         gameEntry.setUser(user);
@@ -97,17 +98,18 @@ public class GameService {
     }
 
     @Transactional
-    public Stream<GameEntry> findGameEntriesByUser(String username) {
+    public List<GameEntry> findGameEntriesByUser(String username) {
         User user = userService.findUserByUsername(username);
+        System.out.println(username);
         Stream<GameEntry> gameEntries = gameEntryRepository.streamAllByUserId(user.getId());
-        return gameEntries;
+        return gameEntries.toList();
     }
 
     @Transactional
     public List<Game> findGamesByUser(String username) {
         User user = userService.findUserByUsername(username);
-        Stream<GameEntry> gameEntries = findGameEntriesByUser(username);
+        List<GameEntry> gameEntries = findGameEntriesByUser(username);
 
-        return gameEntries.map(x->x.getGame()).toList();
+        return gameEntries.stream().map(x->x.getGame()).toList();
     }
 }

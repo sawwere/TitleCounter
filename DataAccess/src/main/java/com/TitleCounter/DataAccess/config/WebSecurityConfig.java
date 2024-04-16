@@ -47,7 +47,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                //.csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/error",
                                 "/login", "/registration",
@@ -59,11 +59,11 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE,
                                 GameController.DELETE_GAME)
                         .hasAuthority("SCOPE_deleteTitles")
-                        .requestMatchers(
-                                GameController.CREATE_GAME_ENTRY, 
-                                GameController.DELETE_GAME_ENTRY)
-                        .authenticated()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(
+//                                GameController.CREATE_GAME_ENTRY,
+//                                GameController.DELETE_GAME_ENTRY)
+//                        .authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .invalidSessionUrl("/login")
