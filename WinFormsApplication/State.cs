@@ -1,19 +1,25 @@
-﻿using hltb.Models;
+﻿using hltb.Dto;
+using hltb.Models;
+using hltb.Models.Outdated;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace hltb
 {
     public class State<T> : ModeState where T : Content
     {
-        private EFGenericRepository<T> repository = new EFGenericRepository<T>(new TitleCounterContext());
-
-        public State(Mainform form) : base(form) { }
-
+        //private EFGenericRepository<T> repository = new EFGenericRepository<T>(new TitleCounterContext());
+        HttpClient httpClient = new HttpClient();
+        public State(Mainform form) : base(form) {
+            httpClient.BaseAddress = new Uri("http://localhost:8080/api");
+        }
 
         public override void Create(Content content)
         {
@@ -22,23 +28,43 @@ namespace hltb
             else
             {
 #pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-                repository.Create(content as T);
+                //repository.Create(content as T);
 #pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
             }
         }
 
         public override void Load()
         {
-            contents = repository.Get().Select(x => x as Content).ToList();
+            contents = new List<Content> { };
+            var gameDtos = httpClient.GetFromJsonAsync<List<GameDto>>(httpClient.BaseAddress + "/games").Result;
+            foreach (var dto in gameDtos)
+            {
+                Game game = new Game();
+                game.Id = dto.id;
+                game.Title = dto.title;
+                game.FixedTitle = dto.title;
+                game.Note = "";
+                game.DateCompleted = DateOnly.FromDateTime(DateTime.Now);
+                game.DateRelease = game.DateCompleted;
+                game.Score = (long)dto.globalScore;
+                game.Status = "backlog";
+                game.LinkUrl = dto.linkUrl;
+                game.ImageUrl = dto.imageUrl;
+                game.Time = dto.time;
+                contents.Add(game);
+            }
         }
 
         public override void Save()
         {
-            using (TitleCounterContext db = new TitleCounterContext())
-            {
-                db.SaveChanges();
-            }
+            //using (TitleCounterContext db = new TitleCounterContext())
+            //{
+            //    db.SaveChanges();
+            //}
         }
+
+
+        
 
         public override void Update(Content content)
         {
@@ -47,7 +73,18 @@ namespace hltb
             else
             {
 #pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-                repository.Update(content as T);
+                //repository.Update(content as T);
+                
+                GameDto game = new GameDto();
+                game.title = "Battlefield 3";
+                game.dateRelease = "2020-11-11";
+                game.globalScore = 0;
+                game.linkUrl = "";
+                game.imageUrl = "";
+                game.time = 5;
+                HttpContent httpContent = JsonContent.Create(game);
+                var res = httpClient.PostAsync(httpClient.BaseAddress+"/games", httpContent);
+                Console.WriteLine(res.Result.StatusCode);
 #pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
             }
 
@@ -55,7 +92,7 @@ namespace hltb
 
         public override void Remove(long id)
         {
-            repository.Remove(repository.FindById(id));
+            //repository.Remove(repository.FindById(id));
         }
 
         public override Content? GetFromJson(string json_string)

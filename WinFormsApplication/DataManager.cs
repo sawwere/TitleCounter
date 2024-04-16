@@ -1,6 +1,5 @@
 ﻿using hltb.Models;
 using hltb.Models.Outdated;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Diagnostics;
