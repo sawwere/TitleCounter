@@ -541,3 +541,4 @@ DataAccess/src/main/resources/application.properties
 DataAccess/.mvn/wrapper/maven-wrapper.jar
 DataAccess/.mvn/wrapper/maven-wrapper.properties
 SpringClient/
+*.jpg

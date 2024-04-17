@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,8 @@ public class GameController
     public static final String FIND_ALL_GAMES = "/api/games";
 
     public static final String CREATE_GAME_ENTRY = "/api/users/{username}/games";
-    public static final String DELETE_GAME_ENTRY = "/api/submissions/{submission_id}";
+    public static final String UPDATE_GAME_ENTRY = "/api/games/submissions/{submission_id}";
+    public static final String DELETE_GAME_ENTRY = "/api/games/submissions/{submission_id}";
     public static final String FIND_GAME_ENTRIES = "/api/users/{username}/games";
 
     /**
@@ -79,14 +81,20 @@ public class GameController
                 .findGameEntriesByUser(username)
                 .stream()
                 .map(gameEntryDtoFactory::entityToDto)
-                .collect(Collectors.toList())
+                .toList()
                 .get(0);
     }
 
     @PostMapping(CREATE_GAME_ENTRY)
     public GameEntryResponseDto createGameEntry(@PathVariable(name="username") String username,
-                                        @RequestBody GameEntryCreationDto gameEntryDto) {
+                                        @RequestBody GameEntryRequestDto gameEntryDto) throws IOException {
         return gameEntryDtoFactory.entityToDto(gameService.createGameEntry(username, gameEntryDto));
+    }
+
+    @PutMapping(UPDATE_GAME_ENTRY)
+    public void putGameEntry(@PathVariable(name="submission_id") Long gameEntryId,
+                             @RequestBody GameEntryRequestDto gameEntryDto) {
+        gameService.updateGameEntry(gameEntryId, gameEntryDto);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

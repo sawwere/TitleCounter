@@ -2,7 +2,7 @@ package com.TitleCounter.DataAccess.service;
 
 import com.TitleCounter.DataAccess.dto.GameDto;
 import com.TitleCounter.DataAccess.dto.GameDtoFactory;
-import com.TitleCounter.DataAccess.dto.GameEntryCreationDto;
+import com.TitleCounter.DataAccess.dto.GameEntryRequestDto;
 import com.TitleCounter.DataAccess.dto.GameEntryDtoFactory;
 import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.Game;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -79,7 +80,7 @@ public class GameService {
     }
 
     @Transactional
-    public GameEntry createGameEntry(String username, GameEntryCreationDto gameEntryDto) {
+    public GameEntry createGameEntry(String username, GameEntryRequestDto gameEntryDto) {
         GameEntry gameEntry = gameEntryDtoFactory.dtoToEntity(gameEntryDto);
         Game gameEntity = findGameOrElseThrowException(gameEntryDto.getGameId());
         gameEntry.setGame(gameEntity);
@@ -88,7 +89,23 @@ public class GameService {
         User user = userService.findUserByUsername(username);
         gameEntry.setUser(user);
         gameEntryRepository.save(gameEntry);
+        logger.info("Created GameEntry %d for user %s".formatted(gameEntry.getId(), username));
         return gameEntry;
+    }
+
+    @Transactional
+    public void updateGameEntry(Long gameEntryId, @Valid GameEntryRequestDto gameEntryDto) {
+        if (!Objects.equals(gameEntryId, gameEntryDto.getId()))
+            throw new IllegalArgumentException("Invalid id passed");
+        GameEntry gameEntry = findGameEntryOrElseThrowException(gameEntryId);
+        gameEntry.setCustomTitle(gameEntryDto.getCustomTitle());
+        gameEntry.setNote(gameEntryDto.getNote());
+        gameEntry.setPlatform(gameEntryDto.getPlatform());
+        gameEntry.setScore(gameEntryDto.getScore());
+        gameEntry.setStatus(gameEntryDto.getStatus());
+        gameEntry.setTime(gameEntryDto.getTime());
+        gameEntry.setDateCompleted(gameEntryDto.getDateCompleted());
+        gameEntryRepository.save(gameEntry);
     }
 
     @Transactional
@@ -100,7 +117,6 @@ public class GameService {
     @Transactional
     public List<GameEntry> findGameEntriesByUser(String username) {
         User user = userService.findUserByUsername(username);
-        System.out.println(username);
         Stream<GameEntry> gameEntries = gameEntryRepository.streamAllByUserId(user.getId());
         return gameEntries.toList();
     }

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class GameEntryResponseDto {
     private Long id;
 
-    @Size(min = 0, max = 64)
+    @Size(min = 1, max = 64)
     @JsonProperty(value = "custom_title")
     private String customTitle;
 

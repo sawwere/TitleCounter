@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameEntryCreationDto {
+public class GameEntryRequestDto {
     private Long id;
 
     @Size(min = 1, max = 64)

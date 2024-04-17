@@ -27,7 +27,7 @@ public class GameEntryDtoFactory {
                 .build();
     }
 
-    public GameEntry dtoToEntity(GameEntryCreationDto gameEntryDto) {
+    public GameEntry dtoToEntity(GameEntryRequestDto gameEntryDto) {
         return GameEntry.builder()
                 .id(gameEntryDto.getId())
                 .customTitle(gameEntryDto.getCustomTitle())
@@ -42,8 +42,8 @@ public class GameEntryDtoFactory {
                 .build();
     }
 
-    public GameEntryCreationDto makeDefault(Long gameId, Long userId) {
-        return  GameEntryCreationDto.builder()
+    public GameEntryRequestDto makeDefault(Long gameId, Long userId) {
+        return  GameEntryRequestDto.builder()
                 .score(0L)
                 .status("COMPLETED")
                 .dateCompleted(LocalDate.now())
