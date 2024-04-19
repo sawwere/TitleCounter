@@ -22,8 +22,6 @@ namespace hltb
 
         public abstract void Load();
 
-        public abstract void Save();
-
         public abstract void Create(Content content);
 
         public abstract void Update(Content content);

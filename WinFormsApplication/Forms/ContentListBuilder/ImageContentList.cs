@@ -33,7 +33,7 @@ namespace hltb.Forms.ContentListBuilder
 
                 button.BackgroundImage = new Bitmap(DataManager.PATH + "\\data\\images\\"
                         + "Game".ToString() + "\\"
-                        + content.Id + " " + content.FixedTitle + ".jpg");
+                        + content.Id + " " + content.Title + ".jpg");
                 button.Click += action;
                 button.BackgroundImageLayout = ImageLayout.Stretch;
                 button.ForeColor = Color.Transparent;

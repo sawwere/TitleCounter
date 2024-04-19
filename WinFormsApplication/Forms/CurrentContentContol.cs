@@ -1,4 +1,5 @@
 ﻿using hltb.Models;
+using System;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
@@ -7,6 +8,11 @@ namespace hltb
 {
     public partial class CurrentContentContol : UserControl
     {
+        private HttpClient httpClient = new()
+        {
+            BaseAddress = new Uri("http://127.0.0.1:8080"),
+        };
+
         private Content content;
         Mainform parent;
 
@@ -41,16 +47,24 @@ namespace hltb
             return res.ToString();
         }
 
-        public CurrentContentContol(Mainform owner,Content content)
+        static async Task<Image> GetImageAsync(HttpClient httpClient, string imageUrl)
+        {
+            var response = httpClient.GetStreamAsync($"{imageUrl}").Result;
+            var img = Image.FromStream( response );
+            return img;
+        }
+
+
+        public CurrentContentContol(Mainform owner, Content content)
         {
             InitializeComponent();
             this.Dock = DockStyle.Fill;
             parent = owner;
 
             this.content = content;
-            var str = parent.modeState.ToString();
-            var tmp = $@"{DataManager.PATH}\data\images\{str}\{content.Id} {content.FixedTitle}.jpg";
-            titlePicture.Image = new Bitmap($@"{DataManager.PATH}\data\images\\{str}\{content.Id} {content.FixedTitle}.jpg");
+            var tmp = $@"/images/{owner.modeState.ToString()}/{content.Id}.jpg";
+
+            titlePicture.Image = GetImageAsync(httpClient, tmp).Result;
             nameLabel.Text = GetFullName();
 
             //timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
@@ -163,7 +177,7 @@ namespace hltb
             // score
             content.Score = (int)score_c.SelectedItem;
             // status
-            var status = status_c.SelectedItem.ToString();
+            var status = status_c.SelectedItem is null ? status_c.Items[0].ToString() : status_c.SelectedItem.ToString();
             content.Status = status;
             // competition date
             int day = competitionDay.SelectedIndex + 1;

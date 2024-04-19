@@ -2,6 +2,7 @@
 using hltb.Forms.ContentListBuilder;
 using hltb.Models;
 using hltb.Models.Outdated;
+using hltb.Service;
 using Newtonsoft.Json;
 using System.Data;
 using System.Text;
@@ -29,7 +30,7 @@ namespace hltb
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            modeState.Save();
+            //modeState.Save();
         }
 
         void UpdateStatisticsLabel()
@@ -71,7 +72,7 @@ namespace hltb
         {
             InitializeComponent();
             AddOwnedForm(add_content);
-            ChangeState(new State<Game>(this));
+            ChangeState(new GameService(this));
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -103,7 +104,7 @@ namespace hltb
             //TODO
             content.Status = "backlog";
             content.Score = 0;
-            content.FixedTitle = GetSafeName(content.Title);
+            //content.FixedTitle = GetSafeName(content.Title);
             return content;
         }
 
@@ -215,7 +216,7 @@ namespace hltb
             switch (nmode)
             {
                 case "Game":
-                    ChangeState(new State<Game>(this));
+                    ChangeState(new GameService(this));
                     break;
                 case "Film":
                     ChangeState(new State<Film>(this));

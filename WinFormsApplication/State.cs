@@ -1,4 +1,5 @@
 ﻿using hltb.Dto;
+using hltb.Exception;
 using hltb.Models;
 using hltb.Models.Outdated;
 using Newtonsoft.Json;
@@ -33,38 +34,17 @@ namespace hltb
             }
         }
 
+        
+
         public override void Load()
         {
             contents = new List<Content> { };
-            var gameDtos = httpClient.GetFromJsonAsync<List<GameDto>>(httpClient.BaseAddress + "/games").Result;
+            var gameDtos = httpClient.GetFromJsonAsync<List<GameEntryResponseDto>>(httpClient.BaseAddress + "/users/admin/games").Result;
             foreach (var dto in gameDtos)
             {
-                Game game = new Game();
-                game.Id = dto.id;
-                game.Title = dto.title;
-                game.FixedTitle = dto.title;
-                game.Note = "";
-                game.DateCompleted = DateOnly.FromDateTime(DateTime.Now);
-                game.DateRelease = game.DateCompleted;
-                game.Score = (long)dto.globalScore;
-                game.Status = "backlog";
-                game.LinkUrl = dto.linkUrl;
-                game.ImageUrl = dto.imageUrl;
-                game.Time = dto.time;
-                contents.Add(game);
+                //contents.Add(parseGameJson(dto));
             }
-        }
-
-        public override void Save()
-        {
-            //using (TitleCounterContext db = new TitleCounterContext())
-            //{
-            //    db.SaveChanges();
-            //}
-        }
-
-
-        
+        }        
 
         public override void Update(Content content)
         {
