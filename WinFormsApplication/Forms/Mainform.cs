@@ -1,9 +1,7 @@
-﻿using hltb.Forms;
+﻿using hltb.Dto;
 using hltb.Forms.ContentListBuilder;
 using hltb.Models;
-using hltb.Models.Outdated;
 using hltb.Service;
-using Newtonsoft.Json;
 using System.Data;
 using System.Text;
 
@@ -22,11 +20,9 @@ namespace hltb
 
         public ModeState modeState;
         private Dictionary<Button, ComboBox> mapFilterToComboBox = new Dictionary<Button, ComboBox>();
-        private static HttpClient sharedClient = new()
-        {
-            BaseAddress = new Uri("http://127.0.0.1:5000"),
-        };
+        private readonly RestApiSerice restApiSerice;
 
+        public static UserLoginDto USER_INFO = new UserLoginDto("admin", "1111");
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
@@ -71,6 +67,9 @@ namespace hltb
         public Mainform()
         {
             InitializeComponent();
+            restApiSerice = RestApiSerice.Instance;
+            restApiSerice.login(USER_INFO);
+
             AddOwnedForm(add_content);
             ChangeState(new GameService(this));
         }
@@ -87,27 +86,6 @@ namespace hltb
             Application.ApplicationExit += new EventHandler(OnApplicationExit!);
         }
 
-        static async Task<byte[]> GetImageAsync(HttpClient httpClient, string imageUrl)
-        {
-            var response = await httpClient.GetStringAsync($"find/image?image_url={imageUrl}");
-            return System.Convert.FromBase64String(response); ;
-        }
-
-        private async Task<Content> GetContentAsync(string title)
-        {
-            var response = await sharedClient.GetStringAsync($"find/{modeState.ToString().ToLower()}s?title={title}");
-            var content = modeState.GetFromJson(response);
-            if (content is null)
-            {
-                throw new ArgumentNullException("Invalid Json Deserialize");
-            }
-            //TODO
-            content.Status = "backlog";
-            content.Score = 0;
-            //content.FixedTitle = GetSafeName(content.Title);
-            return content;
-        }
-
         private async void addtitle_MouseDown(object sender, MouseEventArgs e)
         {
             StringBuilder status = new StringBuilder();
@@ -118,8 +96,8 @@ namespace hltb
             else
             {
 #pragma warning disable CS4014
-                var content = await GetContentAsync(namebox.Text);
-                var decodedImage = await Task.Run(() => GetImageAsync(sharedClient, content.ImageUrl));
+                var content = await restApiSerice.GetContentAsync(namebox.Text);
+                var decodedImage = await Task.Run(() => restApiSerice.GetImageAsync(content.ImageUrl));
 #pragma warning restore CS4014
                 char operationCode = '0';
                 if (operationCode == '0')

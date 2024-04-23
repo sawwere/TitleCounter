@@ -2,23 +2,19 @@
 using hltb.Exception;
 using hltb.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace hltb.Service
 {
     internal class GameService : ModeState
-    { 
-        HttpClient httpClient = new HttpClient();
+    {
+        private readonly RestApiSerice restApiSerice = RestApiSerice.Instance;
         public GameService(Mainform form) : base(form)
         {
-            httpClient.BaseAddress = new Uri("http://localhost:8080/api");
+            //httpClient.BaseAddress = new Uri("http://localhost:8080/api");
         }
+
+        //TODO
         public override void Create(Content content)
         {
             if (!(content is Game))
@@ -33,8 +29,8 @@ namespace hltb.Service
                 game.imageUrl = "";
                 game.time = 5;
                 HttpContent httpContent = JsonContent.Create(game);
-                var res = httpClient.PostAsync(httpClient.BaseAddress + "/games", httpContent);
-                Console.WriteLine(res.Result.StatusCode);
+                //var res = httpClient.PostAsync(httpClient.BaseAddress + "/games", httpContent);
+                //Console.WriteLine(res.Result.StatusCode);
             }
         }
 
@@ -46,7 +42,7 @@ namespace hltb.Service
         public override void Load()
         {
             contents = new List<Content> { };
-            var gameDtos = httpClient.GetFromJsonAsync<List<GameEntryResponseDto>>(httpClient.BaseAddress + "/users/admin/games").Result;
+            var gameDtos = restApiSerice.findGames();
             foreach (var dto in gameDtos)
             {
                 contents.Add(dtoToEnity(dto));
@@ -55,10 +51,9 @@ namespace hltb.Service
 
         public override void Remove(long id)
         {
-            var response = httpClient.DeleteAsync(httpClient.BaseAddress + $"/api/games/submissions/{id}").Result;
-            if (response.IsSuccessStatusCode)
+            if (restApiSerice.deleteGame(id))
             {
-                contents.Remove( contents.First(x=>x.EntryId==id));
+                contents.Remove(contents.First(x => x.EntryId == id));
             }
         }
 
@@ -69,13 +64,7 @@ namespace hltb.Service
 
         public override void Update(Content content)
         {
-            var response = httpClient.PutAsJsonAsync(httpClient.BaseAddress + $"/games/submissions/{content.EntryId}", 
-                enitiyToRequestDto(content as Game))
-                .Result;
-            if (response.IsSuccessStatusCode)
-            {
-                
-            }
+            restApiSerice.updateGame(enitiyToRequestDto(content as Game));
         }
 
         public Game dtoToEnity(GameEntryResponseDto gameEntryDto)

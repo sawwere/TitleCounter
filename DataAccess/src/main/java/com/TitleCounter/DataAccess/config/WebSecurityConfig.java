@@ -9,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
@@ -49,21 +53,30 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/error",
-                                "/login", "/registration",
+                        .requestMatchers("/api/login").anonymous()
+                        .requestMatchers("/", "/error", "/login",
+                                "/registration",
                                 "/games/*", "/users/**",
                                 "/css/**", "/images/**").permitAll()
                         .requestMatchers("/games/*/submit").authenticated()
-                        //.requestMatchers(HttpMethod.GET).permitAll()
                         //.requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("SCOPE_addTitles")
-                        .requestMatchers(HttpMethod.DELETE,
-                                GameController.DELETE_GAME)
-                        .hasAuthority("SCOPE_deleteTitles")
-//                        .requestMatchers(
-//                                GameController.CREATE_GAME_ENTRY,
-//                                GameController.DELETE_GAME_ENTRY)
-//                        .authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                GameController.DELETE_GAME
+                        ).hasAuthority("SCOPE_deleteTitles")
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                GameController.CREATE_GAME_ENTRY
+                        ).authenticated()
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                GameController.UPDATE_GAME_ENTRY
+                        ).authenticated()
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                GameController.DELETE_GAME_ENTRY
+                        ).authenticated()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .invalidSessionUrl("/login")
@@ -85,6 +98,17 @@ public class WebSecurityConfig {
                 ;
         return http.build();
     }
+
+//    @Bean
+//    public AuthenticationManager authenticationManager(
+//            UserDetailsService userDetailsService,
+//            PasswordEncoder passwordEncoder) {
+//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//        authenticationProvider.setUserDetailsService(userDetailsService);
+//        authenticationProvider.setPasswordEncoder(passwordEncoder);
+//
+//        return new ProviderManager(authenticationProvider);
+//    }
 
     @Autowired
     void configure(AuthenticationManagerBuilder builder) throws Exception {
