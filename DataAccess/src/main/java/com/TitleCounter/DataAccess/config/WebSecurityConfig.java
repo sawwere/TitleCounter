@@ -32,7 +32,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final UserService userService;
-
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepo) {
         return username -> {
@@ -54,16 +53,15 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/login").anonymous()
-                        .requestMatchers("/", "/error", "/login",
-                                "/registration",
-                                "/games/*", "/users/**",
+                        .requestMatchers("/", "/error",
+                                GameController.FIND_GAME, GameController.FIND_ALL_GAMES, GameController.FIND_GAME_ENTRIES,
+                                "/login", "/registration",
+                                "/games/*", "/games", "/users/**",
                                 "/css/**", "/images/**").permitAll()
                         .requestMatchers("/games/*/submit").authenticated()
-                        //.requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("SCOPE_addTitles")
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                GameController.DELETE_GAME
-                        ).hasAuthority("SCOPE_deleteTitles")
+                        .requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, GameController.UPDATE_GAME).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, GameController.DELETE_GAME).hasRole("ADMIN")
                         .requestMatchers(
                                 HttpMethod.POST,
                                 GameController.CREATE_GAME_ENTRY
@@ -80,8 +78,7 @@ public class WebSecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .invalidSessionUrl("/login")
-                        .maximumSessions(1))
-                //.httpBasic(withDefaults())
+                        .maximumSessions(5))
                 .formLogin(form -> form
                         .defaultSuccessUrl("/")
                         .permitAll())
@@ -98,17 +95,6 @@ public class WebSecurityConfig {
                 ;
         return http.build();
     }
-
-//    @Bean
-//    public AuthenticationManager authenticationManager(
-//            UserDetailsService userDetailsService,
-//            PasswordEncoder passwordEncoder) {
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//        authenticationProvider.setUserDetailsService(userDetailsService);
-//        authenticationProvider.setPasswordEncoder(passwordEncoder);
-//
-//        return new ProviderManager(authenticationProvider);
-//    }
 
     @Autowired
     void configure(AuthenticationManagerBuilder builder) throws Exception {

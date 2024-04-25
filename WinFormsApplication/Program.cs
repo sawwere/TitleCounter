@@ -1,4 +1,6 @@
-﻿using System;
+﻿using hltb.Forms;
+using hltb.Service;
+using System;
 using System.Windows.Forms;
 
 namespace hltb
@@ -13,7 +15,7 @@ namespace hltb
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Mainform());
+            Application.Run(new LoginForm());
         }
     }
 }

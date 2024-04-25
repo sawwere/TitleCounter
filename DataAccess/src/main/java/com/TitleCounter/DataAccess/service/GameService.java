@@ -80,6 +80,16 @@ public class GameService {
     }
 
     @Transactional
+    public List<Game> search(Optional<String> query) {
+        var games = gameRepository.streamAllBy();
+        if (query.isPresent()) {
+            games = games.filter(_game-> _game.getTitle().equals(query.get()));
+        }
+        return games.toList();
+    }
+
+
+    @Transactional
     public GameEntry createGameEntry(String username, GameEntryRequestDto gameEntryDto) {
         GameEntry gameEntry = gameEntryDtoFactory.dtoToEntity(gameEntryDto);
         Game gameEntity = findGameOrElseThrowException(gameEntryDto.getGameId());

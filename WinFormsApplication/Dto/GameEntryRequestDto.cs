@@ -15,14 +15,14 @@ namespace hltb.Dto
         [JsonPropertyName("custom_title")]
         public string customTitle { get; set; }
 
-        public string note { get; set; }
+        public string? note { get; set; }
         public long score { get; set; }
         public string status { get; set; }
 
         [JsonPropertyName("date_completed")]
         public string dateCompleted { get; set; }
         public long time { get; set; }
-        public string platform { get; set; }
+        public string? platform { get; set; }
 
         [JsonPropertyName("client_id")]
         public long userId { get; set; }
@@ -66,7 +66,7 @@ namespace hltb.Dto
 
             public GameEntryDtoBuilder dateCompleted(DateOnly date)
             {
-                _result.dateCompleted = $"{date.Year}-{ string.Format("{0:D2}", date.Month)}-{date.Day}";
+                _result.dateCompleted = $"{date.Year}-{string.Format("{0:D2}", date.Month)}-{string.Format("{0:D2}", date.Day)}";
                 return this;
             }
 

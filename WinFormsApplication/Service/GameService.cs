@@ -8,29 +8,26 @@ namespace hltb.Service
 {
     internal class GameService : ModeState
     {
-        private readonly RestApiSerice restApiSerice = RestApiSerice.Instance;
         public GameService(Mainform form) : base(form)
         {
             //httpClient.BaseAddress = new Uri("http://localhost:8080/api");
         }
 
         //TODO
-        public override void Create(Content content)
+        public override void Create(ISearchable content)
         {
-            if (!(content is Game))
-                throw new InvalidCastException("Cant cast content to T");
-            else
             {
-                GameDto game = new GameDto();
-                game.title = "Battlefield 3";
-                game.dateRelease = "2020-11-11";
-                game.globalScore = 0;
-                game.linkUrl = "";
-                game.imageUrl = "";
-                game.time = 5;
-                HttpContent httpContent = JsonContent.Create(game);
-                //var res = httpClient.PostAsync(httpClient.BaseAddress + "/games", httpContent);
-                //Console.WriteLine(res.Result.StatusCode);
+                GameEntryRequestDto gameEntry = GameEntryRequestDto.builder()
+                    .customTitle(content.title)
+                    .score(0)
+                    .status("backlog")
+                    .dateCompleted( DateOnly.FromDateTime(DateTime.Today))
+                    .time(content.time)
+                    .userId(1) // TODO
+                    .gameId(content.id)
+                    .build();
+                
+                RestApiSerice.Instance.createGameEntry(gameEntry);
             }
         }
 
@@ -39,10 +36,15 @@ namespace hltb.Service
             return JsonConvert.DeserializeObject<Game>(json_string);
         }
 
+        public override IEnumerable<ISearchable> Search(string title)
+        {
+            return RestApiSerice.Instance.searchGames(title);
+        }
+
         public override void Load()
         {
             contents = new List<Content> { };
-            var gameDtos = restApiSerice.findGames();
+            var gameDtos = RestApiSerice.Instance.findGames();
             foreach (var dto in gameDtos)
             {
                 contents.Add(dtoToEnity(dto));
@@ -51,7 +53,7 @@ namespace hltb.Service
 
         public override void Remove(long id)
         {
-            if (restApiSerice.deleteGame(id))
+            if (RestApiSerice.Instance.deleteGameEntry(id))
             {
                 contents.Remove(contents.First(x => x.EntryId == id));
             }
@@ -64,7 +66,11 @@ namespace hltb.Service
 
         public override void Update(Content content)
         {
-            restApiSerice.updateGame(enitiyToRequestDto(content as Game));
+            if ((Game)content is null)
+            {
+                throw new InvalidCastException(nameof(content));
+            }
+            RestApiSerice.Instance.updateGameEntry(enitiyToRequestDto(content as Game));
         }
 
         public Game dtoToEnity(GameEntryResponseDto gameEntryDto)

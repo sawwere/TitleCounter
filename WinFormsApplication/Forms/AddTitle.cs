@@ -18,12 +18,9 @@ namespace hltb
             InitializeComponent();
         }
 
-        public void RecieveResponse(string title, byte[] decodedImage)
+        public void RecieveResponse(string title, Image decodedImage)
         {
-            using (var ms = new MemoryStream(decodedImage))
-            {
-                contentPicture.Image = new Bitmap(ms);
-            }
+            contentPicture.Image = new Bitmap(decodedImage);
             nameLabel.Text =  title;
         }
 

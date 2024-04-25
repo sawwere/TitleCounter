@@ -1,4 +1,5 @@
 ﻿using hltb.Models;
+using hltb.Service;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -8,11 +9,6 @@ namespace hltb
 {
     public partial class CurrentContentContol : UserControl
     {
-        private HttpClient httpClient = new()
-        {
-            BaseAddress = new Uri("http://127.0.0.1:8080"),
-        };
-
         private Content content;
         Mainform parent;
 
@@ -47,13 +43,6 @@ namespace hltb
             return res.ToString();
         }
 
-        static async Task<Image> GetImageAsync(HttpClient httpClient, string imageUrl)
-        {
-            var response = httpClient.GetStreamAsync($"{imageUrl}").Result;
-            var img = Image.FromStream( response );
-            return img;
-        }
-
 
         public CurrentContentContol(Mainform owner, Content content)
         {
@@ -62,9 +51,9 @@ namespace hltb
             parent = owner;
 
             this.content = content;
-            var tmp = $@"/images/{owner.modeState.ToString()}/{content.Id}.jpg";
+            var tmp = $@"http://localhost:8080/images/{owner.modeState.ToString()}/{content.Id}.jpg";
 
-            titlePicture.Image = GetImageAsync(httpClient, tmp).Result;
+            titlePicture.Image = RestApiSerice.Instance.GetImageAsync(tmp).Result;
             nameLabel.Text = GetFullName();
 
             //timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);

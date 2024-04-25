@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -60,11 +61,9 @@ public class GameController
     }
 
     @GetMapping(FIND_ALL_GAMES)
-    public List<GameDto> findAllGames() {
-        return gameService.findAll().stream().map(gameDtoFactory::entityToDto).collect(Collectors.toList());
+    public List<GameDto> findAllGames(@RequestParam(value = "q") Optional<String> query) {
+        return gameService.search(query).stream().map(gameDtoFactory::entityToDto).collect(Collectors.toList());
     }
-
-
 
     @GetMapping(FIND_GAME_ENTRIES)
     public List<GameEntryResponseDto> findGameEntriesByUser(@PathVariable(name="username") String username) {
@@ -73,16 +72,6 @@ public class GameController
                 .stream()
                 .map(gameEntryDtoFactory::entityToDto)
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping(FIND_GAME_ENTRIES+"2")
-    public GameEntryResponseDto findGameEntriesByUser2(@PathVariable(name="username") String username) {
-        return gameService
-                .findGameEntriesByUser(username)
-                .stream()
-                .map(gameEntryDtoFactory::entityToDto)
-                .toList()
-                .get(0);
     }
 
     @PostMapping(CREATE_GAME_ENTRY)

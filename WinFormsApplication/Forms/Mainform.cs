@@ -1,13 +1,12 @@
 ﻿using hltb.Dto;
 using hltb.Forms.ContentListBuilder;
 using hltb.Models;
+using hltb.Models.Outdated;
 using hltb.Service;
 using System.Data;
+using System.Diagnostics;
 using System.Text;
 
-using static hltb.DataManager;
-
-#pragma warning disable CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.
 namespace hltb
 {
     public enum mode { GAMES, FILMS, TVSERIES };
@@ -20,13 +19,10 @@ namespace hltb
 
         public ModeState modeState;
         private Dictionary<Button, ComboBox> mapFilterToComboBox = new Dictionary<Button, ComboBox>();
-        private readonly RestApiSerice restApiSerice;
-
-        public static UserLoginDto USER_INFO = new UserLoginDto("admin", "1111");
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            //modeState.Save();
+            AuthService.Instance.logout();
         }
 
         void UpdateStatisticsLabel()
@@ -54,7 +50,7 @@ namespace hltb
         public void RefreshTitles()
         {
             modeState.Load();
-            
+
             UpdateStatisticsLabel();
         }
 
@@ -67,16 +63,12 @@ namespace hltb
         public Mainform()
         {
             InitializeComponent();
-            restApiSerice = RestApiSerice.Instance;
-            restApiSerice.login(USER_INFO);
-
             AddOwnedForm(add_content);
             ChangeState(new GameService(this));
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            CheckDataFiles();
             UpdateStatisticsLabel();
             mapFilterToComboBox.Add(ByYearButton, YearSortBox);
             mapFilterToComboBox.Add(ByScoreButton, ScoreSortBox);
@@ -95,25 +87,41 @@ namespace hltb
             }
             else
             {
-#pragma warning disable CS4014
-                var content = await restApiSerice.GetContentAsync(namebox.Text);
-                var decodedImage = await Task.Run(() => restApiSerice.GetImageAsync(content.ImageUrl));
-#pragma warning restore CS4014
                 char operationCode = '0';
+                var searchResult = modeState.Search(namebox.Text);
+                string foundTitle = "Not found";
+
+                string imageUrl = $@"http://localhost:8080/images/None.jpg";
+                if (searchResult.Count() == 0)
+                {
+                    operationCode = '1';
+                }
+                else
+                {
+                    imageUrl = $@"http://localhost:8080/images/{modeState.ToString()}/{searchResult.First().id}.jpg";
+                    foundTitle = searchResult.First().title;
+                }
+                Image decodedImage = await Task.Run(() => RestApiSerice.Instance.GetImageAsync(imageUrl));
+
                 if (operationCode == '0')
                 {
-                    if (modeState.Contents.Where(x => x.Title == content.Title && x.DateRelease == content.DateRelease).Count() > 0)
+                    if (modeState
+                        .Contents
+                        .Where(x => 
+                            x.Title == foundTitle 
+                            && x.DateRelease.Year.ToString() == searchResult.First().dateRelease.Substring(0,4))
+                        .Count() > 0)
                         operationCode = '2';
                 }
                 // send operation code to add_content Control, perform preparations
                 add_content.SetStatus(operationCode);
 
-                add_content.RecieveResponse(content.Title, decodedImage);
+                add_content.RecieveResponse(foundTitle, decodedImage);
                 if (add_content.ShowDialog() == DialogResult.OK)
                 {
                     namebox.Text = "";
-                    modeState.Create(content);
-                    DataManager.SaveImage(modeState, content, decodedImage);
+                    Content content = new Content();
+                    modeState.Create(searchResult.First());
                 }
             }
             UpdateStatisticsLabel();
@@ -250,6 +258,10 @@ namespace hltb
             AddButtons(modeState.Contents.Where(x => x.Title.ToString().First() == cur_letter).ToList());
 
         }
+
+        private void Mainform_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
-#pragma warning restore CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.

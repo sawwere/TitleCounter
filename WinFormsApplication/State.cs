@@ -22,7 +22,7 @@ namespace hltb
             httpClient.BaseAddress = new Uri("http://localhost:8080/api");
         }
 
-        public override void Create(Content content)
+        public override void Create(ISearchable content)
         {
             if (!(content is T))
                 throw new InvalidCastException($"Cant cast content to {typeof(T)}");
@@ -34,7 +34,10 @@ namespace hltb
             }
         }
 
-        
+        public override IEnumerable<ISearchable> Search(string title)
+        {
+            throw new NotImplementedException();
+        }
 
         public override void Load()
         {

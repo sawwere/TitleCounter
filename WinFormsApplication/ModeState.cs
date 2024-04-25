@@ -1,4 +1,5 @@
-﻿using hltb.Models;
+﻿using hltb.Dto;
+using hltb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,11 @@ namespace hltb
             this.form = form;
         }
 
+        public abstract IEnumerable<ISearchable> Search(string title);
+
         public abstract void Load();
 
-        public abstract void Create(Content content);
+        public abstract void Create(ISearchable content);
 
         public abstract void Update(Content content);
 

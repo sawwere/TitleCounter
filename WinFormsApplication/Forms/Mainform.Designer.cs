@@ -395,6 +395,7 @@ namespace hltb
             ForeColor = Color.SeaShell;
             Name = "Mainform";
             Text = "MyList";
+            FormClosing += Mainform_FormClosing;
             Load += MainForm_Load;
             groupBox1.ResumeLayout(false);
             displayModeGroupBox.ResumeLayout(false);

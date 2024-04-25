@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.TitleCounter</groupId>
 	<artifactId>DataAccess</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.7</version>
 	<name>DataAccess</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -43,6 +43,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<!-- Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 
 		<!-- Mail -->

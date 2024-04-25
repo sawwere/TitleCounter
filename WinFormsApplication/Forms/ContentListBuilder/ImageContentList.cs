@@ -1,4 +1,5 @@
-﻿using System;
+﻿using hltb.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,9 +32,9 @@ namespace hltb.Forms.ContentListBuilder
                 button.Name = "btn" + i;
                 button.Tag = content.Id;
 
-                button.BackgroundImage = new Bitmap(DataManager.PATH + "\\data\\images\\"
+                button.BackgroundImage = RestApiSerice.Instance.GetImageAsync( "\\data\\images\\"
                         + "Game".ToString() + "\\"
-                        + content.Id + " " + content.Title + ".jpg");
+                        + content.Id + " " + content.Title + ".jpg").Result;
                 button.Click += action;
                 button.BackgroundImageLayout = ImageLayout.Stretch;
                 button.ForeColor = Color.Transparent;
