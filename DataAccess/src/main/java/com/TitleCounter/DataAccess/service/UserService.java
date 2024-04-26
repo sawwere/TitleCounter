@@ -1,6 +1,6 @@
 package com.TitleCounter.DataAccess.service;
 
-import com.TitleCounter.DataAccess.dto.UserRegistrationDto;
+import com.TitleCounter.DataAccess.dto.user.UserRegistrationDto;
 import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.RoleRepository;

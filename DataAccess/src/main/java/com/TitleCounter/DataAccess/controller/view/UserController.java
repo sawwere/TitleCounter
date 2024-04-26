@@ -1,8 +1,7 @@
 package com.TitleCounter.DataAccess.controller.view;
 
-import com.TitleCounter.DataAccess.dto.UserDto;
-import com.TitleCounter.DataAccess.dto.UserDtoFactory;
-import com.TitleCounter.DataAccess.dto.UserRegistrationDto;
+import com.TitleCounter.DataAccess.dto.user.UserDtoFactory;
+import com.TitleCounter.DataAccess.dto.user.UserRegistrationDto;
 import com.TitleCounter.DataAccess.service.UserService;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import jakarta.servlet.ServletException;
@@ -10,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller

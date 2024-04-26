@@ -1,12 +1,14 @@
 package com.TitleCounter.DataAccess.controller.api;
+
 import com.TitleCounter.DataAccess.dto.*;
+import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.service.GameService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,7 +63,7 @@ public class GameController
     }
 
     @GetMapping(FIND_ALL_GAMES)
-    public List<GameDto> findAllGames(@RequestParam(value = "q") Optional<String> query) {
+    public List<GameDto> findAllGames(@RequestParam(value = "q", required = false) Optional<String> query) {
         return gameService.search(query).stream().map(gameDtoFactory::entityToDto).collect(Collectors.toList());
     }
 
@@ -76,19 +78,26 @@ public class GameController
 
     @PostMapping(CREATE_GAME_ENTRY)
     public GameEntryResponseDto createGameEntry(@PathVariable(name="username") String username,
-                                        @RequestBody GameEntryRequestDto gameEntryDto) throws IOException {
+                                                @RequestBody GameEntryRequestDto gameEntryDto,
+                                                Authentication authentication) {
+        if (!authentication.getName().equals(username))
+        {
+            throw new ForbiddenException("aa");
+        }
         return gameEntryDtoFactory.entityToDto(gameService.createGameEntry(username, gameEntryDto));
     }
 
     @PutMapping(UPDATE_GAME_ENTRY)
     public void putGameEntry(@PathVariable(name="submission_id") Long gameEntryId,
-                             @RequestBody GameEntryRequestDto gameEntryDto) {
-        gameService.updateGameEntry(gameEntryId, gameEntryDto);
+                             @RequestBody GameEntryRequestDto gameEntryDto,
+                             Authentication authentication) {
+        gameService.updateGameEntry(gameEntryId, gameEntryDto, authentication);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(DELETE_GAME_ENTRY)
-    public void createGameEntry(@PathVariable(name="submission_id") Long gameEntryId) {
-        gameService.deleteGameEntry(gameEntryId);
+    public void createGameEntry(@PathVariable(name="submission_id") Long gameEntryId,
+                                Authentication authentication) {
+        gameService.deleteGameEntry(gameEntryId, authentication);
     }
 }

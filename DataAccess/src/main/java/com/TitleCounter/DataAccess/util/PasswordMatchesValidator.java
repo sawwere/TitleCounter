@@ -1,6 +1,6 @@
 package com.TitleCounter.DataAccess.util;
 
-import com.TitleCounter.DataAccess.dto.UserRegistrationDto;
+import com.TitleCounter.DataAccess.dto.user.UserRegistrationDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -1,33 +1,60 @@
 package com.TitleCounter.DataAccess.controller.api;
 
-import com.TitleCounter.DataAccess.dto.UserLoginDto;
+import com.TitleCounter.DataAccess.dto.user.UserDto;
+import com.TitleCounter.DataAccess.dto.user.UserLoginDto;
+import com.TitleCounter.DataAccess.exception.ApiBadCredentialsException;
+import com.TitleCounter.DataAccess.service.GameService;
+import com.TitleCounter.DataAccess.storage.entity.User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Logger;
+
 @RequiredArgsConstructor
 @RestController
 public class AuthController {
-    //private final AuthenticationManager authenticationManager;
-    @PostMapping("/api/login")
-    public void login(@Valid @RequestBody UserLoginDto userLoginDto, HttpServletRequest request) {
-        Authentication authenticationRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(userLoginDto.getUsername(), userLoginDto.getPassword());
-        //request.login(userLoginDto.getUsername(), userLoginDto.getPassword());
+    private static final Logger logger =
+            Logger.getLogger(GameService.class.getName());
+
+    public static final String API_LOGIN = "/api/login";
+    public static final String API_LOGOUT = "/api/logout";
+
+    @PostMapping(API_LOGIN)
+    public UserDto login(@Valid @RequestBody UserLoginDto userLoginDto, HttpServletRequest request) {
         try {
             request.login(userLoginDto.getUsername(), userLoginDto.getPassword());
         } catch (ServletException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getCause());
-            throw new RuntimeException("Invalid username or password");
+            logger.info(e.getMessage());
+            throw new ApiBadCredentialsException("Invalid username or password");
+        }
+        var auth = (Authentication) request.getUserPrincipal();
+        var user = (User) auth.getPrincipal();
+        return UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
+    }
+
+    @PostMapping(API_LOGOUT)
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            request.logout();
+            request.getSession().invalidate();
+
+            Cookie toRemove = new Cookie("SESSION", "");
+            toRemove.setMaxAge(0);
+            response.addCookie(toRemove);
+        } catch (ServletException e) {
+            logger.info(e.getMessage());
         }
     }
 }

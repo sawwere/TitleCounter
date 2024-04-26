@@ -1,6 +1,5 @@
 package com.TitleCounter.DataAccess.config;
 
-import com.TitleCounter.DataAccess.storage.entity.Game;
 import com.TitleCounter.DataAccess.storage.entity.Role;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.GameRepository;
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Configuration

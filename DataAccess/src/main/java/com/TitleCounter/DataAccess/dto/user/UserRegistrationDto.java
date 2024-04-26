@@ -1,6 +1,7 @@
-package com.TitleCounter.DataAccess.dto;
+package com.TitleCounter.DataAccess.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.TitleCounter.DataAccess.util.PasswordMatches;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -10,7 +11,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginDto {
+@PasswordMatches
+public class UserRegistrationDto {
     @NotNull
     @NotEmpty
     private String username;
@@ -18,4 +20,10 @@ public class UserLoginDto {
     @NotNull
     @NotEmpty
     private String password;
+
+    private String passwordConfirm;
+
+    @NotNull
+    @Email
+    private String email;
 }

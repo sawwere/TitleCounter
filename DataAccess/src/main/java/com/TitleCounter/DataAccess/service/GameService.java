@@ -4,6 +4,8 @@ import com.TitleCounter.DataAccess.dto.GameDto;
 import com.TitleCounter.DataAccess.dto.GameDtoFactory;
 import com.TitleCounter.DataAccess.dto.GameEntryRequestDto;
 import com.TitleCounter.DataAccess.dto.GameEntryDtoFactory;
+import com.TitleCounter.DataAccess.exception.ApiBadCredentialsException;
+import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.Game;
 import com.TitleCounter.DataAccess.storage.entity.GameEntry;
@@ -13,6 +15,8 @@ import com.TitleCounter.DataAccess.storage.repository.GameRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -104,7 +108,10 @@ public class GameService {
     }
 
     @Transactional
-    public void updateGameEntry(Long gameEntryId, @Valid GameEntryRequestDto gameEntryDto) {
+    public void updateGameEntry(Long gameEntryId, @Valid GameEntryRequestDto gameEntryDto, Authentication authentication) {
+        User user = userService.findUserByUsername(authentication.getName());
+        if (!user.getId().equals(gameEntryDto.getUserId()))
+            throw new ForbiddenException("You don't have access to requested resource");
         if (!Objects.equals(gameEntryId, gameEntryDto.getId()))
             throw new IllegalArgumentException("Invalid id passed");
         GameEntry gameEntry = findGameEntryOrElseThrowException(gameEntryId);
@@ -116,12 +123,17 @@ public class GameService {
         gameEntry.setTime(gameEntryDto.getTime());
         gameEntry.setDateCompleted(gameEntryDto.getDateCompleted());
         gameEntryRepository.save(gameEntry);
+        logger.info("Updated GameEntry %d for user %s".formatted(gameEntry.getId(), user.getUsername()));
     }
 
     @Transactional
-    public void deleteGameEntry(Long gameEntryId) {
+    public void deleteGameEntry(Long gameEntryId, Authentication authentication) {
         GameEntry gameEntry = findGameEntryOrElseThrowException(gameEntryId);
+        User user = userService.findUserByUsername(authentication.getName());
+        if (!user.getId().equals(gameEntry.getUser().getId()))
+            throw new ForbiddenException("You don't have access to requested resource");
         gameEntryRepository.delete(gameEntry);
+        logger.info("Deleted GameEntry %d for user %s".formatted(gameEntry.getId(), user.getUsername()));
     }
 
     @Transactional

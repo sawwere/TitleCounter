@@ -1,5 +1,6 @@
 package com.TitleCounter.DataAccess.config;
 
+import com.TitleCounter.DataAccess.controller.api.AuthController;
 import com.TitleCounter.DataAccess.controller.api.GameController;
 import com.TitleCounter.DataAccess.service.UserService;
 import com.TitleCounter.DataAccess.storage.entity.User;
@@ -9,22 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.Optional;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
@@ -42,6 +38,17 @@ public class WebSecurityConfig {
                 throw new UsernameNotFoundException("User ‘" + username + "’ not found");
         };
     }
+    @Bean
+    public RequestMatcher apiGamesGetRequestMatcher() {
+        return request -> {
+            String requestUri = request.getRequestURI();
+            return request.getMethod().equals(HttpMethod.GET.toString())
+                    && (requestUri.equals(GameController.FIND_GAME)
+                        || requestUri.equals(GameController.FIND_ALL_GAMES)
+                        || requestUri.equals(GameController.FIND_GAME_ENTRIES))
+                    ;
+        };
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -50,18 +57,19 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/login").anonymous()
+                        .requestMatchers(AuthController.API_LOGIN).anonymous()
+                        .requestMatchers(AuthController.API_LOGOUT).authenticated()
+                        .requestMatchers(apiGamesGetRequestMatcher()).permitAll()
                         .requestMatchers("/", "/error",
-                                GameController.FIND_GAME, GameController.FIND_ALL_GAMES, GameController.FIND_GAME_ENTRIES,
                                 "/login", "/registration",
                                 "/games/*", "/games", "/users/**",
                                 "/css/**", "/images/**").permitAll()
                         .requestMatchers("/games/*/submit").authenticated()
-                        .requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, GameController.UPDATE_GAME).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, GameController.DELETE_GAME).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, GameController.CREATE_GAME).hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, GameController.UPDATE_GAME).hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, GameController.DELETE_GAME).hasAuthority("ADMIN")
                         .requestMatchers(
                                 HttpMethod.POST,
                                 GameController.CREATE_GAME_ENTRY
@@ -77,14 +85,14 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/login")
+                        .invalidSessionUrl("/")
                         .maximumSessions(5))
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/")
-                        .permitAll())
+//                .formLogin(form -> form
+//                        .defaultSuccessUrl("/")
+//                        .permitAll())
                 .logout(logout -> logout
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "SESSION")
                         .logoutSuccessUrl("/"))
                 .rememberMe(x->x
                        .rememberMeParameter("remember-me-new")

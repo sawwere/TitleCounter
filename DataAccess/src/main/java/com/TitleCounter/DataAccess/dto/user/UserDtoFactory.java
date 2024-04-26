@@ -1,6 +1,6 @@
-package com.TitleCounter.DataAccess.dto;
+package com.TitleCounter.DataAccess.dto.user;
 
-import com.TitleCounter.DataAccess.storage.entity.Game;
+import com.TitleCounter.DataAccess.dto.user.UserDto;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ public class UserDtoFactory {
     public UserDto entityToDto(User user) {
         return  UserDto.builder()
                 .id(user.getId())
-                .name(user.getUsername())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .build();
     }
@@ -17,7 +17,7 @@ public class UserDtoFactory {
     public User dtoToEntity(UserDto userDto) {
         return User.builder()
                 .id(userDto.getId())
-                .username(userDto.getName())
+                .username(userDto.getUsername())
                 .email(userDto.getEmail())
                 .build();
     }
