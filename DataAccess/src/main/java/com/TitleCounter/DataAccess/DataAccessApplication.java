@@ -1,13 +1,12 @@
 package com.TitleCounter.DataAccess;
 
+import com.TitleCounter.DataAccess.config.FileStorageConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
+@EnableConfigurationProperties(FileStorageConfig.class)
 public class DataAccessApplication
 {
 	public static void main(String[] args)

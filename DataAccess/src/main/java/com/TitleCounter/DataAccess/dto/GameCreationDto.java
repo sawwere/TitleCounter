@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -13,9 +14,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameDto {
-    private long id;
-
+public class GameCreationDto {
     @NotBlank
     private String title;
 
@@ -33,4 +32,6 @@ public class GameDto {
     @Min(0)
     @JsonProperty("global_score")
     private Float globalScore;
+
+    private MultipartFile image;
 }

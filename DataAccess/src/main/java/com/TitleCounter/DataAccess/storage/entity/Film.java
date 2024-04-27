@@ -24,9 +24,6 @@ public class Film {
     @Column(name = "rus_title")
     private String rusTitle;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "link_url")
     private String linkUrl;
 

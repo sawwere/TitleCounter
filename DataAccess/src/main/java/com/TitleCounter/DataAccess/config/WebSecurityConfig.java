@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,6 +19,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.Optional;
@@ -85,20 +89,21 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/")
+                        .invalidSessionUrl("/error")
                         .maximumSessions(5))
-//                .formLogin(form -> form
-//                        .defaultSuccessUrl("/")
-//                        .permitAll())
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/")
+                        .permitAll())
                 .logout(logout -> logout
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "SESSION")
-                        .logoutSuccessUrl("/"))
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()))
                 .rememberMe(x->x
                        .rememberMeParameter("remember-me-new")
                         .alwaysRemember(false)
                         .userDetailsService(userService)
                         .tokenValiditySeconds(60*60*24))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 //.oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
                 ;
         return http.build();

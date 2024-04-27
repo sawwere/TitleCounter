@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <img th:src="@{/images/games/1.jpg}">
+
+    <form action="#" th:action="@{/games/new}" th:object="${newGame}" method="post" enctype="multipart/form-data">
+        <p>name: <input type="text" th:field="*{title}" /></p>
+        <p>time: <input type="number" th:field="*{time}" /></p>
+        <p>globalScore: <input type="number" th:field="*{globalScore}" /></p>
+        <p>dateRelease: <input type="date" th:field="*{dateRelease}" /></p>
+        <p>imageUrl: <input type="text" th:field="*{imageUrl}" /></p>
+        <p>link_url: <input type="text" th:field="*{link_url}" /></p>
+        <p>image:<input type="file" th:field="*{image}" multiple="multiple"/>
+            <input type="submit" value="upload" />
+            <input type="reset" value="Reset" /></p>
+    </form>
+</div>
+</body>
+</html>

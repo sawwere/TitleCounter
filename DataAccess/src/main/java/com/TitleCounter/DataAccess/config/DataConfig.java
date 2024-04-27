@@ -1,5 +1,8 @@
 package com.TitleCounter.DataAccess.config;
 
+import com.TitleCounter.DataAccess.service.DefaultFileStorageService;
+import com.TitleCounter.DataAccess.service.ImageStorageService;
+import com.TitleCounter.DataAccess.service.StorageService;
 import com.TitleCounter.DataAccess.storage.entity.Role;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.GameRepository;
@@ -25,7 +28,11 @@ public class DataConfig {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Bean
-    public CommandLineRunner dataLoader() {
+    public CommandLineRunner dataLoader(DefaultFileStorageService storageService,
+                                        ImageStorageService imageStorageService) {
+        storageService.init();
+        imageStorageService.init();
+
         Role admin = Role.builder()
                 .id(1L)
                 .name("ADMIN")

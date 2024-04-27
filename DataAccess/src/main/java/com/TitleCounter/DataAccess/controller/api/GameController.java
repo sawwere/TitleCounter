@@ -3,11 +3,13 @@ package com.TitleCounter.DataAccess.controller.api;
 import com.TitleCounter.DataAccess.dto.*;
 import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.service.GameService;
+import com.TitleCounter.DataAccess.service.ImageStorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GameController
 {
+    private final ImageStorageService imageStorageService;
     private final GameService gameService;
 
     private final GameDtoFactory gameDtoFactory;
@@ -36,13 +39,24 @@ public class GameController
 
     /**
      * Обрабатывает входящеий запрос на создание нового Game.
-     * @param gameDto объект, содержащий необходимые для создания Game данные
+     * @param gameCreationDto объект, содержащий необходимые для создания Game данные
      * @return GameDto, содержащий данные созданной Game
      */
     @PostMapping(CREATE_GAME)
     @ResponseStatus(HttpStatus.CREATED)
-    public GameDto createGame(@Valid @RequestBody GameDto gameDto) {
-        return gameDtoFactory.entityToDto(gameService.createGame(gameDto));
+    public GameDto createGame(@Valid @RequestPart("game") GameDto gameCreationDto,
+                              @RequestPart("image") MultipartFile image) {
+        GameDto gameDto = GameDto.builder()
+                .title(gameCreationDto.getTitle())
+                .time(gameCreationDto.getTime())
+                .globalScore(gameCreationDto.getGlobalScore())
+                .dateRelease(gameCreationDto.getDateRelease())
+                .linkUrl(gameCreationDto.getLinkUrl())
+                .build();
+        var gameEntity = gameService.createGame(gameDto);
+        var id = gameEntity.getId();
+        imageStorageService.store(image, "games/%d".formatted(id));
+        return gameDtoFactory.entityToDto(gameEntity);
     }
 
     @PutMapping(UPDATE_GAME)

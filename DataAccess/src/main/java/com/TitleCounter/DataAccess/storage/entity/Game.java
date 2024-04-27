@@ -21,9 +21,6 @@ public class Game {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "link_url")
     private String linkUrl;
 

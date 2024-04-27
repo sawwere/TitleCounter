@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,8 @@ public class AuthController {
 
     public static final String API_LOGIN = "/api/login";
     public static final String API_LOGOUT = "/api/logout";
+
+    private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @PostMapping(API_LOGIN)
     public UserDto login(@Valid @RequestBody UserLoginDto userLoginDto, HttpServletRequest request) {
@@ -45,16 +48,19 @@ public class AuthController {
     }
 
     @PostMapping(API_LOGOUT)
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.logout();
-            request.getSession().invalidate();
+    public void logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        logoutHandler.logout(request, response, authentication);
 
-            Cookie toRemove = new Cookie("SESSION", "");
-            toRemove.setMaxAge(0);
-            response.addCookie(toRemove);
-        } catch (ServletException e) {
-            logger.info(e.getMessage());
-        }
+//        try {
+//            request.logout();
+//            request.getSession().invalidate();
+//
+//            Cookie toRemove = new Cookie("SESSION", "");
+//            toRemove.setMaxAge(0);
+//            response.addCookie(toRemove);
+//
+//        } catch (ServletException e) {
+//            logger.info(e.getMessage());
+//        }
     }
 }
