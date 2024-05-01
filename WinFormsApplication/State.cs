@@ -59,12 +59,11 @@ namespace hltb
                 //repository.Update(content as T);
                 
                 GameDto game = new GameDto();
-                game.title = "Battlefield 3";
-                game.dateRelease = "2020-11-11";
-                game.globalScore = 0;
-                game.linkUrl = "";
-                game.imageUrl = "";
-                game.time = 5;
+                game.Title = "Battlefield 3";
+                game.DateRelease = "2020-11-11";
+                game.GlobalScore = 0;
+                game.LinkUrl = "";
+                game.Time = 5;
                 HttpContent httpContent = JsonContent.Create(game);
                 var res = httpClient.PostAsync(httpClient.BaseAddress+"/games", httpContent);
                 Console.WriteLine(res.Result.StatusCode);

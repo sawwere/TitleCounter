@@ -18,14 +18,14 @@ namespace hltb.Service
         {
             {
                 GameEntryRequestDto gameEntry = GameEntryRequestDto.builder()
-                    .customTitle(content.title)
-                    .score(0)
-                    .status("backlog")
-                    .dateCompleted( DateOnly.FromDateTime(DateTime.Today))
-                    .time(content.time)
-                    .userId(1) // TODO
-                    .gameId(content.id)
-                    .build();
+                    .CustomTitle(content.Title)
+                    .Score(0)
+                    .Status("backlog")
+                    .DateCompleted( DateOnly.FromDateTime(DateTime.Today))
+                    .Time(content.Time)
+                    .UserId(AuthService.Instance.UserInfo.Id)
+                    .GameId(content.Id)
+                    .Build();
                 
                 RestApiSerice.Instance.createGameEntry(gameEntry);
             }
@@ -75,47 +75,46 @@ namespace hltb.Service
 
         public Game dtoToEnity(GameEntryResponseDto gameEntryDto)
         {
-            if (!DateOnly.TryParse(gameEntryDto.dateCompleted, out DateOnly dateC))
+            if (!DateOnly.TryParse(gameEntryDto.DateCompleted, out DateOnly dateC))
             {
-                throw new JsonParseException($"Error parsing dateCompleted of game with id {gameEntryDto.game.id}");
+                throw new JsonParseException($"Error parsing dateCompleted of game with id {gameEntryDto.Game.Id}");
             }
-            if (!DateOnly.TryParse(gameEntryDto.game.dateRelease, out DateOnly dateR))
+            if (!DateOnly.TryParse(gameEntryDto.Game.DateRelease, out DateOnly dateR))
             {
-                throw new JsonParseException($"Error parsing dateRelease of game with id {gameEntryDto.game.id}");
+                throw new JsonParseException($"Error parsing dateRelease of game with id {gameEntryDto.Game.Id}");
             }
             return Game.builder()
-                .id(gameEntryDto.game.id)
-                .entryId(gameEntryDto.id)
-                .userId(gameEntryDto.userId)
-                .title(gameEntryDto.customTitle)
-                .dateCompleted(dateC)
-                .dateRelease(dateR)
-                .time(gameEntryDto.time)
-                .globalTime(gameEntryDto.game.time)
-                .linkUrl(gameEntryDto.game.linkUrl)
-                .imageUrl(gameEntryDto.game.imageUrl)
-                .status(gameEntryDto.status)
-                .score(gameEntryDto.score)
-                .globalScore(gameEntryDto.game.globalScore)
-                .note(gameEntryDto.note is null ? "" : gameEntryDto.note)
-                .platform(gameEntryDto.platform)
-                .build();
+                .Id(gameEntryDto.Game.Id)
+                .EntryId(gameEntryDto.Id)
+                .UserId(gameEntryDto.UserId)
+                .Title(gameEntryDto.CustomTitle)
+                .DateCompleted(dateC)
+                .DateRelease(dateR)
+                .Time(gameEntryDto.Time)
+                .GlobalTime(gameEntryDto.Game.Time)
+                .LinkUrl(gameEntryDto.Game.LinkUrl)
+                .Status(gameEntryDto.Status)
+                .Score(gameEntryDto.Score)
+                .GlobalScore(gameEntryDto.Game.GlobalScore)
+                .Note(gameEntryDto.Note)
+                .Platform(gameEntryDto.Platform)
+                .Build();
         }
 
         public GameEntryRequestDto enitiyToRequestDto(Game gameEntity)
         {
             return GameEntryRequestDto.builder()
-                .id(gameEntity.EntryId)
-                .gameId(gameEntity.Id)
-                .userId(gameEntity.UserId)
-                .customTitle(gameEntity.Title)
-                .dateCompleted(gameEntity.DateCompleted)
-                .time(gameEntity.Time)
-                .status(gameEntity.Status)
-                .score(gameEntity.Score)
-                .note(gameEntity.Note)
-                .platform(gameEntity.Platform)
-                .build();
+                .Id(gameEntity.EntryId)
+                .GameId(gameEntity.Id)
+                .UserId(gameEntity.UserId)
+                .CustomTitle(gameEntity.Title)
+                .DateCompleted(gameEntity.DateCompleted)
+                .Time(gameEntity.Time)
+                .Status(gameEntity.Status)
+                .Score(gameEntity.Score)
+                .Note(gameEntity.Note)
+                .Platform(gameEntity.Platform)
+                .Build();
         }
     }
 }

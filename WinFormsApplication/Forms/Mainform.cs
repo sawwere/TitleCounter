@@ -98,8 +98,8 @@ namespace hltb
                 }
                 else
                 {
-                    imageUrl = $@"http://localhost:8080/images/{modeState.ToString()}/{searchResult.First().id}.jpg";
-                    foundTitle = searchResult.First().title;
+                    imageUrl = $@"http://localhost:8080/images/{modeState.ToString()}/{searchResult.First().Id}.jpg";
+                    foundTitle = searchResult.First().Title;
                 }
                 Image decodedImage = await Task.Run(() => RestApiSerice.Instance.GetImageAsync(imageUrl));
 
@@ -109,7 +109,7 @@ namespace hltb
                         .Contents
                         .Where(x => 
                             x.Title == foundTitle 
-                            && x.DateRelease.Year.ToString() == searchResult.First().dateRelease.Substring(0,4))
+                            && x.DateRelease.Year.ToString() == searchResult.First().DateRelease.Substring(0,4))
                         .Count() > 0)
                         operationCode = '2';
                 }

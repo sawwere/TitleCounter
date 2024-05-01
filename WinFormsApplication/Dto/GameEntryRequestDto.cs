@@ -10,25 +10,37 @@ namespace hltb.Dto
 {
     internal class GameEntryRequestDto
     {
-        public long id { get; set; }
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
 
         [JsonPropertyName("custom_title")]
-        public string customTitle { get; set; }
+        public string CustomTitle { get; set; }
 
-        public string? note { get; set; }
-        public long score { get; set; }
-        public string status { get; set; }
+        [JsonPropertyName("note")]
+        public string? Note { get; set; }
+
+        [JsonPropertyName("score")]
+        public long Score { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
+
 
         [JsonPropertyName("date_completed")]
-        public string dateCompleted { get; set; }
-        public long time { get; set; }
-        public string? platform { get; set; }
+        public string DateCompleted { get; set; }
 
-        [JsonPropertyName("client_id")]
-        public long userId { get; set; }
+        [JsonPropertyName("time")]
+        public long Time { get; set; }
+
+        [JsonPropertyName("platform")]
+        public string? Platform { get; set; }
+
+        [JsonPropertyName("user_id")]
+        public long UserId { get; set; }
 
         [JsonPropertyName("game_id")]
-        public long gameId { get; set; }
+        public long GameId { get; set; }
 
         public static GameEntryDtoBuilder builder() { return new GameEntryDtoBuilder(); }
 
@@ -40,67 +52,67 @@ namespace hltb.Dto
                 _result = new GameEntryRequestDto();
             }
 
-            public GameEntryDtoBuilder id(long id)
+            public GameEntryDtoBuilder Id(long id)
             {
-                _result.id = id;
+                _result.Id = id;
                 return this;
             }
 
-            public GameEntryDtoBuilder gameId(long gameId)
+            public GameEntryDtoBuilder GameId(long gameId)
             {
-                _result.gameId = gameId;
+                _result.GameId = gameId;
                 return this;
             }
 
-            public GameEntryDtoBuilder userId(long userId)
+            public GameEntryDtoBuilder UserId(long userId)
             {
-                _result.userId = userId;
+                _result.UserId = userId;
                 return this;
             }
 
-            public GameEntryDtoBuilder customTitle(string title)
+            public GameEntryDtoBuilder CustomTitle(string title)
             {
-                _result.customTitle = title;
+                _result.CustomTitle = title;
                 return this;
             }
 
-            public GameEntryDtoBuilder dateCompleted(DateOnly date)
+            public GameEntryDtoBuilder DateCompleted(DateOnly date)
             {
-                _result.dateCompleted = $"{date.Year}-{string.Format("{0:D2}", date.Month)}-{string.Format("{0:D2}", date.Day)}";
+                _result.DateCompleted = $"{date.Year}-{string.Format("{0:D2}", date.Month)}-{string.Format("{0:D2}", date.Day)}";
                 return this;
             }
 
-            public GameEntryDtoBuilder platform(string platform)
+            public GameEntryDtoBuilder Platform(string? platform)
             {
-                _result.platform = platform;
+                _result.Platform = platform;
                 return this;
             }
 
-            public GameEntryDtoBuilder score(long score)
+            public GameEntryDtoBuilder Score(long score)
             {
-                _result.score = score;
+                _result.Score = score;
                 return this;
             }
 
-            public GameEntryDtoBuilder status(string status)
+            public GameEntryDtoBuilder Status(string status)
             {
-                _result.status = status;
+                _result.Status = status;
                 return this;
             }
 
-            public GameEntryDtoBuilder time(long time)
+            public GameEntryDtoBuilder Time(long time)
             {
-                _result.time = time;
+                _result.Time = time;
                 return this;
             }
 
-            public GameEntryDtoBuilder note(string note)
+            public GameEntryDtoBuilder Note(string? note)
             {
-                _result.note = note;
+                _result.Note = note;
                 return this;
             }
 
-            public GameEntryRequestDto build()
+            public GameEntryRequestDto Build()
             {
                 return _result;
             }

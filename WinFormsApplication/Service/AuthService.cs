@@ -13,7 +13,8 @@ namespace hltb.Service
 #pragma warning disable CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
         private static AuthService authService;
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно,
-        public UserLoginDto LoginInfo { get; private set; }
+        private UserLoginDto _LoginInfo { get; set; }
+        public UserDto UserInfo { get; private set; }
 
         public static AuthService Instance
         {
@@ -30,7 +31,8 @@ namespace hltb.Service
 
         public async Task loginPeriodicallyAsync(UserLoginDto userLoginDto, TimeSpan period, CancellationToken cancellationToken)
         {
-            LoginInfo = userLoginDto;
+            _LoginInfo = userLoginDto;
+            UserInfo = login(userLoginDto);
             while (!cancellationToken.IsCancellationRequested)
             {
                 login(userLoginDto);
@@ -38,11 +40,10 @@ namespace hltb.Service
             }
         }
 
-        private void login(UserLoginDto userLoginDto)
+        private UserDto login(UserLoginDto userLoginDto)
         {
             Debug.WriteLine("Login operation started.");
-            RestApiSerice.Instance.login(userLoginDto);
-            Debug.WriteLine("Login operation completed.");
+            return RestApiSerice.Instance.login(userLoginDto);
         }
 
         public void logout()

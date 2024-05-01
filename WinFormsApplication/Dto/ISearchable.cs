@@ -9,12 +9,11 @@ namespace hltb.Dto
 {
     public interface ISearchable
     {
-        public long id { get; set; }
-        public string title { get; set; }
-        public string imageUrl { get; set; }
-        public string linkUrl { get; set; }
-        public long time { get; set; }
-        public string dateRelease { get; set; }
-        public float globalScore { get; set; }
+        public long Id { get; set; }
+        public string Title { get; set; }
+        public string LinkUrl { get; set; }
+        public long Time { get; set; }
+        public string DateRelease { get; set; }
+        public float GlobalScore { get; set; }
     }
 }

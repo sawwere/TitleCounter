@@ -1,5 +1,6 @@
 ﻿using hltb.Dto;
 using hltb.Models;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -35,13 +36,14 @@ namespace hltb.Service
         public string SessionId { get { return SESSIONID; } }
 
 
-        public void login(UserLoginDto userLoginDto)
+        public UserDto login(UserLoginDto userLoginDto)
         {
             var content = JsonContent.Create(userLoginDto);
             var result = restApiClient.HttpClient.PostAsync("http://localhost:8080/api/login", content).Result;
-            var a = result.Headers;
+            var userDto = JsonConvert.DeserializeObject<UserDto>(result.Content.ReadAsStringAsync().Result);
             SESSIONID = restApiClient.Handler.CookieContainer.GetAllCookies().Cast<Cookie>().First(x => x.Name == "SESSION").Value;
             Debug.WriteLine(SESSIONID);
+            return userDto!;
         }
 
         public void logout()
@@ -72,7 +74,7 @@ namespace hltb.Service
             if (!first)
                 restApiClient.HttpClient.DefaultRequestHeaders.Add("Cookie", $"SESSION={SESSIONID}");
             var gameDtos = restApiClient.HttpClient.GetFromJsonAsync<List<GameEntryResponseDto>>(
-                    restApiClient.HttpClient.BaseAddress + $"/users/{AuthService.Instance.LoginInfo.username}/games"
+                    restApiClient.HttpClient.BaseAddress + $"/users/{AuthService.Instance.UserInfo.Username}/games"
                 )
                 .Result;
             return gameDtos is null ? new List<GameEntryResponseDto>() : gameDtos;
@@ -84,7 +86,7 @@ namespace hltb.Service
             if (!first)
                 restApiClient.HttpClient.DefaultRequestHeaders.Add("Cookie", $"SESSION={SESSIONID}");
             var response = restApiClient.HttpClient.PostAsJsonAsync(
-                    restApiClient.HttpClient.BaseAddress + $"/users/{AuthService.Instance.LoginInfo.username}/games",
+                    restApiClient.HttpClient.BaseAddress + $"/users/{AuthService.Instance.UserInfo.Username}/games",
                     gameEntryRequestDto)
                 .Result;
             return response.IsSuccessStatusCode;
@@ -96,7 +98,7 @@ namespace hltb.Service
             if (!first)
                 restApiClient.HttpClient.DefaultRequestHeaders.Add("Cookie", $"SESSION={SESSIONID}");
             var response = restApiClient.HttpClient.PutAsJsonAsync(
-                    restApiClient.HttpClient.BaseAddress + $"/games/submissions/{gameEntryRequestDto.id}",
+                    restApiClient.HttpClient.BaseAddress + $"/games/submissions/{gameEntryRequestDto.Id}",
                     gameEntryRequestDto)
                 .Result;
             return response.IsSuccessStatusCode;

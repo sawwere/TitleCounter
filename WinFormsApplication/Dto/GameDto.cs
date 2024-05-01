@@ -4,22 +4,32 @@ namespace hltb.Dto
 {
     public class GameDto : ISearchable
     {
-        public long id { get; set; }
-        public string title { get; set; }
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+
 
         [JsonPropertyName("image_url")]
-        public string imageUrl { get; set; }
+        public string ImageUrl { get; set; }
+
 
         [JsonPropertyName("link_url")]
-        public string linkUrl { get; set; }
+        public string LinkUrl { get; set; }
 
-        public long time { get; set; }
+
+        [JsonPropertyName("time")]
+        public long Time { get; set; }
+
 
         [JsonPropertyName("date_release")]
-        public string dateRelease { get; set; }
+        public string DateRelease { get; set; }
+
 
         [JsonPropertyName("global_score")]
-        public float globalScore { get; set; }
+        public float GlobalScore { get; set; }
         public GameDto() { }
     }
 }
