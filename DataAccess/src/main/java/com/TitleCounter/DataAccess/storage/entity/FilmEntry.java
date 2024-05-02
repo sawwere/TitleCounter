@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -19,6 +21,10 @@ public class FilmEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(min = 1, max = 64)
+    @Column(name = "custom_title")
+    private String customTitle;
+
     @Size(max=255)
     private String note;
 
@@ -30,7 +36,7 @@ public class FilmEntry {
     private String status;
 
     @Column(name = "date_completed")
-    private Long dateCompleted;
+    private LocalDate dateCompleted;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
