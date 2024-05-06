@@ -9,20 +9,15 @@ headers = {
 class Game:
     def __init__(self, 
                  Title = "None",
-                 FixedTitle = "None",
                  ImageUrl = "https://kitairu.net/images/noimage.png",
                  LinkUrl = "https://howlongtobeat.com",
-                 Time = 0, 
-                 StatusId = 2,
+                 Time = 0,
                  DateRelease = "1900-01-01",
-                 DateCompleted = "1900-01-01",
-                 Note = "",
                  Platform = "",
                  Score = 0,
                  Similarity = 0.0
                  ):
         self.title = Title
-        self.FixedTitle = FixedTitle
         self.ImageUrl = ImageUrl
         self.LinkUrl = LinkUrl
         
@@ -35,11 +30,7 @@ class Game:
                 self.time = int(mt)
         else:
             self.time = Time
-
-        self.status_id = StatusId
         self.DateRelease = self.find_DateRelease(LinkUrl)
-        self.DateCompleted = DateCompleted
-        self.note = Note
         self.platform = Platform
         self.score = Score
         self.similarity = Similarity
@@ -119,5 +110,6 @@ class Game:
                 "ImageUrl": self.ImageUrl,
                 "LinkUrl": self.LinkUrl,
                 "Time": self.time,
-                "DateRelease": self.DateRelease
+                "DateRelease": self.DateRelease,
+                "Score": self.score
                 }

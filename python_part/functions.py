@@ -49,7 +49,8 @@ async def choose_game(name):
                    LinkUrl=r.game_web_link, 
                    Time=r.main_story*60,
                    Similarity=r.similarity, 
-                   DateRelease=str(r.release_world)+"-01-01")
+                   DateRelease=str(r.release_world)+"-01-01",
+                   Score=r.review_score)
         #res.date_release = find_date_release(res.link_url)
         return res
     else: 
@@ -74,24 +75,6 @@ async def download_image(image_url):
     except:
         print("ERROR downloading image")
         return None
-    
-
-
-# Create json file of titles
-def create_json(path_to_data, titles, tp, f=True):
-    if f:
-        print_status('s', 'create_json')    
-    filename = path_to_data + tp + '_sheet.json'
-    file = open(filename, 'w', encoding='utf-8')
-    data = list()
-    for t in titles:
-        #g.print()
-        data.append(t.to_dict())
-
-    json.dump(data, file, indent=4)
-    file.close
-    if f:
-        print_status('f', 'create_json')
 
 
 

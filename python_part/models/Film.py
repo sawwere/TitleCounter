@@ -3,22 +3,17 @@ import re
 
 class Film():
     def __init__(self, Title = "None",
-                       FixedTitle = "None",
                        RusTitle = "Нету",
                        ImageUrl="https://kitairu.net/images/noimage.png",
                        LinkUrl="https://yandex.ru/",    
                        Time = 0,                   
                        score = 0,
                        DateRelease = "1900-01-01",
-                       DateCompleted = "1900-01-01",
-                       note = "",
-                       status_id = 2):
 
         self.imdb = imdb.Cinemagoer()
         self.movie = self.imdb.search_movie(Title)[0]
         self.imdb.update(self.movie, info='main')
         self.Title = self.movie['title']
-        self.FixedTitle = FixedTitle
         self.RusTitle = self.movie['original title']
         self.ImageUrl = self.movie['cover url']
         self.LinkUrl = 'https://www.imdb.com/title/tt' + self.movie['imdbID']
@@ -30,19 +25,13 @@ class Film():
 
         if self.movie.has_key('original air date'):
             DateRelease = self.movie['original air date']
-            self.DateRelease = self.string_into_date(DateRelease)     
-
-        self.DateCompleted = DateCompleted
-        
-        self.status_id = status_id
-        self.score = int(score)
-        self.note = note
+            self.DateRelease = self.string_into_date(DateRelease)
+        self.score = self.movie.data['rating']
         
     def to_string(self):
         result = str(self.Title + ' ' + self.RusTitle + ' ' 
                          + ' ' + self.ImageUrl + ' ' + self.LinkUrl 
-                         + ' ' + self.Time + ' ' + self.score + ' ' + self.DateRelease 
-                         + ' ' + self.status_id)
+                         + ' ' + self.Time + ' ' + self.score + ' ' + self.DateRelease)
         return result
     
     def month_to_num(self, string_month):
@@ -76,6 +65,7 @@ class Film():
                 "ImageUrl": self.ImageUrl,
                 "LinkUrl": self.LinkUrl,
                 "Time": self.Time,
-                "DateRelease": self.DateRelease
+                "DateRelease": self.DateRelease,
+                "Score": self.score
                 }
 
