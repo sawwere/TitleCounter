@@ -1,14 +1,5 @@
 ﻿using hltb.Dto;
 using hltb.Service;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace hltb.Forms
 {
@@ -22,7 +13,8 @@ namespace hltb.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             UserLoginDto userLoginDto = new UserLoginDto(textBox1.Text, textBox2.Text);
-            _ = AuthService.Instance.loginPeriodicallyAsync(userLoginDto, TimeSpan.FromSeconds(15), CancellationToken.None);
+            _ = AuthService.Instance.Login(userLoginDto);
+            _ = AuthService.Instance.LoginPeriodicallyAsync(userLoginDto, TimeSpan.FromSeconds(15), CancellationToken.None);
             Hide();
             Mainform mainform = new Mainform();
             mainform.Show();

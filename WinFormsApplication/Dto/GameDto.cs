@@ -12,10 +12,6 @@ namespace hltb.Dto
         public string Title { get; set; }
 
 
-        [JsonPropertyName("image_url")]
-        public string ImageUrl { get; set; }
-
-
         [JsonPropertyName("link_url")]
         public string LinkUrl { get; set; }
 

@@ -32,9 +32,9 @@ namespace hltb.Forms.ContentListBuilder
                 button.Name = "btn" + i;
                 button.Tag = content.Id;
 
-                button.BackgroundImage = RestApiSerice.Instance.GetImageAsync( "\\data\\images\\"
+                button.BackgroundImage = RestApiSerice.Instance.GetImage( "\\data\\images\\"
                         + "Game".ToString() + "\\"
-                        + content.Id + " " + content.Title + ".jpg").Result;
+                        + content.Id + " " + content.Title + ".jpg");
                 button.Click += action;
                 button.BackgroundImageLayout = ImageLayout.Stretch;
                 button.ForeColor = Color.Transparent;

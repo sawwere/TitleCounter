@@ -1,10 +1,7 @@
-﻿using hltb.Dto;
-using hltb.Forms.ContentListBuilder;
+﻿using hltb.Forms.ContentListBuilder;
 using hltb.Models;
-using hltb.Models.Outdated;
 using hltb.Service;
 using System.Data;
-using System.Diagnostics;
 using System.Text;
 
 namespace hltb
@@ -17,7 +14,7 @@ namespace hltb
         private ContentListBuilder list_builder = new ButtonsContentList();
         private AddContent add_content = new AddContent();
 
-        public ModeState modeState;
+        public AbstractContentService modeState;
         private Dictionary<Button, ComboBox> mapFilterToComboBox = new Dictionary<Button, ComboBox>();
 
         private void OnApplicationExit(object sender, EventArgs e)
@@ -37,7 +34,7 @@ namespace hltb
                 + $"Time : {tmcmpltd} / {tmtotal} ({(tmcmpltd / tmtotal * 100):F2}%)";
         }
 
-        private void ChangeState(ModeState state)
+        private void ChangeState(AbstractContentService state)
         {
             this.modeState = state;
             modeState.Load();
@@ -64,7 +61,7 @@ namespace hltb
         {
             InitializeComponent();
             AddOwnedForm(add_content);
-            ChangeState(new GameService(this));
+            ChangeState(GameService.Instance);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -88,7 +85,7 @@ namespace hltb
             else
             {
                 char operationCode = '0';
-                var searchResult = modeState.Search(namebox.Text);
+                var searchResult = modeState.SearchByTitle(namebox.Text);
                 string foundTitle = "Not found";
 
                 string imageUrl = $@"http://localhost:8080/images/None.jpg";
@@ -101,7 +98,7 @@ namespace hltb
                     imageUrl = $@"http://localhost:8080/images/{modeState.ToString()}/{searchResult.First().Id}.jpg";
                     foundTitle = searchResult.First().Title;
                 }
-                Image decodedImage = await Task.Run(() => RestApiSerice.Instance.GetImageAsync(imageUrl));
+                Image decodedImage = await Task.Run(() => RestApiSerice.Instance.GetImage(imageUrl));
 
                 if (operationCode == '0')
                 {
@@ -202,10 +199,10 @@ namespace hltb
             switch (nmode)
             {
                 case "Game":
-                    ChangeState(new GameService(this));
+                    ChangeState(GameService.Instance);
                     break;
                 case "Film":
-                    ChangeState(new State<Film>(this));
+                    ChangeState(FilmService.Instance);
                     break;
                 case "TVSeries":
                     break;

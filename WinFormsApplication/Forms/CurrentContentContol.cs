@@ -53,7 +53,7 @@ namespace hltb
             this.content = content;
             var tmp = $@"http://localhost:8080/images/{owner.modeState.ToString()}/{content.Id}.jpg";
 
-            titlePicture.Image = RestApiSerice.Instance.GetImageAsync(tmp).Result;
+            titlePicture.Image = RestApiSerice.Instance.GetImage(tmp);
             nameLabel.Text = GetFullName();
 
             //timeLabel.Location = new Point(nameLabel.Location.X, nameLabel.Bottom + 5);
@@ -110,7 +110,7 @@ namespace hltb
             char symb = e.KeyChar;
             if (!int.TryParse(textbox.Text + symb.ToString(), out int hours)
                 && (e.KeyChar != 8)
-                && (parent.modeState is State<Game>))
+                && (parent.modeState is GameService))
             {
                 e.Handled = true;
             }

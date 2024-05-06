@@ -1,16 +1,31 @@
 ﻿using hltb.Dto;
 using hltb.Exception;
 using hltb.Models;
+using hltb.Repository;
 using Newtonsoft.Json;
-using System.Net.Http.Json;
+using System.Diagnostics;
 
 namespace hltb.Service
 {
-    internal class GameService : ModeState
+    internal class GameService : AbstractContentService
     {
-        public GameService(Mainform form) : base(form)
+        private IGameRepository _gameRepository;
+#pragma warning disable CS8618
+        private static GameService _instance;
+#pragma warning restore CS8618 
+
+        public static GameService Instance
         {
-            //httpClient.BaseAddress = new Uri("http://localhost:8080/api");
+            get
+            {
+                if (_instance == null)
+                    _instance = new GameService();
+                return _instance;
+            }
+        }
+        private GameService()
+        {
+            _gameRepository = RestGameRepository.Instance;
         }
 
         //TODO
@@ -26,8 +41,7 @@ namespace hltb.Service
                     .UserId(AuthService.Instance.UserInfo.Id)
                     .GameId(content.Id)
                     .Build();
-                
-                RestApiSerice.Instance.createGameEntry(gameEntry);
+                _gameRepository.CreateGameEntry(gameEntry);
             }
         }
 
@@ -36,24 +50,25 @@ namespace hltb.Service
             return JsonConvert.DeserializeObject<Game>(json_string);
         }
 
-        public override IEnumerable<ISearchable> Search(string title)
+        public override IEnumerable<ISearchable> SearchByTitle(string title)
         {
-            return RestApiSerice.Instance.searchGames(title);
+            return _gameRepository.SearchByTitle(title);
         }
 
         public override void Load()
         {
             contents = new List<Content> { };
-            var gameDtos = RestApiSerice.Instance.findGames();
+            var gameDtos = _gameRepository.FindAll();
             foreach (var dto in gameDtos)
             {
                 contents.Add(dtoToEnity(dto));
             }
+            Debug.WriteLine("Load");
         }
 
         public override void Remove(long id)
         {
-            if (RestApiSerice.Instance.deleteGameEntry(id))
+            if (_gameRepository.DeleteGameEntry(id))
             {
                 contents.Remove(contents.First(x => x.EntryId == id));
             }
@@ -70,7 +85,7 @@ namespace hltb.Service
             {
                 throw new InvalidCastException(nameof(content));
             }
-            RestApiSerice.Instance.updateGameEntry(enitiyToRequestDto(content as Game));
+            _gameRepository.UpdateGameEntry(enitiyToRequestDto(content as Game));
         }
 
         public Game dtoToEnity(GameEntryResponseDto gameEntryDto)

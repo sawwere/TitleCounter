@@ -1,10 +1,8 @@
 ﻿using hltb.Dto;
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http.Json;
+using System.Net;
 
 namespace hltb.Service
 {
@@ -13,8 +11,11 @@ namespace hltb.Service
 #pragma warning disable CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
         private static AuthService authService;
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно,
+        private RestApiClient _restApiClient;
         private UserLoginDto _LoginInfo { get; set; }
         public UserDto UserInfo { get; private set; }
+        private string SESSIONID;
+        public string SessionId { get { return SESSIONID; } }
 
         public static AuthService Instance
         {
@@ -27,28 +28,45 @@ namespace hltb.Service
                 return authService;
             }
         }
-        private AuthService() {  }
-
-        public async Task loginPeriodicallyAsync(UserLoginDto userLoginDto, TimeSpan period, CancellationToken cancellationToken)
+        private AuthService() 
         {
+            _restApiClient = RestApiClient.Instance;
+        }
+
+        public bool Login(UserLoginDto userLoginDto)
+        {
+            Debug.WriteLine("Login operation started.");
             _LoginInfo = userLoginDto;
-            UserInfo = login(userLoginDto);
+            UserInfo = _login(userLoginDto);
+            return true;
+        }
+
+        public async Task LoginPeriodicallyAsync(UserLoginDto userLoginDto, TimeSpan period, CancellationToken cancellationToken)
+        {
             while (!cancellationToken.IsCancellationRequested)
             {
-                login(userLoginDto);
+                _login(userLoginDto);
                 await Task.Delay(period, cancellationToken);
             }
         }
 
-        private UserDto login(UserLoginDto userLoginDto)
+        private UserDto _login(UserLoginDto userLoginDto)
         {
             Debug.WriteLine("Login operation started.");
-            return RestApiSerice.Instance.login(userLoginDto);
+            var content = JsonContent.Create(userLoginDto);
+            var result = _restApiClient.HttpClient.PostAsync("http://localhost:8080/api/login", content).Result;
+            var userDto = JsonConvert.DeserializeObject<UserDto>(result.Content.ReadAsStringAsync().Result);
+            SESSIONID = _restApiClient.Handler.CookieContainer.GetAllCookies().Cast<Cookie>().First(x => x.Name == "SESSION").Value;
+            _restApiClient.SetSessionCookie(SESSIONID);
+            Debug.WriteLine(SESSIONID);
+            return userDto;
         }
 
         public void logout()
         {
-            RestApiSerice.Instance.logout();
+            var result = _restApiClient.HttpClient.GetAsync("http://localhost:8080/logout").Result;
+            result.EnsureSuccessStatusCode();
+            Debug.WriteLine("Logout succesfully");
         }
     }
 }

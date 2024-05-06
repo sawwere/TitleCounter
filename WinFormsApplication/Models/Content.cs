@@ -12,8 +12,6 @@
 
         public string Title { get; set; } = null!;
 
-        public string ImageUrl { get; set; }
-
         public string LinkUrl { get; set; }
 
         public long Time { get; set; }

@@ -63,12 +63,6 @@ public partial class Game : Content
             return this;
         }
 
-        public GameBuilder ImageUrl(string imageUrl)
-        {
-            game.ImageUrl = imageUrl;
-            return this;
-        }
-
         public GameBuilder LinkUrl(string linkUrl)
         {
             game.LinkUrl = linkUrl;

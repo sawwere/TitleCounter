@@ -6,22 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace hltb
+namespace hltb.Service
 {
-    public abstract class ModeState
+    public abstract class AbstractContentService
     {
         protected List<Content> contents;
-        protected Mainform form;
         public List<Content> Contents
         { get { return contents; } }
 
-        public ModeState(Mainform form)
+        public AbstractContentService()
         {
             contents = new List<Content>();
-            this.form = form;
         }
 
-        public abstract IEnumerable<ISearchable> Search(string title);
+        public abstract IEnumerable<ISearchable> SearchByTitle(string title);
 
         public abstract void Load();
 

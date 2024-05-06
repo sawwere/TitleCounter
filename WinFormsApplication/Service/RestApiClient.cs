@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace hltb.Service
 {
@@ -37,6 +32,11 @@ namespace hltb.Service
             handler.CookieContainer = cookies;
             httpClient = new HttpClient(this.handler);
             httpClient.BaseAddress = new Uri("http://localhost:8080/api");
+        }
+
+        public void SetSessionCookie(string value)
+        {
+            handler.CookieContainer.Add(new Cookie("SESSION", value) { Domain = httpClient.BaseAddress!.Host });
         }
     }
 }
