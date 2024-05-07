@@ -1,11 +1,4 @@
-﻿using hltb.Forms;
-using hltb.Models;
-using hltb.Models.Outdated;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using hltb.Models;
 
 namespace hltb.Forms.ContentListBuilder
 {
@@ -16,11 +9,16 @@ namespace hltb.Forms.ContentListBuilder
 
         protected List<Content> _contentList;
         protected Panel list_panel = new Panel();
+        protected IFilterContentStrategy contentFilter;
+        protected EventHandler buttonClickHandler;
 
+#pragma warning disable CS8618
         public ContentListBuilder()
+#pragma warning restore CS8618 
         {
             list_panel = new Panel();
             _contentList = new List<Content>();
+            contentFilter = new FilterByYear();
         }
 
         public void Reset()
@@ -29,12 +27,22 @@ namespace hltb.Forms.ContentListBuilder
             _contentList = new List<Content>();
         }
 
+        public void SetFilter(IFilterContentStrategy filterContent)
+        {
+            this.contentFilter = filterContent;
+        }
+
         public void SetContent(List<Content> contents)
         {
             _contentList = contents;
         }
 
-        public abstract Panel Build(EventHandler action);
+        public void SetButtonClickHandler(EventHandler action)
+        {
+            buttonClickHandler = action;
+        }
+
+        public abstract Panel Build(string filterValue);
 
         protected Color GetColor(int score)
         {

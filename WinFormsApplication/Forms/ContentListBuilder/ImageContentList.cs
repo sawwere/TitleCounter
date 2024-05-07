@@ -12,7 +12,7 @@ namespace hltb.Forms.ContentListBuilder
         public new const int BUTTON_WIDTH = 120;
         public new const int BUTTON_HEIGHT = 200;
 
-        public override Panel Build(EventHandler action)
+        public override Panel Build(string filterValue)
         {
             list_panel.Width = 800;
             list_panel.AutoScroll = true;
@@ -21,7 +21,7 @@ namespace hltb.Forms.ContentListBuilder
             int colCount = 6;
             int y = 5;
             int i = 1;
-            foreach (var content in _contentList)
+            foreach (var content in contentFilter.Filter(_contentList, filterValue))
             {
                 RoundedButton button = new RoundedButton();
                 button.Width = BUTTON_WIDTH;
@@ -35,7 +35,7 @@ namespace hltb.Forms.ContentListBuilder
                 button.BackgroundImage = RestApiSerice.Instance.GetImage( "\\data\\images\\"
                         + "Game".ToString() + "\\"
                         + content.Id + " " + content.Title + ".jpg");
-                button.Click += action;
+                button.Click += this.buttonClickHandler;
                 button.BackgroundImageLayout = ImageLayout.Stretch;
                 button.ForeColor = Color.Transparent;
                 list_panel.Controls.Add(button);

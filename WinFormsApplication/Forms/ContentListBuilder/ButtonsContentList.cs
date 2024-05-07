@@ -11,7 +11,7 @@ namespace hltb.Forms.ContentListBuilder
         public new const int BUTTON_WIDTH = 250;
         public new const int BUTTON_HEIGHT = 25;
 
-        public override Panel Build(EventHandler action)
+        public override Panel Build(string filterValue)
         {
             list_panel.Width = 800;
             list_panel.AutoScroll = true;
@@ -20,7 +20,7 @@ namespace hltb.Forms.ContentListBuilder
             int colCount = 3;
             int y = 5;
             int i = 1;
-            foreach (var content in _contentList)
+            foreach (var content in contentFilter.Filter(_contentList, filterValue))
             {
                 RoundedButton button = new RoundedButton();
                 button.Width = BUTTON_WIDTH;
@@ -33,7 +33,7 @@ namespace hltb.Forms.ContentListBuilder
                 button.Tag = content.Id;
                 button.Text = content.Title;
 
-                button.Click += action;
+                button.Click += this.buttonClickHandler;
 
                 list_panel.Controls.Add(button);
                 if (i % colCount == 0)

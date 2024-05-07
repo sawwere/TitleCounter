@@ -1,6 +1,8 @@
-﻿using hltb.Forms.ContentListBuilder;
+﻿using hltb.Forms;
+using hltb.Forms.ContentListBuilder;
 using hltb.Models;
 using hltb.Service;
+using System.Collections;
 using System.Data;
 using System.Text;
 
@@ -10,12 +12,12 @@ namespace hltb
 
     public partial class Mainform : Form
     {
-        private Panel list_panel = new Panel();
-        private ContentListBuilder list_builder = new ButtonsContentList();
-        private AddContent add_content = new AddContent();
+        private Panel _listPanel = new Panel();
+        private ContentListBuilder _listBuilder = new ButtonsContentList();
+        private AddContent _addContent = new AddContent();
+        private Dictionary<ComboBox, IFilterContentStrategy> _mapFilterToComboBox = new Dictionary<ComboBox, IFilterContentStrategy>();
 
         public AbstractContentService modeState;
-        private Dictionary<Button, ComboBox> mapFilterToComboBox = new Dictionary<Button, ComboBox>();
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
@@ -41,7 +43,7 @@ namespace hltb
             ResetYears();
             ResetStatus();
             ResetTitles();
-            RefreshTitles();
+            filter_Click(YearSortBox, new EventArgs());
         }
 
         public void RefreshTitles()
@@ -60,17 +62,18 @@ namespace hltb
         public Mainform()
         {
             InitializeComponent();
-            AddOwnedForm(add_content);
-            ChangeState(GameService.Instance);
+            AddOwnedForm(_addContent);
+            Controls.Add(_listPanel);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            _mapFilterToComboBox.Add(YearSortBox, new FilterByYear());
+            _mapFilterToComboBox.Add(ScoreSortBox, new FilterByScore());
+            _mapFilterToComboBox.Add(NameSortBox, new FilterByName());
+            _mapFilterToComboBox.Add(StatusSortBox, new FilterByStatus());
+            ChangeState(GameService.Instance);
             UpdateStatisticsLabel();
-            mapFilterToComboBox.Add(ByYearButton, YearSortBox);
-            mapFilterToComboBox.Add(ByScoreButton, ScoreSortBox);
-            mapFilterToComboBox.Add(ByNameButton, NameSortBox);
-            mapFilterToComboBox.Add(ByStatusButton, StatusSortBox);
 
             Application.ApplicationExit += new EventHandler(OnApplicationExit!);
         }
@@ -111,10 +114,10 @@ namespace hltb
                         operationCode = '2';
                 }
                 // send operation code to add_content Control, perform preparations
-                add_content.SetStatus(operationCode);
+                _addContent.SetStatus(operationCode);
 
-                add_content.RecieveResponse(foundTitle, decodedImage);
-                if (add_content.ShowDialog() == DialogResult.OK)
+                _addContent.RecieveResponse(foundTitle, decodedImage);
+                if (_addContent.ShowDialog() == DialogResult.OK)
                 {
                     namebox.Text = "";
                     Content content = new Content();
@@ -132,14 +135,15 @@ namespace hltb
             currentTitlePanel.Controls.Add(ccc);
             this.Controls.Add(currentTitlePanel);
         }
-        private void AddButtons(List<Content> titles)
+        private void UpdateListPanel(List<Content> titles, string filterValue)
         {
-            this.Controls.Remove(list_panel);
-            list_builder.Reset();
-            list_builder.SetContent(titles);
-            list_panel = list_builder.Build(ButtonOnClick!);
-            list_panel.Location = new Point(ByYearButton.Left, displayModeGroupBox.Bottom + 25);
-            this.Controls.Add(list_panel);
+            this.Controls.Remove(_listPanel);
+            _listBuilder.Reset();
+            _listBuilder.SetContent(titles);
+            _listBuilder.SetButtonClickHandler(this.ButtonOnClick!);
+            _listPanel = _listBuilder.Build(filterValue);
+            _listPanel.Location = new Point(ByYearButton.Left, displayModeGroupBox.Bottom + 25);
+            this.Controls.Add(_listPanel);
         }
 
         private void ResetYears()
@@ -163,7 +167,20 @@ namespace hltb
         }
         private void ResetStatus()
         {
-            StatusSortBox.SelectedIndex = 0;
+            StatusSortBox.Items.Clear();
+            var set = new SortedSet<string>();
+            foreach (var g in modeState.Contents)
+                set.Add(g.Status);
+            object[] a = new object[set.Count];
+            int i = 0;
+            foreach (string s in set)
+            {
+                a[i] = s;
+                i++;
+            }
+            StatusSortBox.Items.AddRange(a);
+            if (StatusSortBox.Items.Count > 0)
+                StatusSortBox.SelectedIndex = 0;
         }
         private void ResetTitles()
         {
@@ -179,7 +196,8 @@ namespace hltb
                 i++;
             }
             NameSortBox.Items.AddRange(a);
-            NameSortBox.SelectedIndex = 0;
+            if (NameSortBox.Items.Count > 0)
+                NameSortBox.SelectedIndex = 0;
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
@@ -194,7 +212,7 @@ namespace hltb
 #pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
             if (nmode.ToLower() == modeState.ToString())
                 return;
-            list_panel.Controls.Clear();
+            _listPanel.Controls.Clear();
             currentTitlePanel.Controls.Clear();
             switch (nmode)
             {
@@ -207,53 +225,34 @@ namespace hltb
                 case "TVSeries":
                     break;
             }
-            //FilterButton_Click(ByYearButton, e);
         }
         private void displayOptionsButton_Click(object sender, EventArgs e)
         {
-            list_builder = new ButtonsContentList();
+            _listBuilder = new ButtonsContentList();
             RefreshTitles();
         }
 
         private void displayImagesButton_Click(object sender, EventArgs e)
         {
-            list_builder = new ImageContentList();
+            _listBuilder = new ImageContentList();
             RefreshTitles();
         }
 
         private void displayRowsButton_Click(object sender, EventArgs e)
         {
-            list_builder = new RowContentList();
+            _listBuilder = new RowContentList();
             RefreshTitles();
         }
 
-        private void ByYearButton_Click(object sender, EventArgs e)
+        private void filter_Click(object sender, EventArgs e)
         {
-            string cur_year = YearSortBox.SelectedItem.ToString();
             RefreshTitles();
-            AddButtons(modeState.Contents.Where(x => x.DateRelease.Year.ToString() == cur_year).ToList());
-        }
-
-        private void ByScoreButton_Click(object sender, EventArgs e)
-        {
-            string cur_score = ScoreSortBox.SelectedIndex.ToString();
-            RefreshTitles();
-            AddButtons(modeState.Contents.Where(x => x.Score.ToString() == cur_score).ToList());
-        }
-
-        private void ByStatusButton_Click(object sender, EventArgs e)
-        {
-            string cur_status = StatusSortBox.SelectedItem.ToString().ToLower();
-            RefreshTitles();
-            AddButtons(modeState.Contents.Where(x => x.Status == cur_status).ToList());
-        }
-
-        private void ByNameButton_Click(object sender, EventArgs e)
-        {
-            char cur_letter = NameSortBox.SelectedItem.ToString().First();
-            RefreshTitles();
-            AddButtons(modeState.Contents.Where(x => x.Title.ToString().First() == cur_letter).ToList());
-
+            ComboBox comboBox = (ComboBox)sender;
+            _listBuilder.SetFilter(_mapFilterToComboBox[comboBox]);
+            if (comboBox.SelectedItem == null)
+                return;
+            string filterValue = comboBox.SelectedItem.ToString()!;
+            UpdateListPanel(modeState.Contents, filterValue);
         }
 
         private void Mainform_FormClosing(object sender, FormClosingEventArgs e)

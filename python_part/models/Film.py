@@ -8,7 +8,8 @@ class Film():
                        LinkUrl="https://yandex.ru/",    
                        Time = 0,                   
                        score = 0,
-                       DateRelease = "1900-01-01",
+                       DateRelease = "1900-01-01"
+                       ):
 
         self.imdb = imdb.Cinemagoer()
         self.movie = self.imdb.search_movie(Title)[0]

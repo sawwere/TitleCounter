@@ -107,7 +107,7 @@ namespace hltb
             YearSortBox.Name = "YearSortBox";
             YearSortBox.Size = new Size(135, 24);
             YearSortBox.TabIndex = 8;
-            YearSortBox.SelectionChangeCommitted += ByYearButton_Click;
+            YearSortBox.SelectionChangeCommitted += filter_Click;
             // 
             // ByYearButton
             // 
@@ -123,7 +123,6 @@ namespace hltb
             ByYearButton.Tag = "0";
             ByYearButton.Text = "By Year";
             ByYearButton.UseVisualStyleBackColor = false;
-            ByYearButton.Click += ByYearButton_Click;
             // 
             // ByScoreButton
             // 
@@ -139,7 +138,6 @@ namespace hltb
             ByScoreButton.Tag = "1";
             ByScoreButton.Text = "By Score";
             ByScoreButton.UseVisualStyleBackColor = false;
-            ByScoreButton.Click += ByScoreButton_Click;
             // 
             // statisticsLabel
             // 
@@ -166,7 +164,6 @@ namespace hltb
             ByStatusButton.Tag = "2";
             ByStatusButton.Text = "By Status";
             ByStatusButton.UseVisualStyleBackColor = false;
-            ByStatusButton.Click += ByStatusButton_Click;
             // 
             // ScoreSortBox
             // 
@@ -181,7 +178,7 @@ namespace hltb
             ScoreSortBox.Name = "ScoreSortBox";
             ScoreSortBox.Size = new Size(135, 24);
             ScoreSortBox.TabIndex = 26;
-            ScoreSortBox.SelectionChangeCommitted += ByScoreButton_Click;
+            ScoreSortBox.SelectionChangeCommitted += filter_Click;
             // 
             // StatusSortBox
             // 
@@ -196,7 +193,7 @@ namespace hltb
             StatusSortBox.Name = "StatusSortBox";
             StatusSortBox.Size = new Size(121, 24);
             StatusSortBox.TabIndex = 28;
-            StatusSortBox.SelectionChangeCommitted += ByStatusButton_Click;
+            StatusSortBox.SelectionChangeCommitted += filter_Click;
             // 
             // currentTitlePanel
             // 
@@ -221,7 +218,6 @@ namespace hltb
             ByNameButton.Tag = "3";
             ByNameButton.Text = "By Name";
             ByNameButton.UseVisualStyleBackColor = false;
-            ByNameButton.Click += ByNameButton_Click;
             // 
             // NameSortBox
             // 
@@ -236,7 +232,7 @@ namespace hltb
             NameSortBox.Name = "NameSortBox";
             NameSortBox.Size = new Size(135, 24);
             NameSortBox.TabIndex = 31;
-            NameSortBox.SelectionChangeCommitted += ByNameButton_Click;
+            NameSortBox.SelectionChangeCommitted += filter_Click;
             // 
             // groupBox1
             // 
