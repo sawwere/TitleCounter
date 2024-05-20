@@ -18,13 +18,13 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "link_url")
     private String linkUrl;
 
-    @Column(name = "time")
+    @Column(name = "time", nullable = false)
     private long time;
 
     @Column(name = "date_release")

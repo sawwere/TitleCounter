@@ -18,7 +18,7 @@ public class Film {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "rus_title")
@@ -36,7 +36,6 @@ public class Film {
     @Column(name = "global_score")
     private Float globalScore;
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "game_entry_id", referencedColumnName = "id")
+    @OneToMany(orphanRemoval = true, mappedBy = "film")
     private List<FilmEntry> filmEntries;
 }

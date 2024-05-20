@@ -7,7 +7,7 @@ class Film():
                        ImageUrl="https://kitairu.net/images/noimage.png",
                        LinkUrl="https://yandex.ru/",    
                        Time = 0,                   
-                       score = 0,
+                       Score = 0,
                        DateRelease = "1900-01-01"
                        ):
 

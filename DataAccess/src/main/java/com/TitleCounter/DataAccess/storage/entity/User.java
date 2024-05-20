@@ -20,18 +20,24 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "unique_username_idx", columnList = "username", unique = true)
+})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", unique = true, nullable = false)
     @Size(min = 1, message = "Не меньше 1 знаков")
     private String username;
 
+    @Column(name = "password", nullable = false)
     @Size(min = 1, message = "Не меньше 1 знаков")
     private String password;
 
+
+    @Column(name = "email", unique = true, nullable = false)
     @Email
     private String email;
 
