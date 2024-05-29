@@ -4,8 +4,11 @@ import com.TitleCounter.DataAccess.dto.*;
 import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.service.GameService;
 import com.TitleCounter.DataAccess.service.ImageStorageService;
+import com.TitleCounter.DataAccess.storage.entity.Game;
+import com.TitleCounter.DataAccess.storage.repository.specification.GameSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,20 +42,13 @@ public class GameController
 
     /**
      * Обрабатывает входящеий запрос на создание нового Game.
-     * @param gameCreationDto объект, содержащий необходимые для создания Game данные
+     * @param gameDto объект, содержащий необходимые для создания Game данные
      * @return GameDto, содержащий данные созданной Game
      */
     @PostMapping(CREATE_GAME)
     @ResponseStatus(HttpStatus.CREATED)
-    public GameDto createGame(@Valid @RequestPart("game") GameDto gameCreationDto,
+    public GameDto createGame(@Valid @RequestPart("game") GameDto gameDto,
                               @RequestPart("image") MultipartFile image) {
-        GameDto gameDto = GameDto.builder()
-                .title(gameCreationDto.getTitle())
-                .time(gameCreationDto.getTime())
-                .globalScore(gameCreationDto.getGlobalScore())
-                .dateRelease(gameCreationDto.getDateRelease())
-                .linkUrl(gameCreationDto.getLinkUrl())
-                .build();
         var gameEntity = gameService.createGame(gameDto);
         var id = gameEntity.getId();
         imageStorageService.store(image, "games/%d".formatted(id));
@@ -78,7 +74,7 @@ public class GameController
 
     @GetMapping(FIND_ALL_GAMES)
     public List<GameDto> findAllGames(@RequestParam(value = "q", required = false) Optional<String> query) {
-        return gameService.search(query).stream().map(gameDtoFactory::entityToDto).collect(Collectors.toList());
+        return gameService.search(query).stream().map(gameDtoFactory::entityToDto).toList();
     }
 
     @GetMapping(FIND_GAME_ENTRIES)
@@ -87,7 +83,7 @@ public class GameController
                 .findGameEntriesByUser(username)
                 .stream()
                 .map(gameEntryDtoFactory::entityToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PostMapping(CREATE_GAME_ENTRY)

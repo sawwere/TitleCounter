@@ -8,11 +8,13 @@ import com.TitleCounter.DataAccess.storage.entity.FilmEntry;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.FilmEntryRepository;
 import com.TitleCounter.DataAccess.storage.repository.FilmRepository;
-import jakarta.transaction.Transactional;
+import com.TitleCounter.DataAccess.storage.repository.specification.FilmSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -73,18 +75,18 @@ public class FilmService {
         logger.info("Deleted film '%s' with id '%d'".formatted(film.getTitle(), filmId));
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<Film> findAll() {
         return filmRepository.streamAllBy().toList();
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<Film> search(Optional<String> query) {
-        var films = filmRepository.streamAllBy();
+        Specification<Film> filter = Specification.where(null);
         if (query.isPresent()) {
-            films = films.filter(_film-> _film.getTitle().equals(query.get()));
+            filter = filter.and(FilmSpecification.titleContains(query.get()));
         }
-        return films.toList();
+        return filmRepository.findAll(filter);
     }
 
 
@@ -129,14 +131,14 @@ public class FilmService {
         logger.info("Deleted FilmEntry %d for user %s".formatted(filmEntry.getId(), user.getUsername()));
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<FilmEntry> findFilmEntriesByUser(String username) {
         User user = userService.findUserByUsername(username);
         Stream<FilmEntry> filmEntries = filmEntryRepository.streamAllByUserId(user.getId());
         return filmEntries.toList();
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<Film> findFilmsByUser(String username) {
         User user = userService.findUserByUsername(username);
         List<FilmEntry> filmEntries = findFilmEntriesByUser(username);

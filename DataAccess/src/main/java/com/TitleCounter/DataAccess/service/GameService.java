@@ -4,7 +4,6 @@ import com.TitleCounter.DataAccess.dto.GameDto;
 import com.TitleCounter.DataAccess.dto.GameDtoFactory;
 import com.TitleCounter.DataAccess.dto.GameEntryRequestDto;
 import com.TitleCounter.DataAccess.dto.GameEntryDtoFactory;
-import com.TitleCounter.DataAccess.exception.ApiBadCredentialsException;
 import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.exception.NotFoundException;
 import com.TitleCounter.DataAccess.storage.entity.Game;
@@ -12,12 +11,13 @@ import com.TitleCounter.DataAccess.storage.entity.GameEntry;
 import com.TitleCounter.DataAccess.storage.entity.User;
 import com.TitleCounter.DataAccess.storage.repository.GameEntryRepository;
 import com.TitleCounter.DataAccess.storage.repository.GameRepository;
-import jakarta.transaction.Transactional;
+import com.TitleCounter.DataAccess.storage.repository.specification.GameSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -78,20 +78,19 @@ public class GameService {
         logger.info("Deleted game '%s' with id '%d'".formatted(game.getTitle(), gameId));
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<Game> findAll() {
         return gameRepository.streamAllBy().toList();
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<Game> search(Optional<String> query) {
-        var games = gameRepository.streamAllBy();
+        Specification<Game> filter = Specification.where(null);
         if (query.isPresent()) {
-            games = games.filter(_game-> _game.getTitle().equals(query.get()));
+            filter = filter.and(GameSpecification.titleContains(query.get()));
         }
-        return games.toList();
+        return gameRepository.findAll(filter);
     }
-
 
     @Transactional
     public GameEntry createGameEntry(String username, GameEntryRequestDto gameEntryDto) {
@@ -136,18 +135,17 @@ public class GameService {
         logger.info("Deleted GameEntry %d for user %s".formatted(gameEntry.getId(), user.getUsername()));
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<GameEntry> findGameEntriesByUser(String username) {
         User user = userService.findUserByUsername(username);
         Stream<GameEntry> gameEntries = gameEntryRepository.streamAllByUserId(user.getId());
         return gameEntries.toList();
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     public List<Game> findGamesByUser(String username) {
         User user = userService.findUserByUsername(username);
         List<GameEntry> gameEntries = findGameEntriesByUser(username);
-
-        return gameEntries.stream().map(x->x.getGame()).toList();
+        return gameEntries.stream().map(GameEntry::getGame).toList();
     }
 }

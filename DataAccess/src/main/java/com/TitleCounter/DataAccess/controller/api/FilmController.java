@@ -4,8 +4,11 @@ import com.TitleCounter.DataAccess.dto.film.*;
 import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.service.FilmService;
 import com.TitleCounter.DataAccess.service.ImageStorageService;
+import com.TitleCounter.DataAccess.storage.entity.Film;
+import com.TitleCounter.DataAccess.storage.repository.specification.FilmSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,6 @@ public class FilmController {
     public static final String FIND_FILM = "/api/films/{film_id}";
     public static final String DELETE_FILM = "/api/films/{film_id}";
     public static final String FIND_ALL_FILMS = "/api/films";
-
     public static final String CREATE_FILM_ENTRY = "/api/users/{username}/films";
     public static final String UPDATE_FILM_ENTRY = "/api/films/submissions/{submission_id}";
     public static final String DELETE_FILM_ENTRY = "/api/films/submissions/{submission_id}";
@@ -38,20 +40,13 @@ public class FilmController {
 
     /**
      * Обрабатывает входящеий запрос на создание нового Film.
-     * @param filmCreationDto объект, содержащий необходимые для создания Film данные
+     * @param filmDto объект, содержащий необходимые для создания Film данные
      * @return FilmDto, содержащий данные созданной Film
      */
     @PostMapping(CREATE_FILM)
     @ResponseStatus(HttpStatus.CREATED)
-    public FilmDto createFilm(@Valid @RequestPart("film") FilmDto filmCreationDto,
+    public FilmDto createFilm(@Valid @RequestPart("film") FilmDto filmDto,
                               @RequestPart("image") MultipartFile image) {
-        FilmDto filmDto = FilmDto.builder()
-                .title(filmCreationDto.getTitle())
-                .time(filmCreationDto.getTime())
-                .globalScore(filmCreationDto.getGlobalScore())
-                .dateRelease(filmCreationDto.getDateRelease())
-                .linkUrl(filmCreationDto.getLinkUrl())
-                .build();
         var filmEntity = filmService.createFilm(filmDto);
         var id = filmEntity.getId();
         imageStorageService.store(image, "films/%d".formatted(id));
