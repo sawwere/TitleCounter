@@ -20,7 +20,7 @@ public class FilmEntryDtoFactory {
                 .score(filmEntry.getScore())
                 .status(filmEntry.getStatus())
                 .dateCompleted(filmEntry.getDateCompleted())
-                .game(filmDtoFactory.entityToDto(filmEntry.getFilm()))
+                .film(filmDtoFactory.entityToDto(filmEntry.getFilm()))
                 .userId(filmEntry.getUser().getId())
                 .build();
     }

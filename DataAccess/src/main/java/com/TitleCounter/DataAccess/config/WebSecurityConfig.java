@@ -26,6 +26,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.Optional;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -69,8 +71,8 @@ public class WebSecurityConfig {
                         .requestMatchers(AuthController.API_LOGIN).anonymous()
                         .requestMatchers(AuthController.API_LOGOUT).authenticated()
                         .requestMatchers(
-                                HttpMethod.GET,
-                                GameController.FIND_GAME, GameController.FIND_ALL_GAMES, GameController.FIND_GAME_ENTRIES,
+                                HttpMethod.GET, GameController.FIND_GAME,
+                                GameController.FIND_ALL_GAMES, GameController.FIND_GAME_ENTRIES,
                                 FilmController.FIND_FILM, FilmController.FIND_ALL_FILMS, FilmController.FIND_FILM_ENTRIES
                         ).permitAll()
                         .requestMatchers("/", "/error",

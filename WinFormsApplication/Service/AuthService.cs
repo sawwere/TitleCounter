@@ -56,7 +56,7 @@ namespace hltb.Service
             var content = JsonContent.Create(userLoginDto);
             var result = _restApiClient.HttpClient.PostAsync("http://localhost:8080/api/login", content).Result;
             var userDto = JsonConvert.DeserializeObject<UserDto>(result.Content.ReadAsStringAsync().Result);
-            SESSIONID = _restApiClient.Handler.CookieContainer.GetAllCookies().Cast<Cookie>().First(x => x.Name == "SESSION").Value;
+            SESSIONID = _restApiClient.Handler.CookieContainer.GetAllCookies().Cast<Cookie>().First(x => x.Name == "JSESSIONID").Value;
             _restApiClient.SetSessionCookie(SESSIONID);
             Debug.WriteLine(SESSIONID);
             return userDto;

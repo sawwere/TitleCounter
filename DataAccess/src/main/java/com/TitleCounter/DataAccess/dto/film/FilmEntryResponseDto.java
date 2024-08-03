@@ -36,5 +36,5 @@ public class FilmEntryResponseDto {
     private Long userId;
 
     @NotNull
-    private FilmDto game;
+    private FilmDto film;
 }

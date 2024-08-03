@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -24,26 +25,22 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", unique = true, nullable = false)
     @Size(min = 1, message = "Не меньше 1 знаков")
     private String username;
 
+    @Column(name = "password", nullable = false)
     @Size(min = 1, message = "Не меньше 1 знаков")
     private String password;
 
+
+    @Column(name = "email", unique = true, nullable = false)
     @Email
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Cascade(CascadeType.REMOVE)
     private List<Role> roles;
-
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private List<GameEntry> gameEntry;
-
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private List<FilmEntry> filmEntry;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -68,5 +65,20 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User that = (User) o;
+        return username.equals(that.username) &&
+                email.equals(that.email) &&
+                password.equals(that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, email, password);
     }
 }
