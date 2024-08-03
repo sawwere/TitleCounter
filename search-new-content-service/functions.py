@@ -9,7 +9,7 @@ import requests
 
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'}
 
 """
 path_to_data = '/'.join(os.path.abspath(os.curdir).split('/')
@@ -40,7 +40,7 @@ def find_games(name):
     results.sort(key=sortBySim)
     return results
     
-async def choose_game(name):
+def choose_game(name):
     results = find_games(name)
     if results is not None and len(results) > 0:
         r = results[-1]
@@ -68,7 +68,7 @@ def get_fixed_name(string):
 
 
 # Download image for 1 title
-async def download_image(image_url):
+def download_image(image_url):
     try:
         image = requests.get(image_url, headers=headers)
         return image.content

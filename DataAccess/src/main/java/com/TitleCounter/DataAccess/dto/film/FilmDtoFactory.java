@@ -29,4 +29,15 @@ public class FilmDtoFactory {
                 .globalScore(filmDto.getGlobalScore())
                 .build();
     }
+
+    public Film creationDtoToEntity(FilmCreationDto filmDto) {
+        return Film.builder()
+                .title(filmDto.getTitle())
+                .rusTitle(filmDto.getRusTitle())
+                .linkUrl(filmDto.getLinkUrl())
+                .time(filmDto.getTime())
+                .dateRelease(filmDto.getDateRelease())
+                .globalScore(filmDto.getGlobalScore())
+                .build();
+    }
 }

@@ -36,5 +36,6 @@ public class FilmCreationDto {
     @JsonProperty(value = "global_score")
     private Float globalScore;
 
-    private MultipartFile image;
+    @JsonProperty(value = "image_url")
+    private String imageUrl;
 }

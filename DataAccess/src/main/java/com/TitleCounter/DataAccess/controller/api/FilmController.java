@@ -3,12 +3,8 @@ package com.TitleCounter.DataAccess.controller.api;
 import com.TitleCounter.DataAccess.dto.film.*;
 import com.TitleCounter.DataAccess.exception.ForbiddenException;
 import com.TitleCounter.DataAccess.service.FilmService;
-import com.TitleCounter.DataAccess.service.ImageStorageService;
-import com.TitleCounter.DataAccess.storage.entity.Film;
-import com.TitleCounter.DataAccess.storage.repository.specification.FilmSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping(produces="application/json")
 @RequiredArgsConstructor
 public class FilmController {
-    private final ImageStorageService imageStorageService;
     private final FilmService filmService;
 
     private final FilmDtoFactory filmDtoFactory;
@@ -37,7 +32,7 @@ public class FilmController {
     public static final String UPDATE_FILM_ENTRY = "/api/films/submissions/{submission_id}";
     public static final String DELETE_FILM_ENTRY = "/api/films/submissions/{submission_id}";
     public static final String FIND_FILM_ENTRIES = "/api/users/{username}/films";
-
+    public static final String AUTO_CREATE_FILM = "/api/films/auto-create";
     /**
      * Обрабатывает входящеий запрос на создание нового Film.
      * @param filmDto объект, содержащий необходимые для создания Film данные
@@ -47,9 +42,12 @@ public class FilmController {
     @ResponseStatus(HttpStatus.CREATED)
     public FilmDto createFilm(@Valid @RequestPart("film") FilmDto filmDto,
                               @RequestPart("image") MultipartFile image) {
-        var filmEntity = filmService.createFilm(filmDto);
-        var id = filmEntity.getId();
-        imageStorageService.store(image, "films/%d".formatted(id));
+        var filmEntity = filmService.createFilm(filmDto, image);
+        return filmDtoFactory.entityToDto(filmEntity);
+    }
+    @PostMapping(AUTO_CREATE_FILM)
+    public FilmDto autoCreateFilm(@Valid @RequestParam(value = "title") String title) {
+        var filmEntity = filmService.autoCreateFilm(title);
         return filmDtoFactory.entityToDto(filmEntity);
     }
 

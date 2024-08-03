@@ -1,16 +1,20 @@
 from flask import Flask, jsonify, request
 from flask import abort
-from flask import make_response
+from flask import make_response, send_file, Response
+import py_eureka_client.eureka_client as eureca_client
 
 import base64
-
 from functions import *
-from models.Film import Film
-from models.Game import Game
-from models.TVSeries import TVSeries
+from service.film_service import FilmService
 
-
+eureca_client.init(
+    eureka_server="http://localhost:8761/eureka",
+    app_name="external-content-search-service",
+    instance_host="localhost",
+    instance_port=5000
+)
 app = Flask(__name__)
+film_service = FilmService()
 
 @app.errorhandler(404)
 def not_found(error):
@@ -26,22 +30,24 @@ async def get_game():
     return jsonify(game.to_dict())
 
 @app.route('/find/films', methods=['GET'])
-async def get_film():
+def get_film():
     name = request.args.get('title', default = "None", type = str)
-    film = Film(name)
+    film = film_service.search(name)
     if film is None:
         abort(404)
 
     return jsonify(film.to_dict())
 
 @app.route('/find/image', methods=['GET'])
-async def get_image():
+def get_image():
     image_url = request.args.get('image_url', default = "https://kitairu.net/images/noimage.png", type = str)
-    string = await download_image(image_url)
-    base64_image = base64.b64encode(string)
+    image_bytes = download_image(image_url)
+    base64_image = base64.b64encode(image_bytes)
     if base64_image is None:
         abort(404)
-    return base64_image.decode()
+    r = Response(response=image_bytes, status=200, mimetype="image/png")
+    r.headers["Content-Type"] = "image/png"
+    return r
 
 #curl -i "http://localhost:5000/find/films?title=matrix"
 #curl -i "http://localhost:5000/find/image?image_url=https://howlongtobeat.com/games/100639_a.jpg"

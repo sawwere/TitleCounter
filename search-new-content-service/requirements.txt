@@ -2,3 +2,4 @@ cinemagoer
 flask[async]
 howlongtobeatpy
 beautifulsoup4
+py_eureka_client

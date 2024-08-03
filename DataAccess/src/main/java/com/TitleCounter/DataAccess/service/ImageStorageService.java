@@ -60,6 +60,20 @@ public class ImageStorageService implements StorageService {
         }
     }
 
+    public void store(byte[] file, String filename) {
+        try {
+            if (file.length  < 1) {
+                throw new StorageException("Failed to store empty file.");
+            }
+            Path destinationFile = this.rootLocation.resolve("%s.jpg".formatted(filename))
+                    .normalize().toAbsolutePath();
+            Files.write(destinationFile, file);
+        }
+        catch (IOException e) {
+            throw new StorageException("Failed to store file.", e);
+        }
+    }
+
     @Override
     public Stream<Path> loadAll() {
         try {

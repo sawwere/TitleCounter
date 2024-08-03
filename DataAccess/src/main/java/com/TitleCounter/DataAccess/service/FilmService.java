@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +35,8 @@ public class FilmService {
     private final FilmDtoFactory filmDtoFactory;
     private final FilmEntryDtoFactory filmEntryDtoFactory;
 
+    private final ImageStorageService imageStorageService;
+    private final ExternalContentSearchService externalContentSearchService;
     private final UserService userService;
     public Optional<Film> findFilm(Long filmId) {
         return filmRepository.findById(filmId);
@@ -53,9 +56,22 @@ public class FilmService {
     }
 
     @Transactional
-    public Film createFilm(@Valid FilmDto filmDto) {
+    public Film createFilm(@Valid FilmDto filmDto, MultipartFile image) {
         Film film = filmDtoFactory.dtoToEntity(filmDto);
         filmRepository.save(film);
+        imageStorageService.store(image, "films/%d".formatted(film.getId()));
+        logger.info("Created film '%s' with id '%d'".formatted(film.getTitle(), film.getId()));
+        return film;
+    }
+
+    @Transactional
+    public Film autoCreateFilm(String title) {
+        FilmCreationDto filmCreationDto = externalContentSearchService.findFilm(title);
+        Film film = filmDtoFactory.creationDtoToEntity(filmCreationDto);
+        filmRepository.save(film);
+        System.out.println(filmCreationDto.getImageUrl());
+        var image = externalContentSearchService.findImage(filmCreationDto.getImageUrl());
+        imageStorageService.store(image, "films/%d".formatted(film.getId()));
         logger.info("Created film '%s' with id '%d'".formatted(film.getTitle(), film.getId()));
         return film;
     }
