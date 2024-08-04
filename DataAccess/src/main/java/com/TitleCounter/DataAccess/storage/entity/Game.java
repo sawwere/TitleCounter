@@ -2,8 +2,11 @@ package com.TitleCounter.DataAccess.storage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -35,4 +38,12 @@ public class Game {
 
     @OneToMany(orphanRemoval = true, mappedBy = "game")
     private List<GameEntry> gameEntries;
+
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime  updatedAt;
 }

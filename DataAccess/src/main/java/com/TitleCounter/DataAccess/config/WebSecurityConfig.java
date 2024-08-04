@@ -26,8 +26,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.Optional;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 
 @Configuration
 @EnableWebSecurity

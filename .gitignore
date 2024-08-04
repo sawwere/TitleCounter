@@ -542,3 +542,4 @@ DataAccess/.mvn/wrapper/maven-wrapper.jar
 DataAccess/.mvn/wrapper/maven-wrapper.properties
 SpringClient/
 *.jpg
+search-new-content-service/token.json

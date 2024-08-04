@@ -6,13 +6,15 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -52,6 +54,14 @@ public class User implements UserDetails {
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<FilmEntry> filmEntry;
+
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime  updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

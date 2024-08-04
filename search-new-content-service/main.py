@@ -32,19 +32,14 @@ async def get_game():
 @app.route('/find/films', methods=['GET'])
 def get_film():
     name = request.args.get('title', default = "None", type = str)
-    film = film_service.search(name)
-    if film is None:
-        abort(404)
-
-    return jsonify(film.to_dict())
+    page = request.args.get('page', default = 1, type = int)
+    film = film_service.search(name, page)
+    return jsonify([x.to_dict() for x in film])
 
 @app.route('/find/image', methods=['GET'])
 def get_image():
     image_url = request.args.get('image_url', default = "https://kitairu.net/images/noimage.png", type = str)
     image_bytes = download_image(image_url)
-    base64_image = base64.b64encode(image_bytes)
-    if base64_image is None:
-        abort(404)
     r = Response(response=image_bytes, status=200, mimetype="image/png")
     r.headers["Content-Type"] = "image/png"
     return r

@@ -2,8 +2,11 @@ package com.TitleCounter.DataAccess.storage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -38,4 +41,12 @@ public class Film {
 
     @OneToMany(orphanRemoval = true, mappedBy = "film")
     private List<FilmEntry> filmEntries;
+
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime  updatedAt;
 }

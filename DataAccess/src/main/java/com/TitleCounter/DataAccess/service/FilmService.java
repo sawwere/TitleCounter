@@ -11,6 +11,7 @@ import com.TitleCounter.DataAccess.storage.repository.FilmRepository;
 import com.TitleCounter.DataAccess.storage.repository.specification.FilmSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -66,7 +67,7 @@ public class FilmService {
 
     @Transactional
     public Film autoCreateFilm(String title) {
-        FilmCreationDto filmCreationDto = externalContentSearchService.findFilm(title);
+        FilmCreationDto filmCreationDto = externalContentSearchService.findFilms(title, 1).get(0);
         Film film = filmDtoFactory.creationDtoToEntity(filmCreationDto);
         filmRepository.save(film);
         System.out.println(filmCreationDto.getImageUrl());
@@ -102,9 +103,8 @@ public class FilmService {
         if (query.isPresent()) {
             filter = filter.and(FilmSpecification.titleContains(query.get()));
         }
-        return filmRepository.findAll(filter);
+        return filmRepository.findAll(filter, Pageable.ofSize(10)).getContent();
     }
-
 
     @Transactional
     public FilmEntry createFilmEntry(String username, FilmEntryRequestDto filmEntryDto) {

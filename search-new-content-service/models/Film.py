@@ -27,7 +27,11 @@ class Film():
                          + ' ' + self.time + ' ' + self.global_score + ' ' + self.date_release)
         return result
     
-
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['movie']
+        return state
+    
     def to_dict(self) -> dict:
         return {"title": self.title,
                 "rus_title" : self.rus_title,
