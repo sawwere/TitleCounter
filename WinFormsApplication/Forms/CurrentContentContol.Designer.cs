@@ -64,7 +64,7 @@ namespace hltb
             titlePicture.Margin = new Padding(4, 3, 4, 3);
             titlePicture.Name = "titlePicture";
             titlePicture.Size = new Size(280, 415);
-            titlePicture.SizeMode = PictureBoxSizeMode.CenterImage;
+            titlePicture.SizeMode = PictureBoxSizeMode.Zoom;
             titlePicture.TabIndex = 0;
             titlePicture.TabStop = false;
             // 

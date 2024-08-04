@@ -1,6 +1,8 @@
-﻿using hltb.Forms;
+﻿using hltb.Dto;
+using hltb.Forms;
 using hltb.Forms.ContentListBuilder;
 using hltb.Models;
+using hltb.Models.Outdated;
 using hltb.Service;
 using System.Collections;
 using System.Data;
@@ -76,55 +78,6 @@ namespace hltb
             UpdateStatisticsLabel();
 
             Application.ApplicationExit += new EventHandler(OnApplicationExit!);
-        }
-
-        private async void addtitle_MouseDown(object sender, MouseEventArgs e)
-        {
-            StringBuilder status = new StringBuilder();
-            if (namebox.Text == "")
-            {
-                status.Append("Error: empty name field");
-            }
-            else
-            {
-                char operationCode = '0';
-                var searchResult = modeState.SearchByTitle(namebox.Text);
-                string foundTitle = "Not found";
-
-                string imageUrl = $@"http://localhost:8080/images/None.jpg";
-                if (searchResult.Count() == 0)
-                {
-                    operationCode = '1';
-                }
-                else
-                {
-                    imageUrl = $@"http://localhost:8080/images/{modeState.ToString()}/{searchResult.First().Id}.jpg";
-                    foundTitle = searchResult.First().Title;
-                }
-                Image decodedImage = await Task.Run(() => RestApiSerice.Instance.GetImage(imageUrl));
-
-                if (operationCode == '0')
-                {
-                    if (modeState
-                        .Contents
-                        .Where(x => 
-                            x.Title == foundTitle 
-                            && x.DateRelease.Year.ToString() == searchResult.First().DateRelease.Substring(0,4))
-                        .Count() > 0)
-                        operationCode = '2';
-                }
-                // send operation code to add_content Control, perform preparations
-                _addContent.SetStatus(operationCode);
-
-                _addContent.RecieveResponse(foundTitle, decodedImage);
-                if (_addContent.ShowDialog() == DialogResult.OK)
-                {
-                    namebox.Text = "";
-                    Content content = new Content();
-                    modeState.Create(searchResult.First());
-                }
-            }
-            UpdateStatisticsLabel();
         }
 
         private void ButtonOnClick(object sender, EventArgs eventArgs)
@@ -258,6 +211,62 @@ namespace hltb
         private void Mainform_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
+        }
+
+        private async void addEntry_Click(object sender, EventArgs e)
+        {
+            AddContent.AddContentBuilder builder = new AddContent.AddContentBuilder(_addContent);
+            StringBuilder status = new StringBuilder();
+            if (namebox.Text == "")
+            {
+                status.Append("Error: empty name field");
+                return;
+            }
+            IEnumerable<ISearchable> searchResult = new List<ISearchable>();//improve somehow??
+            try
+            {
+                searchResult = modeState.SearchByTitle(namebox.Text);
+                string imageUrl = $@"http://localhost:8080/images/None.jpg";
+                if (!searchResult.Any())
+                {
+                    builder.Errors("Nothing has been found");
+                }
+                else
+                {
+                    foreach (var content in searchResult)
+                    {
+                        var entryCreationListElement = new EntryCreationListElement();
+
+                        imageUrl = $@"http://localhost:8080/images/{modeState.ToString()}/{content.Id}.jpg";
+
+                        Content? c = modeState
+                            .Contents
+                            .Where(x => x.LinkUrl == content.LinkUrl)
+                            .FirstOrDefault();
+                        if (c is null)
+                            entryCreationListElement.SetStatusLabel("");
+                        else
+                            entryCreationListElement.SetStatusLabel(c.Status);
+                        entryCreationListElement.SetImage(RestApiSerice.Instance.GetImage(imageUrl));
+                        entryCreationListElement.SetText($"{content.Title}");
+                        entryCreationListElement.SetYear($"Release date: {content.DateRelease}");
+                        
+                        builder.EntryElement(entryCreationListElement);
+                    }
+                }
+            }
+            catch (HttpRequestException ex) {
+                builder.Errors(ex.Message);
+            }
+            
+            _addContent = builder.Build();
+            AddOwnedForm(_addContent);
+            if (_addContent.ShowDialog() == DialogResult.OK)
+            {
+                namebox.Text = "";
+                modeState.Create(searchResult.ElementAt(_addContent.Result));
+            }
+            UpdateStatisticsLabel();
         }
     }
 }

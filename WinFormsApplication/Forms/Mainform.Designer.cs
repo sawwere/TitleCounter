@@ -30,7 +30,7 @@ namespace hltb
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            addgame = new Button();
+            addEntry = new Button();
             operationLabel = new Label();
             namebox = new TextBox();
             YearSortBox = new ComboBox();
@@ -56,21 +56,21 @@ namespace hltb
             displayModeGroupBox.SuspendLayout();
             SuspendLayout();
             // 
-            // addgame
+            // addEntry
             // 
-            addgame.BackColor = Color.Gray;
-            addgame.BackgroundImage = Properties.Resources.search_icon;
-            addgame.BackgroundImageLayout = ImageLayout.Zoom;
-            addgame.FlatAppearance.BorderSize = 0;
-            addgame.FlatStyle = FlatStyle.Flat;
-            addgame.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            addgame.ForeColor = Color.SeaShell;
-            addgame.Location = new Point(100, 22);
-            addgame.Name = "addgame";
-            addgame.Size = new Size(38, 29);
-            addgame.TabIndex = 0;
-            addgame.UseVisualStyleBackColor = false;
-            addgame.MouseDown += addtitle_MouseDown;
+            addEntry.BackColor = Color.Gray;
+            addEntry.BackgroundImage = Properties.Resources.search_icon;
+            addEntry.BackgroundImageLayout = ImageLayout.Zoom;
+            addEntry.FlatAppearance.BorderSize = 0;
+            addEntry.FlatStyle = FlatStyle.Flat;
+            addEntry.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            addEntry.ForeColor = Color.SeaShell;
+            addEntry.Location = new Point(100, 22);
+            addEntry.Name = "addEntry";
+            addEntry.Size = new Size(38, 29);
+            addEntry.TabIndex = 0;
+            addEntry.UseVisualStyleBackColor = false;
+            addEntry.Click += addEntry_Click;
             // 
             // operationLabel
             // 
@@ -386,7 +386,7 @@ namespace hltb
             Controls.Add(YearSortBox);
             Controls.Add(namebox);
             Controls.Add(operationLabel);
-            Controls.Add(addgame);
+            Controls.Add(addEntry);
             Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = Color.SeaShell;
             Name = "Mainform";
@@ -401,7 +401,7 @@ namespace hltb
 
         #endregion
 
-        private Button addgame;
+        private Button addEntry;
         private Label operationLabel;
         private TextBox namebox;
         private ComboBox YearSortBox;
