@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: title-counter-api
+  data:
+    redis:
+      repositories:
+        enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/TitleCounter
+    username: postgres
+    password: 1234
+  flyway:
+    user: postgres
+    password: 1234
+    schemas: dev
+    url: jdbc:postgresql://localhost:5432/TitleCounter
+    baselineOnMigrate: true
+    enabled: false
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: dev
+  jba:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.lob.non_contextual_creation: true
+  #  redis:
+  #    host: localhost
+  #    port: 6379
+  #  session:
+  #    redis:
+  #      flush-mode: on_save
+  #      namespace: title_counter:session
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
+  thymeleaf:
+    cache: false
+server:
+  servlet:
+    session:
+      timeout: 15m
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
+
+#http://localhost:9000/oauth2/authorize?response_type=code&client_id=title_counter_client&redirect_uri=http://127.0.0.1:9090/login/oauth2/code/title_counter_client&scope=addTitles+deleteTitles

@@ -536,10 +536,6 @@ README.html
 .exercism
 
 WinFormsApplication/appsettings.json
-DataAccess/src/main/resources/hibernate.cfg.xml
-DataAccess/src/main/resources/application.properties 
-DataAccess/.mvn/wrapper/maven-wrapper.jar
-DataAccess/.mvn/wrapper/maven-wrapper.properties
 SpringClient/
 *.jpg
 search-new-content-service/token.json

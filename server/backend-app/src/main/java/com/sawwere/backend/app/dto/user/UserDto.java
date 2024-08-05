@@ -1,0 +1,14 @@
+package com.sawwere.backend.app.dto.user;
+
+import lombok.*;
+
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserDto {
+    private Long id;
+    private String username;
+    private String email;
+}
