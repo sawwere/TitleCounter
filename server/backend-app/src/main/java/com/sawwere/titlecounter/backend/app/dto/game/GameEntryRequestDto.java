@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto;
+package com.sawwere.titlecounter.backend.app.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameEntryResponseDto {
+public class GameEntryRequestDto {
     private Long id;
 
     @Size(min = 1, max = 64)
@@ -41,5 +41,6 @@ public class GameEntryResponseDto {
     private Long userId;
 
     @NotNull
-    private GameDto game;
+    @JsonProperty(value = "game_id")
+    private Long gameId;
 }

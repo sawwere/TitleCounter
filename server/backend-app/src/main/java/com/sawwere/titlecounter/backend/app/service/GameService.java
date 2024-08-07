@@ -2,10 +2,10 @@ package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
-import com.sawwere.titlecounter.backend.app.dto.GameDto;
-import com.sawwere.titlecounter.backend.app.dto.GameDtoFactory;
-import com.sawwere.titlecounter.backend.app.dto.GameEntryRequestDto;
-import com.sawwere.titlecounter.backend.app.dto.GameEntryDtoFactory;
+import com.sawwere.titlecounter.backend.app.dto.game.GameDto;
+import com.sawwere.titlecounter.backend.app.dto.game.GameDtoFactory;
+import com.sawwere.titlecounter.backend.app.dto.game.GameEntryRequestDto;
+import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;

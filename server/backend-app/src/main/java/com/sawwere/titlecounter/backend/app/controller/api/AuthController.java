@@ -1,49 +1,55 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
+import com.sawwere.titlecounter.backend.app.dto.JwtAuthenticationResponse;
 import com.sawwere.titlecounter.backend.app.dto.user.UserDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserLoginDto;
+import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.ApiBadCredentialsException;
+import com.sawwere.titlecounter.backend.app.service.AuthService;
 import com.sawwere.titlecounter.backend.app.service.GameService;
+import com.sawwere.titlecounter.backend.app.service.JwtService;
+import com.sawwere.titlecounter.backend.app.service.UserService;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.NotSupportedException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.Authenticator;
+import org.apache.commons.lang.NotImplementedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@RestController
+@RestController()
 public class AuthController {
-    private static final Logger logger =
-            Logger.getLogger(GameService.class.getName());
-
-    public static final String API_LOGIN = "/api/login";
-    public static final String API_LOGOUT = "/api/logout";
+    public static final String API_LOGIN = "/api/auth/login";
+    public static final String API_REGISTER = "/api/auth/register";
+    public static final String API_LOGOUT = "/api/auth/logout";
+    public static final String REFRESH_TOKEN = "/api/auth/token";
 
     private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
+    private final AuthService authService;
+
     @PostMapping(API_LOGIN)
-    public UserDto login(@Valid @RequestBody UserLoginDto userLoginDto, HttpServletRequest request) {
-        try {
-            request.login(userLoginDto.getUsername(), userLoginDto.getPassword());
-        } catch (ServletException e) {
-            logger.info(e.getMessage());
-            throw new ApiBadCredentialsException("Invalid username or password");
-        }
-        var auth = (Authentication) request.getUserPrincipal();
-        var user = (User) auth.getPrincipal();
-        return UserDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
+    public JwtAuthenticationResponse login(@Valid @RequestBody UserLoginDto userLoginDto) {
+        return authService.login(userLoginDto);
+    }
+
+    @PostMapping(API_REGISTER)
+    public JwtAuthenticationResponse register(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
+        return authService.register(userRegistrationDto);
     }
 
     @PostMapping(API_LOGOUT)
@@ -61,5 +67,10 @@ public class AuthController {
 //        } catch (ServletException e) {
 //            logger.info(e.getMessage());
 //        }
+    }
+
+    @GetMapping(REFRESH_TOKEN)
+    public JwtAuthenticationResponse refreshToken(HttpServletRequest request) {
+        return authService.refreshToken(request);
     }
 }

@@ -1,6 +1,6 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
-import com.sawwere.titlecounter.backend.app.dto.*;
+import com.sawwere.titlecounter.backend.app.dto.game.*;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.service.GameService;
 import com.sawwere.titlecounter.backend.app.service.ImageStorageService;

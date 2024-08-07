@@ -2,9 +2,9 @@ package com.sawwere.titlecounter.backend.app.controller.view;
 
 import com.sawwere.titlecounter.backend.app.service.GameService;
 import com.sawwere.titlecounter.backend.app.service.UserService;
-import com.sawwere.titlecounter.backend.app.dto.GameCreationDto;
-import com.sawwere.titlecounter.backend.app.dto.GameDto;
-import com.sawwere.titlecounter.backend.app.dto.GameEntryDtoFactory;
+import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
+import com.sawwere.titlecounter.backend.app.dto.game.GameDto;
+import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.service.ImageStorageService;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import lombok.RequiredArgsConstructor;

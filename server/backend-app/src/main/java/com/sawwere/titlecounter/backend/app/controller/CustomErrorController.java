@@ -30,7 +30,7 @@ public class CustomErrorController implements ErrorController {
                 ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.MESSAGE)
         );
         return ResponseEntity
-                .status((Integer)attributes.get("status"))
+                .status(400)
                 .body(ErrorInfo.builder()
                         .error((String) attributes.get("error"))
                         .description((String) attributes.get("message"))

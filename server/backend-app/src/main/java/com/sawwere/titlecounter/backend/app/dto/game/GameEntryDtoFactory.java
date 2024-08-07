@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto;
+package com.sawwere.titlecounter.backend.app.dto.game;
 
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;

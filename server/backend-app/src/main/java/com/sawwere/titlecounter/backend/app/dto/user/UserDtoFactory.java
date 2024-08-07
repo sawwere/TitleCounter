@@ -1,5 +1,6 @@
 package com.sawwere.titlecounter.backend.app.dto.user;
 
+import com.sawwere.titlecounter.backend.app.dto.role.RoleDto;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -10,14 +11,7 @@ public class UserDtoFactory {
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .build();
-    }
-
-    public User dtoToEntity(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .username(userDto.getUsername())
-                .email(userDto.getEmail())
+                .roles(user.getRoles().stream().map(x-> new RoleDto(x.getName())).toList())
                 .build();
     }
 }

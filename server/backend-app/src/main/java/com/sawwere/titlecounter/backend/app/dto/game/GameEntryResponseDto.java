@@ -1,6 +1,7 @@
-package com.sawwere.titlecounter.backend.app.dto;
+package com.sawwere.titlecounter.backend.app.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sawwere.titlecounter.backend.app.dto.game.GameDto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameEntryRequestDto {
+public class GameEntryResponseDto {
     private Long id;
 
     @Size(min = 1, max = 64)
@@ -41,6 +42,5 @@ public class GameEntryRequestDto {
     private Long userId;
 
     @NotNull
-    @JsonProperty(value = "game_id")
-    private Long gameId;
+    private GameDto game;
 }

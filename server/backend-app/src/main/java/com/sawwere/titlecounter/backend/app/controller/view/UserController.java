@@ -21,24 +21,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Controller
 public class UserController {
-    public static final String FIND = "api/users";
-    public static final String FIND_BY_NAME = "api/users";
-    public static final String CREATE_USER = "api/users";
+        public static final String CREATE_USER = "api/users";
 
     public static final String GET_USER = "/users/{username}";
 
     private final UserService userService;
     private final UserDtoFactory userDtoFactory;
-    @GetMapping(FIND)
-    private ResponseEntity<?> findByName(@RequestParam(value = "name") Optional<String> name) {
-        if (name.isPresent()) {
-            User userEntity = userService.findUserByUsername(name.get());
-            return ResponseEntity.ofNullable(userDtoFactory.entityToDto(userEntity));
-        }
-        else {
-            return ResponseEntity.ofNullable(userService.allUsers().stream().map(userDtoFactory::entityToDto).toList());
-        }
-    }
+
 
 //    @PostMapping(CREATE_USER)
 //    private UserDto createUser(@RequestBody UserDto userDto) {

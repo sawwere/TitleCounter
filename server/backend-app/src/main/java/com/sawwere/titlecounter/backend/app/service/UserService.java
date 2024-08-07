@@ -1,16 +1,20 @@
 package com.sawwere.titlecounter.backend.app.service;
 
+import com.sawwere.titlecounter.backend.app.dto.role.RoleDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
+import com.sawwere.titlecounter.backend.app.storage.entity.Role;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.RoleRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +40,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public User createUser(UserRegistrationDto userRegistrationDto) {
         Optional<User> optionalUser = userRepository.findByUsername(userRegistrationDto.getUsername());
         if (optionalUser.isPresent())
@@ -73,6 +78,21 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findUserByUsername(username);
+    }
+
+    @Transactional
+    public void addRole(Long userId, RoleDto roleDto) {
+        User user = findUserOrElseThrowException(userId);
+        Role role = roleRepository.findByName(roleDto.getName())
+                .orElseThrow(() -> new NotFoundException("Invalid role name given"));
+        user.getRoles().add(role);
+        userRepository.save(user);
+    }
+
+    public User getCurrentUser() {
+        // Получение имени пользователя из контекста Spring Security
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
         return findUserByUsername(username);
     }
 }

@@ -1,6 +1,6 @@
 package com.sawwere.titlecounter.backend.app.dto.user;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -11,10 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 public class UserLoginDto {
     @NotNull
-    @NotEmpty
+    @NotBlank(message = "Имя пользователя не может быть пустыми")
     private String username;
 
     @NotNull
-    @NotEmpty
+    @NotBlank(message = "Пароль не может быть пустыми")
     private String password;
 }
