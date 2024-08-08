@@ -1,5 +1,7 @@
 package com.sawwere.titlecounter.backend.app.exception;
 
+import com.sawwere.titlecounter.common.exception.ConstraintViolation;
+import com.sawwere.titlecounter.common.exception.ErrorInfo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

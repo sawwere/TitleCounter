@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.exception;
+package com.sawwere.titlecounter.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

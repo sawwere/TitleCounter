@@ -9,6 +9,7 @@
 		<module>auth-server</module>
 		<module>gateway-service</module>
 		<module>notification-service</module>
+		<module>common</module>
     </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -43,6 +44,15 @@
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 
+		<!-- Dev Tools -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

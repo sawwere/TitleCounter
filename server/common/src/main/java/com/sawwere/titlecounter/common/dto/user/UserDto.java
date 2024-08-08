@@ -1,6 +1,6 @@
-package com.sawwere.titlecounter.backend.app.dto.user;
+package com.sawwere.titlecounter.common.dto.user;
 
-import com.sawwere.titlecounter.backend.app.dto.role.RoleDto;
+import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import lombok.*;
 
 import java.util.List;

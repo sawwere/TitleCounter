@@ -3,6 +3,8 @@ package com.sawwere.titlecounter.backend.app.dto.film;
 import com.sawwere.titlecounter.backend.app.storage.entity.Film;
 import com.sawwere.titlecounter.backend.app.storage.entity.FilmEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
+import com.sawwere.titlecounter.common.dto.film.FilmEntryRequestDto;
+import com.sawwere.titlecounter.common.dto.film.FilmEntryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

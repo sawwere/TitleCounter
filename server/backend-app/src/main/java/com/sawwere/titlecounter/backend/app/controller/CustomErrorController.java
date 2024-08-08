@@ -1,6 +1,6 @@
 package com.sawwere.titlecounter.backend.app.controller;
 
-import com.sawwere.titlecounter.backend.app.exception.ErrorInfo;
+import com.sawwere.titlecounter.common.exception.ErrorInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;

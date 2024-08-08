@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto.role;
+package com.sawwere.titlecounter.common.dto.role;
 
 import lombok.*;
 

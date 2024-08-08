@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto.film;
+package com.sawwere.titlecounter.common.dto.film;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilmEntryResponseDto {
+public class FilmEntryRequestDto {
     private Long id;
 
     @Size(min = 1, max = 64)
@@ -36,5 +36,6 @@ public class FilmEntryResponseDto {
     private Long userId;
 
     @NotNull
-    private FilmDto film;
+    @JsonProperty(value = "film_id")
+    private Long filmId;
 }

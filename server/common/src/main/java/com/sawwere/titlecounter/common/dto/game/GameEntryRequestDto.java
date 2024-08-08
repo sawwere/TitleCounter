@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto.game;
+package com.sawwere.titlecounter.common.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;

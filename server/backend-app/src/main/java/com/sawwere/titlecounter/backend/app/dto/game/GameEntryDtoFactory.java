@@ -3,6 +3,8 @@ package com.sawwere.titlecounter.backend.app.dto.game;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
+import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
+import com.sawwere.titlecounter.common.dto.game.GameEntryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

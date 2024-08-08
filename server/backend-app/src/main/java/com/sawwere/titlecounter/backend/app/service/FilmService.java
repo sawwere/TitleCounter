@@ -9,6 +9,8 @@ import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.FilmEntryRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.FilmRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.FilmSpecification;
+import com.sawwere.titlecounter.common.dto.film.FilmDto;
+import com.sawwere.titlecounter.common.dto.film.FilmEntryRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

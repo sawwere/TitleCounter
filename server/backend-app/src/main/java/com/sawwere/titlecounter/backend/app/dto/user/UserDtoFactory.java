@@ -1,7 +1,8 @@
 package com.sawwere.titlecounter.backend.app.dto.user;
 
-import com.sawwere.titlecounter.backend.app.dto.role.RoleDto;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
+import com.sawwere.titlecounter.common.dto.user.UserDto;
+import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import org.springframework.stereotype.Component;
 
 @Component

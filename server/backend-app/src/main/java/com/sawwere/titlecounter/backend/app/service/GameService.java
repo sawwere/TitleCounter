@@ -2,9 +2,7 @@ package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
-import com.sawwere.titlecounter.backend.app.dto.game.GameDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameDtoFactory;
-import com.sawwere.titlecounter.backend.app.dto.game.GameEntryRequestDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
@@ -12,6 +10,8 @@ import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameEntryRepository;
+import com.sawwere.titlecounter.common.dto.game.GameDto;
+import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;

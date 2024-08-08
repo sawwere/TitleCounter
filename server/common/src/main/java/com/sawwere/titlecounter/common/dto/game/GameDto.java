@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto.film;
+package com.sawwere.titlecounter.common.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
@@ -13,28 +13,24 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilmDto {
+public class GameDto {
     private long id;
 
     @NotBlank
     private String title;
 
-    @JsonProperty(value = "rus_title")
-    private String rusTitle;
-
-    @JsonProperty(value = "link_url")
+    @JsonProperty("link_url")
     private String linkUrl;
 
     @NotNull
     @Min(0)
-    @JsonProperty(value = "time")
     private Long time;
 
-    @JsonProperty(value = "date_release")
+    @JsonProperty("date_release")
     private LocalDate dateRelease;
 
     @NotNull
     @Min(0)
-    @JsonProperty(value = "global_score")
+    @JsonProperty("global_score")
     private Float globalScore;
 }

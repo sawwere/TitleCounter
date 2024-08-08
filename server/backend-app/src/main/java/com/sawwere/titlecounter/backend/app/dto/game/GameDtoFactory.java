@@ -1,7 +1,7 @@
 package com.sawwere.titlecounter.backend.app.dto.game;
 
-import com.sawwere.titlecounter.backend.app.dto.game.GameDto;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
+import com.sawwere.titlecounter.common.dto.game.GameDto;
 import org.springframework.stereotype.Component;
 
 @Component

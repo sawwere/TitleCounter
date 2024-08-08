@@ -1,6 +1,7 @@
 package com.sawwere.titlecounter.backend.app.dto.film;
 
 import com.sawwere.titlecounter.backend.app.storage.entity.Film;
+import com.sawwere.titlecounter.common.dto.film.FilmDto;
 import org.springframework.stereotype.Component;
 
 @Component

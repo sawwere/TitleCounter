@@ -1,14 +1,15 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
-import com.sawwere.titlecounter.backend.app.dto.role.RoleDto;
-import com.sawwere.titlecounter.backend.app.dto.user.UserDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserDtoFactory;
 import com.sawwere.titlecounter.backend.app.service.UserService;
+import com.sawwere.titlecounter.common.dto.role.RoleDto;
+import com.sawwere.titlecounter.common.dto.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController("api-userController")

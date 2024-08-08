@@ -1,12 +1,12 @@
 package com.sawwere.titlecounter.backend.app.service;
 
-import com.sawwere.titlecounter.backend.app.dto.role.RoleDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Role;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.RoleRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.UserRepository;
+import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
