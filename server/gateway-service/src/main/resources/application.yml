@@ -1,0 +1,33 @@
+server:
+  port: 80
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
+      routes:
+        - id: title-counter-api
+          uri: lb://title-counter-api
+          predicates:
+            - Path=/api/**
+        - id: notifications-api
+          uri: lb://notification-service
+          predicates:
+            - Path=/notification/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
