@@ -6,10 +6,8 @@
         <artifactId>title-counter</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>org.example</groupId>
     <artifactId>common</artifactId>
-    <name>Archetype - common</name>
-    <url>http://maven.apache.org</url>
+    <name>common</name>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -19,6 +17,5 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-
     </dependencies>
 </project>

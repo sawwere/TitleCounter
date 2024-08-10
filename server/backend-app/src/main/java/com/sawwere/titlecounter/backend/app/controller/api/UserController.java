@@ -1,7 +1,9 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
 import com.sawwere.titlecounter.backend.app.dto.user.UserDtoFactory;
+import com.sawwere.titlecounter.backend.app.service.RabbitProducerService;
 import com.sawwere.titlecounter.backend.app.service.UserService;
+import com.sawwere.titlecounter.common.dto.notification.NotificationDto;
 import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import com.sawwere.titlecounter.common.dto.user.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +25,11 @@ public class UserController {
     private final UserService userService;
 
     private final UserDtoFactory userDtoFactory;
+
     @GetMapping(FIND_USER)
     public UserDto find(@PathVariable(value = "user_id") Long userId) {
-        return userDtoFactory.entityToDto(userService.findUserById(userId));
+        var user = userService.findUserOrElseThrowException(userId);
+        return userDtoFactory.entityToDto(user);
     }
 
     @GetMapping(CURRENT_USER)

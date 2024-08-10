@@ -16,7 +16,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/TitleCounter
     baselineOnMigrate: true
     enabled: false
-
   jpa:
     show-sql: false
     open-in-view: false
@@ -45,7 +44,12 @@ spring:
           jwk-set-uri: http://localhost:9000/oauth2/jwks
   thymeleaf:
     cache: false
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
 server:
+  port: 8080
   servlet:
     session:
       timeout: 15m
@@ -60,6 +64,14 @@ token:
     key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
   accessExpirationTimeout: 15 # minutes
   refreshExpirationTimeout: 24 # hours
+app:
+  rabbitmq:
+    queue:
+      name: greetings.notifications
+    exchange:
+      name: title-counter.direct
+    routing:
+      key: register.complete
 #logging:
 #  level:
 #    org:

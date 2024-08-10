@@ -90,7 +90,7 @@ public class WebSecurityConfig {
                         .requestMatchers(AuthController.API_LOGIN, API_REGISTER).anonymous()
                         .requestMatchers(AuthController.API_LOGOUT).authenticated()
                         .requestMatchers(
-                                HttpMethod.GET, GameController.FIND_GAME,
+                                HttpMethod.GET, GameController.FIND_GAME, UserController.FIND_USER,
                                 GameController.FIND_ALL_GAMES, GameController.FIND_GAME_ENTRIES,
                                 FilmController.FIND_FILM, FilmController.FIND_ALL_FILMS, FilmController.FIND_FILM_ENTRIES
                         ).permitAll()

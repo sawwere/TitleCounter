@@ -1,0 +1,27 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/TitleCounter
+    username: postgres
+    password: 1234
+  flyway:
+    user: postgres
+    password: 1234
+    schemas: dev
+    url: jdbc:postgresql://localhost:5432/TitleCounter
+    baselineOnMigrate: true
+    enabled: false
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+token:
+  signing:
+    key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855

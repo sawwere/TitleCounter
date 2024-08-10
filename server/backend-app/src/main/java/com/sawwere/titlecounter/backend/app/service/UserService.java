@@ -1,11 +1,13 @@
 package com.sawwere.titlecounter.backend.app.service;
 
+import com.sawwere.titlecounter.backend.app.dto.user.UserDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Role;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.RoleRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.UserRepository;
+import com.sawwere.titlecounter.common.dto.notification.NotificationDto;
 import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,13 +24,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    private  final UserRepository userRepository;
-    private  final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final RabbitProducerService rabbitProducerService;
 
-    public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
-    }
+    private final UserDtoFactory userDtoFactory;
 
     public User findUserOrElseThrowException(Long userId) {
         return userRepository.findById(userId)
@@ -57,7 +57,7 @@ public class UserService implements UserDetailsService {
         user.setRoles(List.of(roleRepository.findByName("USER").get()));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
-        System.out.println(user.getUsername());
+        rabbitProducerService.send(userDtoFactory.entityToDto(user));
         return user;
     }
 
