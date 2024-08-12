@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto.user;
+package com.sawwere.titlecounter.common.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

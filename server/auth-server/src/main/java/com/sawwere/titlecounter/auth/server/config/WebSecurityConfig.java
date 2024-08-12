@@ -5,6 +5,7 @@ import com.sawwere.titlecounter.auth.server.storage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,11 +39,6 @@ public class WebSecurityConfig {
         };
     }
 
-//    @Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
     @Bean
     public SecurityFilterChain defaultSecurityChain(HttpSecurity http) throws Exception {
         http
@@ -50,7 +46,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/error", "/api/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin(Customizer.withDefaults())
 //                .oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
 //                        .loginPage("/abc")
 //                        .tokenEndpoint(new Customizer<OAuth2LoginConfigurer<org.springframework.security.config.annotation.web.builders.HttpSecurity>.TokenEndpointConfig>() {

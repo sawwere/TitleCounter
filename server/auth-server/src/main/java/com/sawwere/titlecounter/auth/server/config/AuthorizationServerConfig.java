@@ -36,8 +36,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
-    private final AuthorizationServerProperties authorizationServerProperties;
-
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {

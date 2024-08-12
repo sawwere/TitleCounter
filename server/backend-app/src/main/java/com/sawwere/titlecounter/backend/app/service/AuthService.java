@@ -1,7 +1,7 @@
 package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.dto.JwtAuthenticationResponse;
-import com.sawwere.titlecounter.backend.app.dto.user.UserLoginDto;
+import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.ApiBadCredentialsException;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;

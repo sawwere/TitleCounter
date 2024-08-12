@@ -1,6 +1,7 @@
 package com.sawwere.titlecounter.auth.server;
 
 import com.sawwere.titlecounter.auth.server.storage.entity.User;
+import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

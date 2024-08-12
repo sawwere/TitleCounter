@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,9 +25,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -45,19 +42,13 @@ import static com.sawwere.titlecounter.backend.app.controller.api.AuthController
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationFilter authenticationFilter;
     private final UserService userService;
     private final JwtService jwtService;
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepo) {
-        return username -> {
-            Optional<User> user = userRepo.findByUsername(username);
-            if (user.isPresent())
-                return user.get();
-            else
-                throw new UsernameNotFoundException("User ‘" + username + "’ not found");
-        };
+    public UserDetailsService userDetailsService() {
+        return userService;
     }
     @Bean
     public RequestMatcher apiHttpGetRequestMatcher() {
@@ -112,27 +103,12 @@ public class WebSecurityConfig {
                                 HttpMethod.DELETE,
                                 GameController.DELETE_GAME, FilmController.DELETE_FILM
                         ).hasAuthority("ADMIN")
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                GameController.CREATE_GAME_ENTRY, FilmController.CREATE_FILM_ENTRY
-                        ).authenticated()
-                        .requestMatchers(
-                                HttpMethod.PUT,
-                                GameController.UPDATE_GAME_ENTRY, FilmController.UPDATE_FILM_ENTRY
-                        ).authenticated()
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                GameController.DELETE_GAME_ENTRY, FilmController.DELETE_FILM_ENTRY
-                        ).authenticated()
                         .anyRequest().authenticated()
                 )
-//                .sessionManagement(session -> session
-//                        .invalidSessionUrl("/error")
-//                        .maximumSessions(5))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilter(customAuthenticationFilter(authenticationManager))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
 //                .formLogin(form -> form
 //                        .defaultSuccessUrl("/")
 //                        .permitAll())
