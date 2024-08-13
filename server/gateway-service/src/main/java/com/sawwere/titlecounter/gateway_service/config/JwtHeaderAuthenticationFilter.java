@@ -39,7 +39,7 @@ public class JwtHeaderAuthenticationFilter implements GlobalFilter {
     private String jwtSigningKey;
 
     private final List<String> publicEndpoints = List.of(
-            "/login", "/api/auth/login", "register", "/api/auth/register", "/api/auth/token");
+            "/auth/login", "/api/auth/login", "/auth/register", "/api/auth/register", "/api/auth/token");
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();

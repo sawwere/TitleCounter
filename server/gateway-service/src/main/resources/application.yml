@@ -17,6 +17,10 @@ spring:
           uri: lb://notification-service
           predicates:
             - Path=/notification/**
+        - id: title-counter-front
+          uri: lb://title-counter-front
+          predicates:
+            - Path=/**
       discovery:
         locator:
           enabled: true
