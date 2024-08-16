@@ -1,4 +1,3 @@
-import imdb
 import json
 import re
 import requests
@@ -8,39 +7,9 @@ LIMIT = 5
 
 class FilmService:
     def __init__(self) -> None:
-        self.imdb = imdb.Cinemagoer()
         with open("token.json", 'r') as f:
             api_keys = json.loads(f.read())
         self.kinopoisk_token = api_keys["kinopoisk"]
-
-    def __search(self, title) -> list:
-        movies = self.imdb.search_movie(title)
-        count = min(1, len(movies))
-        res = []
-        for i in range(0, count):
-            m = movies[i]
-            print(m)
-            #self.imdb.update(m, info='main')
-
-            film = Film(movie = m, 
-                    title = m['title'],
-                    rus_title = m['original title'],
-                    link_url = 'https://www.imdb.com/title/tt' + m['imdbID'],
-                    image_url =m['cover url'],
-                    )
-            try:
-                film.time = float(m['runtime'][0])
-                film.global_score= m.data['rating']
-            except:
-                print("WARN: no time found for film " + title)
-
-            if m.has_key('original air date'):
-                DateRelease = m['original air date']
-                film.date_release = self.string_into_date(DateRelease)
-            res.append(film)
-            
-        return res
-    
 
     def search(self, title, page) -> list:
         url = "https://api.kinopoisk.dev/v1.4/movie/search?page="+str(page)+"&limit="+str(LIMIT)+"&query=" + title

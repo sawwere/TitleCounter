@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace hltb.Service
 {
@@ -12,10 +13,9 @@ namespace hltb.Service
         private static AuthService authService;
 #pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно,
         private RestApiClient _restApiClient;
-        private UserLoginDto _LoginInfo { get; set; }
         public UserDto UserInfo { get; private set; }
-        private string SESSIONID;
-        public string SessionId { get { return SESSIONID; } }
+        public string AccessToken { get; private set; }
+        public string RefreshToken { get; private set; }
 
         public static AuthService Instance
         {
@@ -31,41 +31,62 @@ namespace hltb.Service
         private AuthService() 
         {
             _restApiClient = RestApiClient.Instance;
+            AccessToken = string.Empty;
+            RefreshToken = string.Empty;
         }
 
         public bool Login(UserLoginDto userLoginDto)
         {
             Debug.WriteLine("Login operation started.");
-            _LoginInfo = userLoginDto;
             UserInfo = _login(userLoginDto);
             return true;
         }
 
-        public async Task LoginPeriodicallyAsync(UserLoginDto userLoginDto, TimeSpan period, CancellationToken cancellationToken)
+        public async Task RefreshTokenPeriodicallyAsync(string refreshToken, TimeSpan period, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _login(userLoginDto);
+                _refreshToken(refreshToken);
                 await Task.Delay(period, cancellationToken);
             }
+        }
+
+        private void _refreshToken(string refreshToken)
+        {
+            var content = JsonContent.Create(new KeyValuePair<string, string>("refreshToken", refreshToken));
+            HttpResponseMessage result = _restApiClient
+                .HttpClient.PostAsync("http://localhost:80/api/auth/token", content)
+                .Result
+                .EnsureSuccessStatusCode();
+            _setTokens(JsonConvert.DeserializeObject<JwtAuthenticationResponse>(result.Content.ReadAsStringAsync().Result)!);
+        }
+
+        private void _setTokens(JwtAuthenticationResponse jwt)
+        {
+            AccessToken = jwt.accessToken;
+            RefreshToken = jwt.refreshToken;
+            _restApiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt.accessToken);
+            Debug.WriteLine(AccessToken);
         }
 
         private UserDto _login(UserLoginDto userLoginDto)
         {
             Debug.WriteLine("Login operation started.");
             var content = JsonContent.Create(userLoginDto);
-            var result = _restApiClient.HttpClient.PostAsync("http://localhost:8080/api/login", content).Result;
-            var userDto = JsonConvert.DeserializeObject<UserDto>(result.Content.ReadAsStringAsync().Result);
-            SESSIONID = _restApiClient.Handler.CookieContainer.GetAllCookies().Cast<Cookie>().First(x => x.Name == "JSESSIONID").Value;
-            _restApiClient.SetSessionCookie(SESSIONID);
-            Debug.WriteLine(SESSIONID);
+            var result = _restApiClient
+                .HttpClient.PostAsync("http://localhost:80/api/auth/login", content)
+                .Result.EnsureSuccessStatusCode();
+            var jwt = JsonConvert.DeserializeObject<JwtAuthenticationResponse>(result.Content.ReadAsStringAsync().Result)!;
+            _setTokens(jwt);
+            result = _restApiClient.HttpClient.GetAsync("http://localhost:80/api/user").Result.EnsureSuccessStatusCode();
+            var userDto = JsonConvert.DeserializeObject<UserDto>(result.Content.ReadAsStringAsync().Result)!;
             return userDto;
         }
 
         public void logout()
         {
-            var result = _restApiClient.HttpClient.GetAsync("http://localhost:8080/logout").Result;
-            result.EnsureSuccessStatusCode();
+            var result = _restApiClient.HttpClient.GetAsync("http://localhost:80/api/auth/logout").Result;
+            //result.EnsureSuccessStatusCode();
             Debug.WriteLine("Logout succesfully");
         }
     }

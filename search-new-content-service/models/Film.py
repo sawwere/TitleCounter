@@ -1,4 +1,3 @@
-import imdb
 import re
 
 class Film():

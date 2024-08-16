@@ -8,32 +8,29 @@ headers = {
 
 class Game:
     def __init__(self, 
-                 Title = "None",
-                 ImageUrl = "https://kitairu.net/images/noimage.png",
-                 LinkUrl = "https://howlongtobeat.com",
-                 Time = 0,
-                 DateRelease = "1900-01-01",
-                 Platform = "",
-                 Score = 0,
-                 Similarity = 0.0
+                 title = "None",
+                 image_url = "https://kitairu.net/images/noimage.png",
+                 link_url = "https://howlongtobeat.com",
+                 time = 0,
+                 date_release = "1900-01-01",
+                 score = 0,
+                 similarity = 0.0
                  ):
-        self.title = Title
-        self.ImageUrl = ImageUrl
-        self.LinkUrl = LinkUrl
+        self.title = title
+        self.image_url = image_url
+        self.link_url = link_url
         
-        mt = str(Time)
-        if (type(Time) == str):
-            
+        mt = str(time)
+        if (type(time) == str):
             if ("\u00bd" in mt):
                 self.time = int(mt[:-1])+0.5
             else:
                 self.time = int(mt)
         else:
-            self.time = Time
-        self.DateRelease = self.find_DateRelease(LinkUrl)
-        self.platform = Platform
-        self.score = Score
-        self.similarity = Similarity
+            self.time = time
+        self.DateRelease = self.find_DateRelease(link_url)
+        self.score = score
+        self.similarity = similarity
 
     def month_to_num(self, string_month):
         return {
@@ -95,21 +92,21 @@ class Game:
             return DateRelease
 
     def print(self):
-        print(self.title, self.FixedTitle, self.ImageUrl, self.LinkUrl,
-              self.time, self.status_id, self.DateRelease, self.DateCompleted, self.score)
+        print(self.title, self.image_url, self.link_url,
+              self.time, self.DateRelease, self.score)
 
     def to_string(self):
-        return str(self.title + ' ' + self.FixedTitle 
-                   + ' ' + self.ImageUrl + ' ' + self.LinkUrl
+        return str(self.title 
+                   + ' ' + self.image_url + ' ' + self.link_url
                    + ' ' + self.time + ' ' 
-                   + ' ' + self.score + ' ' + self.DateRelease + ' ' + self.status_id)
+                   + ' ' + self.score + ' ' + self.DateRelease)
 
     def to_dict(self):
         return {
-                "Title": self.title,
-                "ImageUrl": self.ImageUrl,
-                "LinkUrl": self.LinkUrl,
-                "Time": self.time,
-                "DateRelease": self.DateRelease,
-                "Score": self.score
+                "title": self.title,
+                "image_url": self.image_url,
+                "link_url": self.link_url,
+                "time": self.time,
+                "date_release": self.DateRelease,
+                "score": self.score
                 }

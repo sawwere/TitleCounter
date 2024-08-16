@@ -1,10 +1,10 @@
-package com.sawwere.titlecounter.backend.app;
+package com.sawwere.titlecounter.auth.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TitleCounterBackendApplicationTests {
+class AuthorizationServerApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -27,7 +27,7 @@ public class Film {
     @Column(name = "rus_title")
     private String rusTitle;
 
-    @Column(name = "link_url")
+    @Column(name = "link_url", unique = true)
     private String linkUrl;
 
     @Column(name = "time")

@@ -21,6 +21,9 @@ spring:
           uri: lb://title-counter-front
           predicates:
             - Path=/**
+      default-filters:
+        - RemoveRequestHeader=authorities
+        - RemoveRequestHeader=username
       discovery:
         locator:
           enabled: true

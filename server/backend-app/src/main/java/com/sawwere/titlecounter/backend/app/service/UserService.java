@@ -7,13 +7,11 @@ import com.sawwere.titlecounter.backend.app.storage.entity.Role;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.RoleRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.UserRepository;
-import com.sawwere.titlecounter.common.dto.notification.NotificationDto;
 import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,7 @@ public class UserService implements UserDetailsService {
 
     private final UserDtoFactory userDtoFactory;
 
-    public User findUserOrElseThrowException(Long userId) {
+    public User findUserOrElseThrowException(Long userId) throws NotFoundException{
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id '%s' doesn't exist", userId))
                 );
@@ -61,23 +59,23 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public void deleteUser(Long userId) {
+    public void deleteUser(Long userId) throws NotFoundException {
         User user = findUserOrElseThrowException(userId);
         userRepository.deleteById(userId);
     }
 
-    public User findUserByUsername(String username) throws UsernameNotFoundException {
+    public User findUserByUsername(String username) throws NotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(username);
 
         if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         }
 
         return optionalUser.get();
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws NotFoundException {
         return findUserByUsername(username);
     }
 

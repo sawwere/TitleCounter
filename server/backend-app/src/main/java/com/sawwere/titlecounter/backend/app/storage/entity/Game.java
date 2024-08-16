@@ -24,7 +24,7 @@ public class Game {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "link_url")
+    @Column(name = "link_url", unique = true)
     private String linkUrl;
 
     @Column(name = "time", nullable = false)

@@ -1,47 +1,21 @@
 spring:
   application:
     name: title-counter-api
-  data:
-    redis:
-      repositories:
-        enabled: false
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/TitleCounter
     username: postgres
     password: 1234
-  flyway:
-    user: postgres
-    password: 1234
-    schemas: dev
-    url: jdbc:postgresql://localhost:5432/TitleCounter
-    baselineOnMigrate: true
-    enabled: false
   jpa:
     show-sql: false
     open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        default_schema: dev
-  jba:
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc.lob.non_contextual_creation: true
-  #  redis:
-  #    host: localhost
-  #    port: 6379
-  #  session:
-  #    redis:
-  #      flush-mode: on_save
-  #      namespace: title_counter:session
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9000/oauth2/jwks
+  mvc.throw-exception-if-no-handler-found: true
+  web.resources.add-mappings: false
   thymeleaf:
     cache: false
   rabbitmq:

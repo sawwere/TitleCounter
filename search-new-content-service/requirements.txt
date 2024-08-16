@@ -1,4 +1,3 @@
-cinemagoer
 flask[async]
 howlongtobeatpy
 beautifulsoup4

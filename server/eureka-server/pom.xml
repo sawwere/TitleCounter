@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>eureka-server</artifactId>
 	<version>0.0.7</version>
-	<name>Backend Application</name>
+	<name>Eureka Server</name>
 	<description>Eureka Server for TitleCounter project</description>
 	<url/>
 	<licenses>

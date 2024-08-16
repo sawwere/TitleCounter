@@ -69,11 +69,14 @@ public class FilmService {
 
     @Transactional
     public Film autoCreateFilm(String title) {
-        FilmCreationDto filmCreationDto = externalContentSearchService.findFilms(title, 1).get(0);
-        Film film = filmDtoFactory.creationDtoToEntity(filmCreationDto);
+        var list = externalContentSearchService.findFilms(title, 1);
+        if (list.getTotal() == 0)
+            throw new NotFoundException(title);
+        FilmCreationDto dto = list.getContents().get(0);
+        Film film = filmDtoFactory.creationDtoToEntity(dto);
         filmRepository.save(film);
-        System.out.println(filmCreationDto.getImageUrl());
-        var image = externalContentSearchService.findImage(filmCreationDto.getImageUrl());
+        System.out.println(dto.getImageUrl());
+        var image = externalContentSearchService.findImage(dto.getImageUrl());
         imageStorageService.store(image, "films/%d".formatted(film.getId()));
         logger.info("Created film '%s' with id '%d'".formatted(film.getTitle(), film.getId()));
         return film;

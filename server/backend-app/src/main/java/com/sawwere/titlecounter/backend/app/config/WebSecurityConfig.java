@@ -56,11 +56,11 @@ public class WebSecurityConfig {
             String requestUri = request.getRequestURI();
             return request.getMethod().equals(HttpMethod.GET.toString())
                     && (requestUri.equals(GameController.FIND_GAME)
-                        || requestUri.equals(GameController.FIND_ALL_GAMES)
-                        || requestUri.equals(GameController.FIND_GAME_ENTRIES)
-                        || requestUri.equals(FilmController.FIND_FILM)
-                        || requestUri.equals(FilmController.FIND_ALL_FILMS)
-                        || requestUri.equals(FilmController.FIND_FILM_ENTRIES))
+                    || requestUri.equals(GameController.FIND_ALL_GAMES)
+                    || requestUri.equals(GameController.FIND_GAME_ENTRIES)
+                    || requestUri.equals(FilmController.FIND_FILM)
+                    || requestUri.equals(FilmController.FIND_ALL_FILMS)
+                    || requestUri.equals(FilmController.FIND_FILM_ENTRIES))
                     ;
         };
     }
@@ -109,21 +109,9 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilter(customAuthenticationFilter(authenticationManager))
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .formLogin(form -> form
-//                        .defaultSuccessUrl("/")
-//                        .permitAll())
-//                .logout(logout -> logout
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID", "SESSION")
-//                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()))
-//                .rememberMe(x->x
-//                       .rememberMeParameter("remember-me-new")
-//                        .alwaysRemember(false)
-//                        .userDetailsService(userService)
-//                        .tokenValiditySeconds(60*60*24))
-                //.exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                //.oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
-                ;
+        //.exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+        //.oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
+        ;
         return http.build();
     }
 

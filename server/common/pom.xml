@@ -18,4 +18,7 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
     </dependencies>
+    <properties>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    </properties>
 </project>

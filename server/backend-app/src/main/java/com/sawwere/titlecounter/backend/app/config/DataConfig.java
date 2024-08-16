@@ -12,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class DataConfig {
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     @Bean
     public CommandLineRunner dataLoader(DefaultFileStorageService storageService,
                                         ImageStorageService imageStorageService) {

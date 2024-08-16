@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -28,48 +30,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.springframework.cloud.gateway.filter.WebClientWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 @RequiredArgsConstructor
-public class JwtHeaderAuthenticationFilter implements GlobalFilter {
-    private static final Logger logger = Logger.getLogger(JwtHeaderAuthenticationFilter.class.getName());
+public class JwtHeaderAuthenticationFilter implements GlobalFilter, Ordered {
+
     public static final String BEARER_PREFIX = "Bearer ";
     @Value("${token.signing.key}")
     private String jwtSigningKey;
-
-    private final List<String> publicEndpoints = List.of(
-            "/auth/login", "/api/auth/login", "/auth/register", "/api/auth/register", "/api/auth/token");
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();
-        if (publicEndpoints.stream().anyMatch(x -> x.equals(request.getPath().toString()))) {
-            chain.filter(exchange);
-        } else {
-            var list = request.getHeaders().getOrEmpty(AUTHORIZATION);
-            if (list.isEmpty() || !list.get(0).startsWith(BEARER_PREFIX)) {
-                ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                return response.setComplete();
-            }
-            String token = list.get(0).substring(BEARER_PREFIX.length());
-            try {
-                var parseResult = parseToken(token);
-                exchange.getRequest().mutate()
-                        .header("username", parseResult.username())
-                        .header("authorities", String.join(" ", parseResult.authorities()))
-                        .build();
-            }
-            catch (BadJOSEException e) {
-                ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                return response.setComplete();
-            }
-            catch (JOSEException | ParseException e) {
-                ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.BAD_REQUEST);
-                return response.setComplete();
-            }
+        ServerHttpRequest request = exchange.getRequest();
+        var list = request.getHeaders().getOrEmpty(AUTHORIZATION);
+        if (list.isEmpty())
+            return chain.filter(exchange);
+        else if (!list.get(0).startsWith(BEARER_PREFIX)) {
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return response.setComplete();
+        }
+        String token = list.get(0).substring(BEARER_PREFIX.length());
+        try {
+            var parseResult = parseToken(token);
+            exchange.getRequest().mutate()
+                    .header("username", parseResult.username())
+                    .header("authorities", String.join(" ", parseResult.authorities()))
+                    .build();
+        }
+        catch (BadJOSEException e) {
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return response.setComplete();
+        }
+        catch (JOSEException | ParseException e) {
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.BAD_REQUEST);
+            return response.setComplete();
         }
         return chain.filter(exchange);
     }
@@ -89,6 +87,11 @@ public class JwtHeaderAuthenticationFilter implements GlobalFilter {
         String username = claims.getSubject();
         var roles = (List<String>) claims.getClaim("roles");
         return new TokenParseResult(username, roles);
+    }
+
+    @Override
+    public int getOrder() {
+        return 22 ;
     }
 
     private record TokenParseResult(String username, List<String> authorities){

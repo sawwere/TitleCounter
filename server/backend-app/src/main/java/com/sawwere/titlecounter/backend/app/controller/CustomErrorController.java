@@ -27,10 +27,14 @@ public class CustomErrorController implements ErrorController {
     @RequestMapping(CustomErrorController.ERROR_PATH)
     public ResponseEntity<ErrorInfo> error(WebRequest webRequest) {
         var attributes = errorAttributes.getErrorAttributes(webRequest,
-                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.MESSAGE)
+                ErrorAttributeOptions.of(
+                        ErrorAttributeOptions.Include.ERROR,
+                        ErrorAttributeOptions.Include.MESSAGE,
+                        ErrorAttributeOptions.Include.STATUS)
         );
+        System.out.println(attributes.get("status"));
         return ResponseEntity
-                .status(400)
+                .status((Integer) attributes.get("status"))
                 .body(ErrorInfo.builder()
                         .error((String) attributes.get("error"))
                         .description((String) attributes.get("message"))
