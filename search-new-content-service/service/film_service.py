@@ -27,7 +27,7 @@ class FilmService:
         contents = response["docs"]      
         
         count = min(LIMIT, len(contents))
-        res = []
+        arr = []
         for i in range(0, count):
             url = "https://api.kinopoisk.dev/v1.4/movie/" + str(contents[i]["id"])
             response = requests.get(url, headers=headers)
@@ -53,9 +53,12 @@ class FilmService:
                     image_url = image_url,
                     date_release = self.get_kinopoisk_release_date(m)
                     )
-            res.append(film)
-            
+            arr.append(film)
+        res = {}
+        res["total"] = len(arr)
+        res["contents"] = [x.to_dict() for x in arr]    
         return res
+    
     def get_kinopoisk_release_date(self, film):
         codes = ["world", "russia", "digital", "dvd", "bluray", "country"]
         for code in codes:

@@ -41,7 +41,7 @@ class GameService:
         searh_results.sort(key= lambda x: x.similarity, reverse=True)    
         
         count = min(LIMIT, len(searh_results))
-        res = []
+        arr = []
         for i in range(0, count):
             r = searh_results[i]
 
@@ -52,7 +52,11 @@ class GameService:
                     similarity=r.similarity, 
                     date_release=self.get_hltb_release_date(r.game_web_link),
                     score=r.review_score)
-            res.append(game)
+            arr.append(game)
+        res = {}
+        res = {}
+        res["total"] = len(arr)
+        res["contents"] = [x.to_dict() for x in arr]
         return res
     
     def get_hltb_release_date(self, web_link):
