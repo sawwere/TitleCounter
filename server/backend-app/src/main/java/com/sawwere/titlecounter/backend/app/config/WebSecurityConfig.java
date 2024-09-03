@@ -2,6 +2,7 @@ package com.sawwere.titlecounter.backend.app.config;
 
 import com.sawwere.titlecounter.backend.app.controller.api.GameController;
 import com.sawwere.titlecounter.backend.app.controller.api.UserController;
+import com.sawwere.titlecounter.backend.app.controller.view.ImageController;
 import com.sawwere.titlecounter.backend.app.service.JwtService;
 import com.sawwere.titlecounter.backend.app.service.UserService;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -81,7 +84,8 @@ public class WebSecurityConfig {
                         .requestMatchers(AuthController.API_LOGIN, API_REGISTER).anonymous()
                         .requestMatchers(AuthController.API_LOGOUT).authenticated()
                         .requestMatchers(
-                                HttpMethod.GET, GameController.FIND_GAME, UserController.FIND_USER,
+                                HttpMethod.GET, ImageController.GET,
+                                //GameController.FIND_GAME, UserController.FIND_USER,
                                 GameController.FIND_ALL_GAMES, GameController.FIND_GAME_ENTRIES,
                                 FilmController.FIND_FILM, FilmController.FIND_ALL_FILMS, FilmController.FIND_FILM_ENTRIES
                         ).permitAll()
@@ -109,7 +113,7 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilter(customAuthenticationFilter(authenticationManager))
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        //.exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
         //.oauth2ResourceServer(oath2 -> oath2.jwt(withDefaults()))
         ;
         return http.build();

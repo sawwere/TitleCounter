@@ -53,6 +53,7 @@ public class JwtService {
                     .issuer(issuer)
                     .claim("roles", user.getRoles().stream().map(Role::getName).toList())
                     .claim("email", user.getEmail())
+                    .claim("id", user.getId())
                     .expirationTime(Date.from(Instant.now().plusSeconds(accessExpirationTimeout * 60L)))
                     .issueTime(new Date())
                     .build();

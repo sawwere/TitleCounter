@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: title-counter-api
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/TitleCounter-test
+    username: postgres
+    password: 1234
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+        format_sql: true
+        jdbc.lob.non_contextual_creation: true
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
+  flyway:
+#    enabled: false
+    baselineOnMigrate: true
+  mvc.throw-exception-if-no-handler-found: true
+  web.resources.add-mappings: false
+  thymeleaf:
+    cache: false
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 15m
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+token:
+  signing:
+    key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
+  accessExpirationTimeout: 15 # minutes
+  refreshExpirationTimeout: 24 # hours
+app:
+  rabbitmq:
+    queue:
+      name: greetings.notifications
+    exchange:
+      name: title-counter.direct
+    routing:
+      key: register.complete

@@ -14,7 +14,7 @@ namespace hltb.Forms
         {
             UserLoginDto userLoginDto = new UserLoginDto(textBox1.Text, textBox2.Text);
             _ = AuthService.Instance.Login(userLoginDto);
-            _ = AuthService.Instance.RefreshTokenPeriodicallyAsync(userLoginDto, TimeSpan.FromSeconds(15), CancellationToken.None);
+            _ = AuthService.Instance.RefreshTokenPeriodicallyAsync(AuthService.Instance.RefreshToken, TimeSpan.FromSeconds(15), CancellationToken.None);
             Hide();
             Mainform mainform = new Mainform();
             mainform.Show();

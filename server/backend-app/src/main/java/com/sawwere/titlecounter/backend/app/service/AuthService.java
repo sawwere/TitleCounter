@@ -1,6 +1,7 @@
 package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.dto.JwtAuthenticationResponse;
+import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.ApiBadCredentialsException;
@@ -32,11 +33,16 @@ public class AuthService {
                 userLoginDto.getPassword()
         ));
 
-        var user = userService
-                .findUserByUsername(userLoginDto.getUsername());
-        String accessToken = jwtService.createAccessToken(user, API_LOGIN);
-        String refreshToken = jwtService.createRefreshToken(user.getUsername());
-        return new JwtAuthenticationResponse(accessToken, refreshToken, accessExpirationTimeout * 60);
+        try {
+            var user = userService
+                    .findUserByUsername(userLoginDto.getUsername());
+            String accessToken = jwtService.createAccessToken(user, API_LOGIN);
+            String refreshToken = jwtService.createRefreshToken(user.getUsername());
+            return new JwtAuthenticationResponse(accessToken, refreshToken, accessExpirationTimeout * 60);
+        }
+        catch (NotFoundException ex) {
+            throw new ApiBadCredentialsException("Invalid credentials given");
+        }
     }
 
     public JwtAuthenticationResponse register(UserRegistrationDto userRegistrationDto) {

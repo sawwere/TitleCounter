@@ -36,8 +36,6 @@ CREATE TABLE users_roles (
     user_id bigint NOT NULL
 );
 
-ALTER TABLE users_roles OWNER TO postgres;
-
 ALTER TABLE ONLY users_roles
     ADD CONSTRAINT user_roles_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 ALTER TABLE ONLY users_roles
