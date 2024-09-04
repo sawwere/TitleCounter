@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -25,17 +26,18 @@ public class FilmEntry {
     private Long id;
 
     @Size(min = 1, max = 64)
-    @Column(name = "custom_title")
+    @Column(name = "custom_title", nullable = false)
     private String customTitle;
 
-    @Size(max=255)
+    @Size(max=512)
     private String note;
 
-    @Min(0)
+    @Min(1)
     @Max(10)
     private Long score;
 
     @NotBlank
+    @Column(nullable = false)
     private String status;
 
     @Column(name = "date_completed")
@@ -48,10 +50,12 @@ public class FilmEntry {
     private Film film;
 
     @Column(name = "created_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @UpdateTimestamp
     private LocalDateTime  updatedAt;
 }

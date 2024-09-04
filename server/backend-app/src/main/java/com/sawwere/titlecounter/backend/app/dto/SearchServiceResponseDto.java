@@ -1,4 +1,4 @@
-package com.sawwere.titlecounter.backend.app.dto.film;
+package com.sawwere.titlecounter.backend.app.dto;
 
 import lombok.*;
 

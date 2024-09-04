@@ -1,13 +1,13 @@
 package com.sawwere.titlecounter.backend.app.storage.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,17 +31,28 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
-    @Size(min = 1, message = "Не меньше 1 знаков")
+    @Size(min = 10, message = "Не меньше 10 знаков")
     private String username;
 
     @Column(name = "password", nullable = false)
-    @Size(min = 1, message = "Не меньше 1 знаков")
+    @Size(min = 10, message = "Не меньше 10 знаков")
     private String password;
-
 
     @Column(name = "email", unique = true, nullable = false)
     @Email
     private String email;
+
+    @Column(name = "is_enabled", nullable = false)
+    @ColumnDefault("false")
+    private Boolean isEnabled = Boolean.FALSE;
+
+    @Column(name = "is_locked", nullable = false)
+    @ColumnDefault("false")
+    private Boolean isLocked = Boolean.FALSE;
+
+    @Column(name = "is_remind_enabled", nullable = false)
+    @ColumnDefault("true")
+    private Boolean isRemindEnabled = Boolean.TRUE;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Cascade(CascadeType.REMOVE)
@@ -56,10 +67,12 @@ public class User implements UserDetails {
     private List<FilmEntry> filmEntry;
 
     @Column(name = "created_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @UpdateTimestamp
     private LocalDateTime  updatedAt;
 
@@ -75,7 +88,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked;
     }
 
     @Override
@@ -85,7 +98,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 
     @Override

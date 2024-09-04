@@ -3,6 +3,7 @@ package com.sawwere.titlecounter.backend.app.storage.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -25,14 +26,15 @@ public class GameEntry {
     @Column(name = "custom_title")
     private String customTitle;
 
-    @Size(max=255)
+    @Size(max=512)
     private String note;
 
-    @Min(0)
+    @Min(1)
     @Max(10)
     private Long score;
 
     @NotBlank
+    @Column(nullable = false)
     private String status;
 
     @Column(name = "date_completed")
@@ -41,6 +43,7 @@ public class GameEntry {
     @Min(0)
     private Long time;
 
+    @Size(max = 64)
     private String platform;
 
     @NotNull
@@ -52,10 +55,12 @@ public class GameEntry {
     private Game game;
 
     @Column(name = "created_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @UpdateTimestamp
     private LocalDateTime  updatedAt;
 }

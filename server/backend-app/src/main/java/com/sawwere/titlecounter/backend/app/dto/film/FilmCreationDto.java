@@ -17,20 +17,21 @@ public class FilmCreationDto {
     @NotBlank
     private String title;
 
-    @JsonProperty(value = "rus_title")
-    private String rusTitle;
+    @JsonProperty(value = "alternative_title")
+    private String alternativeTitle;
 
-    @JsonProperty(value = "link_url")
-    private String linkUrl;
+    @JsonProperty("imdb_id")
+    private String imdbIdd;
 
-    @NotNull
+    @JsonProperty("kp_id")
+    private String kpId;
+
     @Min(0)
     private Long time;
 
     @JsonProperty(value = "date_release")
     private LocalDate dateRelease;
 
-    @NotNull
     @Min(0)
     @JsonProperty(value = "global_score")
     private Float globalScore;

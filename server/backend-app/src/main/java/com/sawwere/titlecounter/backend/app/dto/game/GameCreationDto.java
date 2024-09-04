@@ -18,17 +18,15 @@ public class GameCreationDto {
     @NotBlank
     private String title;
 
-    @JsonProperty("link_url")
-    private String linkUrl;
+    @JsonProperty("hltb_id")
+    private String hltbId;
 
-    @NotNull
     @Min(0)
     private Long time;
 
     @JsonProperty("date_release")
     private LocalDate dateRelease;
 
-    @NotNull
     @Min(0)
     @JsonProperty("global_score")
     private Float globalScore;

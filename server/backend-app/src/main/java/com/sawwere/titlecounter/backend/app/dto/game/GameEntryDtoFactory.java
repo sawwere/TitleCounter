@@ -47,7 +47,7 @@ public class GameEntryDtoFactory {
     public GameEntryRequestDto makeDefault(Long gameId, Long userId) {
         return  GameEntryRequestDto.builder()
                 .score(0L)
-                .status("COMPLETED")
+                .status("completed")
                 .dateCompleted(LocalDate.now())
                 .time(0L)
                 .gameId(gameId)

@@ -9,9 +9,14 @@ ALTER TABLE ONLY roles
 --USERS
 CREATE TABLE users (
     id bigint NOT NULL,
-    email character varying(255) NOT NULL,
+    email character varying(255) NOT NULL UNIQUE,
     password character varying(255) NOT NULL,
-    username character varying(255) NOT NULL
+    username character varying(255) NOT NULL UNIQUE,
+    is_remind_enabled boolean DEFAULT true NOT NULL,
+    is_enabled boolean DEFAULT false NOT NULL,
+    is_locked boolean DEFAULT false NOT NULL
+    created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
 
 CREATE SEQUENCE users_id_seq
@@ -46,9 +51,11 @@ CREATE TABLE games (
     id bigint NOT NULL,
     date_release date,
     global_score real,
-    link_url character varying(255),
+    hltb_id character varying(255),
     "time" bigint NOT NULL,
-    title character varying(255) NOT NULL
+    title character varying(255) NOT NULL,
+    created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
 
 CREATE SEQUENCE games_id_seq
@@ -64,21 +71,25 @@ ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regcl
 
 ALTER TABLE ONLY games
     ADD CONSTRAINT games_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY games
+    ADD CONSTRAINT unique_hltb_id_idx UNIQUE (hltb_id);
 
 --GAME_ENTRIES
 CREATE TABLE game_entries (
-     id bigint NOT NULL,
-     custom_title character varying(64),
-     date_completed date,
-     note character varying(255),
-     platform character varying(255),
-     score bigint,
-     status character varying(255),
-     "time" bigint,
-     game_id bigint NOT NULL,
-     user_id bigint NOT NULL,
-     CONSTRAINT game_entries_score_check CHECK (((score >= 0) AND (score <= 10))),
-     CONSTRAINT game_entries_time_check CHECK (("time" >= 0))
+    id bigint NOT NULL,
+    custom_title character varying(64),
+    date_completed date,
+    note character varying(512),
+    platform character varying(64),
+    score bigint,
+    status character varying(255),
+    "time" bigint,
+    game_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    CONSTRAINT game_entries_score_check CHECK (((score >= 1) AND (score <= 10))),
+    CONSTRAINT game_entries_time_check CHECK (("time" >= 0))
 );
 
 CREATE SEQUENCE game_entries_id_seq
@@ -105,10 +116,13 @@ CREATE TABLE films (
     id bigint NOT NULL,
     date_release date,
     global_score real,
-    link_url character varying(255),
-    rus_title character varying(255),
+    imdb_id character varying(255),
+    kp_id character varying(255),
+    alternative_title character varying(255),
     "time" bigint,
-    title character varying(255) NOT NULL
+    title character varying(255) NOT NULL,
+    created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
 );
 
 CREATE SEQUENCE films_id_seq
@@ -124,18 +138,24 @@ ALTER TABLE ONLY films ALTER COLUMN id SET DEFAULT nextval('films_id_seq'::regcl
 
 ALTER TABLE ONLY films
     ADD CONSTRAINT films_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY films
+    ADD CONSTRAINT unique_imdb_id_idx UNIQUE (imdb_id);
+ALTER TABLE ONLY films
+    ADD CONSTRAINT unique_kp_id_idx UNIQUE (kp_id);
 
 --FILM_ENTRIES
 CREATE TABLE film_entries (
-     id bigint NOT NULL,
-     custom_title character varying(64),
-     date_completed date,
-     note character varying(255),
-     score bigint,
-     status character varying(255),
-     film_id bigint,
-     user_id bigint,
-     CONSTRAINT film_entries_score_check CHECK (((score >= 0) AND (score <= 10)))
+    id bigint NOT NULL,
+    custom_title character varying(64),
+    date_completed date,
+    note character varying(512),
+    score bigint,
+    status character varying(255) NOT NULL,
+    film_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    CONSTRAINT film_entries_score_check CHECK (((score >= 1) AND (score <= 10)))
 );
 
 CREATE SEQUENCE film_entries_id_seq
@@ -153,6 +173,5 @@ ALTER TABLE ONLY film_entries
     ADD CONSTRAINT film_entries_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY film_entries
     ADD CONSTRAINT film_entries_user_fk FOREIGN KEY (user_id) REFERENCES users(id);
-
 ALTER TABLE ONLY film_entries
     ADD CONSTRAINT film_entries_film_fk FOREIGN KEY (film_id) REFERENCES films(id);

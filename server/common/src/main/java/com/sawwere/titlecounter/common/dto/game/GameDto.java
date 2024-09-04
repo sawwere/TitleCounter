@@ -1,6 +1,7 @@
 package com.sawwere.titlecounter.common.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,17 +20,15 @@ public class GameDto {
     @NotBlank
     private String title;
 
-    @JsonProperty("link_url")
-    private String linkUrl;
+    @JsonProperty("hltb_id")
+    private String hltbId;
 
-    @NotNull
     @Min(0)
     private Long time;
 
     @JsonProperty("date_release")
     private LocalDate dateRelease;
 
-    @NotNull
     @Min(0)
     @JsonProperty("global_score")
     private Float globalScore;

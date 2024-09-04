@@ -1,14 +1,12 @@
 package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.dto.film.FilmCreationDto;
-import com.sawwere.titlecounter.backend.app.dto.film.SearchServiceResponseDto;
+import com.sawwere.titlecounter.backend.app.dto.SearchServiceResponseDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 
 @FeignClient("external-content-search-service")

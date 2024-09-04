@@ -2,6 +2,7 @@ package com.sawwere.titlecounter.backend.app.storage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -24,11 +25,14 @@ public class Film {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "rus_title")
-    private String rusTitle;
+    @Column(name = "alternative_title")
+    private String alternativeTitle;
 
-    @Column(name = "link_url", unique = true)
-    private String linkUrl;
+    @Column(name = "imdb_id", unique = true)
+    private String imdbIdd;
+
+    @Column(name = "kp_id", unique = true)
+    private String kpId;
 
     @Column(name = "time")
     private Long time;
@@ -43,10 +47,12 @@ public class Film {
     private List<FilmEntry> filmEntries;
 
     @Column(name = "created_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @ColumnDefault("2024-08-04 10:23:54")
     @UpdateTimestamp
     private LocalDateTime  updatedAt;
 }

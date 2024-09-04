@@ -18,10 +18,10 @@ public class GameEntryResponseDto {
     @JsonProperty(value = "custom_title")
     private String customTitle;
 
-    @Size(max=255)
+    @Size(max=512)
     private String note;
 
-    @Min(0)
+    @Min(1)
     @Max(10)
     private Long score;
 
@@ -34,6 +34,7 @@ public class GameEntryResponseDto {
     @Min(0)
     private Long time;
 
+    @Max(64)
     private String platform;
 
     @NotNull
