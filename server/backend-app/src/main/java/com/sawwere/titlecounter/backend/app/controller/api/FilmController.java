@@ -48,11 +48,6 @@ public class FilmController {
         var filmEntity = filmService.createFilm(filmDto, image);
         return filmDtoFactory.entityToDto(filmEntity);
     }
-    @PostMapping(AUTO_CREATE_FILM)
-    public FilmDto autoCreateFilm(@Valid @RequestParam(value = "title") String title) {
-        var filmEntity = filmService.autoCreateFilm(title);
-        return filmDtoFactory.entityToDto(filmEntity);
-    }
 
     @PutMapping(UPDATE_FILM)
     public  FilmDto putFilm(@PathVariable(value = "film_id") Long filmId,
@@ -108,5 +103,16 @@ public class FilmController {
     public void createFilmEntry(@PathVariable(name="submission_id") Long filmEntryId,
                                 Authentication authentication) {
         filmService.deleteFilmEntry(filmEntryId, authentication);
+    }
+
+    @GetMapping(AUTO_CREATE_FILM+"/title")
+    public void autoCreate(@RequestParam(value = "title", required = false) String title) {
+        filmService.autoCreateFilm(title);
+    }
+
+    @GetMapping(AUTO_CREATE_FILM+"/page")
+    public void autoCreate(@RequestParam(value = "page", required = false) Integer page,
+                           @RequestParam(value = "limit", required = false) Integer limit) {
+        filmService.autoCreateFilm(page, limit);
     }
 }

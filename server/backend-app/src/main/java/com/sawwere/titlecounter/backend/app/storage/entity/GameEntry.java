@@ -31,7 +31,7 @@ public class GameEntry {
 
     @Min(1)
     @Max(10)
-    private Long score;
+    private Integer score;
 
     @NotBlank
     @Column(nullable = false)

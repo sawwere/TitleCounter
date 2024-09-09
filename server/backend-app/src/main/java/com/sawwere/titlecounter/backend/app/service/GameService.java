@@ -1,17 +1,19 @@
 package com.sawwere.titlecounter.backend.app.service;
 
+import com.sawwere.titlecounter.backend.app.dto.film.FilmCreationDto;
+import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
+import com.sawwere.titlecounter.backend.app.storage.entity.*;
+import com.sawwere.titlecounter.backend.app.storage.repository.GamePlatformRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
 import com.sawwere.titlecounter.backend.app.dto.game.GameDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
-import com.sawwere.titlecounter.backend.app.storage.entity.Game;
-import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
-import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameEntryRepository;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
+import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,12 +35,15 @@ public class GameService {
             Logger.getLogger(GameService.class.getName());
 
     private final GameRepository gameRepository;
+    private final GamePlatformRepository gamePlatformRepository;
     private final GameEntryRepository gameEntryRepository;
 
     private final GameDtoFactory gameDtoFactory;
     private final GameEntryDtoFactory gameEntryDtoFactory;
 
+    private final ImageStorageService imageStorageService;
     private final UserService userService;
+    private final ExternalContentSearchService externalContentSearchService;
     public Optional<Game> findGame(Long gameId) {
         return gameRepository.findById(gameId);
     }
@@ -92,7 +98,6 @@ public class GameService {
         return gameRepository.findAll(filter);
     }
 
-    @Transactional
     public GameEntry createGameEntry(String username, GameEntryRequestDto gameEntryDto) {
         GameEntry gameEntry = gameEntryDtoFactory.dtoToEntity(gameEntryDto);
         Game gameEntity = findGameOrElseThrowException(gameEntryDto.getGameId());
@@ -147,5 +152,53 @@ public class GameService {
         User user = userService.findUserByUsername(username);
         List<GameEntry> gameEntries = findGameEntriesByUser(username);
         return gameEntries.stream().map(GameEntry::getGame).toList();
+    }
+
+    public void autoCreateGame(int startId, int limit) {
+        for (int i = startId; i < startId + limit; i++) {
+            if (gameRepository.findByExternalId_HltbId(String.valueOf(i)).isEmpty())
+                try {
+                    var list = externalContentSearchService.findGames(null, String.valueOf(i));
+                    if (list.getTotal() == 0)
+                        throw new NotFoundException(String.valueOf(i));
+                    GameCreationDto dto = list.getContents().get(0);
+                    if (gameRepository.findByExternalId_HltbId(dto.getExternalId().getHltbId()).isEmpty()) {
+                        Game game = gameDtoFactory.creationDtoToEntity(dto);
+                        for (String platform : dto.getPlatforms()) {
+                            var searchRes = gamePlatformRepository.findByName(platform);
+                            searchRes.ifPresent(game.getPlatforms()::add);
+                        }
+                        gameRepository.save(game);
+                        System.out.println(dto.getImageUrl());
+                        var image = externalContentSearchService.findImage(dto.getImageUrl());
+                        imageStorageService.store(image, "games/%d".formatted(game.getId()));
+                        logger.info("Created game '%s' with id '%d' hltbId '%s'"
+                                .formatted(game.getTitle(), game.getId(), game.getExternalId().getHltbId())
+                        );
+                    }
+                } catch (FeignException.FeignClientException ex) {
+                    logger.severe("NOT FOUND hltbId '%d'"
+                            .formatted(i)
+                    );
+                }
+        }
+    }
+
+    @Transactional
+    public void autoCreateGame(String title) {
+        var list = externalContentSearchService.findGames(title, null);
+        if (list.getTotal() == 0)
+            throw new NotFoundException(title);
+        GameCreationDto dto = list.getContents().get(0);
+        if (gameRepository.findByExternalId_HltbId(dto.getExternalId().getHltbId()).isEmpty()) {
+            Game game = gameDtoFactory.creationDtoToEntity(dto);
+            gameRepository.save(game);
+            System.out.println(dto.getImageUrl());
+            var image = externalContentSearchService.findImage(dto.getImageUrl());
+            imageStorageService.store(image, "games/%d".formatted(game.getId()));
+            logger.info("Created game '%s' with id '%d' hltbId '%s'"
+                    .formatted(game.getTitle(), game.getId(), game.getExternalId().getHltbId())
+            );
+        }
     }
 }

@@ -1,16 +1,21 @@
 package com.sawwere.titlecounter.backend.app.service;
 
-import com.sawwere.titlecounter.backend.app.dto.film.*;
+import com.sawwere.titlecounter.backend.app.dto.film.FilmCreationDto;
+import com.sawwere.titlecounter.backend.app.dto.film.FilmDtoFactory;
+import com.sawwere.titlecounter.backend.app.dto.film.FilmEntryDtoFactory;
+import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Film;
 import com.sawwere.titlecounter.backend.app.storage.entity.FilmEntry;
+import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.FilmEntryRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.FilmRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.FilmSpecification;
 import com.sawwere.titlecounter.common.dto.film.FilmDto;
 import com.sawwere.titlecounter.common.dto.film.FilmEntryRequestDto;
+import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -68,18 +73,50 @@ public class FilmService {
     }
 
     @Transactional
-    public Film autoCreateFilm(String title) {
-        var list = externalContentSearchService.findFilms(title, 1);
+    public void autoCreateFilm(String title) {
+        var list = externalContentSearchService.findFilms(title, null);
         if (list.getTotal() == 0)
             throw new NotFoundException(title);
         FilmCreationDto dto = list.getContents().get(0);
-        Film film = filmDtoFactory.creationDtoToEntity(dto);
-        filmRepository.save(film);
-        System.out.println(dto.getImageUrl());
-        var image = externalContentSearchService.findImage(dto.getImageUrl());
-        imageStorageService.store(image, "films/%d".formatted(film.getId()));
-        logger.info("Created film '%s' with id '%d'".formatted(film.getTitle(), film.getId()));
-        return film;
+        if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isEmpty()) {
+            Film film = filmDtoFactory.creationDtoToEntity(dto);
+            filmRepository.save(film);
+            System.out.println(dto.getImageUrl());
+            var image = externalContentSearchService.findImage(dto.getImageUrl());
+            imageStorageService.store(image, "films/%d".formatted(film.getId()));
+            logger.info("Created film '%s' with id '%d' kpId '%s'"
+                    .formatted(film.getTitle(), film.getId(), film.getExternalId().getKpId())
+            );
+        }
+    }
+
+
+    public void autoCreateFilm(int pageLimit, int limit) {
+        for (int page = pageLimit; page < pageLimit + limit; page++) {
+            try {
+                var list = externalContentSearchService.findFilms(null, String.valueOf(page));
+                if (list.getTotal() == 0)
+                    throw new NotFoundException(String.valueOf(page));
+                for (int ind = 0; ind < list.getTotal(); ind++) {
+                    FilmCreationDto dto = list.getContents().get(ind);
+                    if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isEmpty()) {
+                        Film film = filmDtoFactory.creationDtoToEntity(dto);
+                        filmRepository.save(film);
+                        System.out.println(dto.getImageUrl());
+                        var image = externalContentSearchService.findImage(dto.getImageUrl());
+                        imageStorageService.store(image, "films/%d".formatted(film.getId()));
+                        logger.info("Created film '%s' with id '%d' kpId '%s' on page %d"
+                                .formatted(film.getTitle(), film.getId(), film.getExternalId().getKpId(), page)
+                        );
+                    }
+                }
+
+            } catch (FeignException.FeignClientException ex) {
+                logger.severe("NOT FOUND page '%d'"
+                        .formatted(page));
+                break;
+            }
+        }
     }
 
     //TODO

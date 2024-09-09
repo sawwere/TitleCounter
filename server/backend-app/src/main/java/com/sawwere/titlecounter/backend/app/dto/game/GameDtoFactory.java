@@ -1,8 +1,14 @@
 package com.sawwere.titlecounter.backend.app.dto.game;
 
+import com.sawwere.titlecounter.backend.app.storage.entity.GameExternalId;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
+import com.sawwere.titlecounter.backend.app.storage.entity.GamePlatform;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
+import com.sawwere.titlecounter.common.dto.game.GameExternalIdDto;
+import com.sawwere.titlecounter.common.dto.game.GamePlatformDto;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 @Component
 public class GameDtoFactory {
@@ -10,10 +16,42 @@ public class GameDtoFactory {
         return  GameDto.builder()
                 .id(game.getId())
                 .title(game.getTitle())
-                .hltbId(game.getHltbId())
+                .gameType(game.getGameType())
+                .developer(game.getDeveloper())
+                .description(game.getDescription())
+                .platforms(game.getPlatforms().stream().map(this::map).toList())
+                .externalId(map(game.getExternalId()))
                 .time(game.getTime())
                 .dateRelease(game.getDateRelease())
                 .globalScore(game.getGlobalScore())
+                .build();
+    }
+
+    private GamePlatformDto map(GamePlatform obj) {
+        return GamePlatformDto.builder()
+                .id(obj.getId())
+                .name(obj.getName())
+                .build();
+    }
+
+    private GamePlatform map(GamePlatformDto obj) {
+        return GamePlatform.builder()
+                .id(obj.getId())
+                .name(obj.getName())
+                .build();
+    }
+
+    private GameExternalIdDto map(GameExternalId obj) {
+        return GameExternalIdDto.builder()
+                .hltbId(obj.getHltbId())
+                .steamId(obj.getSteamId())
+                .build();
+    }
+
+    private GameExternalId map(GameExternalIdDto obj) {
+        return GameExternalId.builder()
+                .hltbId(obj.getHltbId())
+                .steamId(obj.getSteamId())
                 .build();
     }
 
@@ -21,7 +59,30 @@ public class GameDtoFactory {
         return Game.builder()
                 .id(gameDto.getId())
                 .title(gameDto.getTitle())
-                .hltbId(gameDto.getHltbId())
+                .gameType(gameDto.getGameType())
+                .developer(gameDto.getDeveloper())
+                .description(gameDto.getDescription())
+                .platforms(gameDto.getPlatforms().stream().map(this::map).toList())
+                .externalId(map(gameDto.getExternalId()))
+                .time(gameDto.getTime())
+                .dateRelease(gameDto.getDateRelease())
+                .globalScore(gameDto.getGlobalScore())
+                .build();
+    }
+
+    /**
+     * @param gameDto Dto to be mapped into entity
+     * @return mapped object
+     * @implNote WARN: Does not map platforms
+     */
+    public Game creationDtoToEntity(GameCreationDto gameDto) {
+        return Game.builder()
+                .title(gameDto.getTitle())
+                .gameType(gameDto.getGameType())
+                .developer(gameDto.getDeveloper())
+                .description(gameDto.getDescription())
+                .platforms(new ArrayList<>(4))
+                .externalId(map(gameDto.getExternalId()))
                 .time(gameDto.getTime())
                 .dateRelease(gameDto.getDateRelease())
                 .globalScore(gameDto.getGlobalScore())

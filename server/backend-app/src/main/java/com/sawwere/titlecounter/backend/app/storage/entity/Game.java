@@ -1,5 +1,6 @@
 package com.sawwere.titlecounter.backend.app.storage.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -25,9 +26,6 @@ public class Game {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "hltb_id", unique = true)
-    private String hltbId;
-
     @Column(name = "time")
     private long time;
 
@@ -36,6 +34,25 @@ public class Game {
 
     @Column(name = "global_score")
     private Float globalScore;
+
+    @Column(name = "game_type")
+    private String gameType;
+
+    @Column(name  = "developer")
+    private String developer;
+
+    @Column(name = "description", length = 2048)
+    private String description;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="hltbId", column=@Column(name = "hltb_id", unique = true)),
+            @AttributeOverride(name="steamId", column=@Column(name = "steam_id", unique = true))
+    })
+    private GameExternalId externalId;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<GamePlatform> platforms;
 
     @OneToMany(orphanRemoval = true, mappedBy = "game")
     private List<GameEntry> gameEntries;

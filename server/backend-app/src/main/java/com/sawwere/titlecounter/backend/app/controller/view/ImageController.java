@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequiredArgsConstructor
 public class ImageController {
-    public static final String GET = "/images/{subDirectory}/{filename}";
+    public static final String GET = "/api/images/{subDirectory}/{filename}";
 
     private final ImageStorageService imageStorageService;
     @GetMapping(value = GET, produces = MediaType.IMAGE_JPEG_VALUE)

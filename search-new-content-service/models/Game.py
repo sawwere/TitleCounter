@@ -8,18 +8,26 @@ headers = {
 
 class Game:
     def __init__(self, 
-                 title = "None",
-                 image_url = "https://kitairu.net/images/noimage.png",
-                 link_url = "https://howlongtobeat.com",
-                 time = 0,
-                 date_release = "1900-01-01",
+                 platforms,
+                 hltb_id = None,
+                 steam_id = None,
+                 title = "ERROR_MISSING_TITLE",
+                 game_type = "game",
+                 developer = None,
+                 description = None,
+                 image_url = None,
+                 time = None,
+                 date_release = None,
                  score = 0,
                  similarity = 0.0
                  ):
+        self.external_id = {"hltb_id": hltb_id, "steam_id": steam_id}
         self.title = title
-        self.image_url = image_url
-        self.link_url = link_url
-        
+        self.game_type = game_type
+        self.developer = developer
+        self.description = description
+        self.image_url = image_url       
+
         mt = str(time)
         if (type(time) == str):
             if ("\u00bd" in mt):
@@ -28,85 +36,22 @@ class Game:
                 self.time = int(mt)
         else:
             self.time = time
-        self.DateRelease = self.find_DateRelease(link_url)
+
+        self.date_release = date_release
         self.score = score
         self.similarity = similarity
-
-    def month_to_num(self, string_month):
-        return {
-            'January': '01',
-            'February': '02',
-            'March': '03',
-            'April': '04',
-            'May': '05',
-            'June': '06',
-            'July': '07',
-            'August': '08',
-            'September': '09',
-            'October': '10',
-            'November': '11',
-            'December': '12'
-        }[string_month]
-
-    def string_into_date(self, string):
-        r = re.match(r"([A-Za-z]+) (\d{2}), (\d{4})", string)
-        if r is None:
-            return "1900-01-01"
-        month = r.group(1)
-        day = r.group(2)
-        year = r.group(3)
-        return year+'-'+self.month_to_num(month)+'-'+day
-
-
-    def find_DateRelease(self, web_link):
-        DateRelease = "1900-01-01"
-        try:
-            r = requests.get(web_link, headers=headers)
-            
-            soup = BeautifulSoup(r.text.encode('utf-8'), features="html.parser")
-            # get text from html
-            text = soup.get_text()
-
-            na = text.find("NA:")
-            eu = text.find("EU:")
-            jp = text.find("JP:")
-            up = text.find("Updated:")
-
-            if jp == -1:
-                jp = up
-            if eu == -1:
-                eu = up
-            dates = []
-            if na != -1:
-                dates.append(text[na+4:eu])
-            if eu != up:
-                dates.append(text[eu+4:jp])
-            if jp != up:
-                dates.append(text[jp+4:up])
-
-            #dates = [na_date, eu_date, jp_date]
-            dates.sort()
-            DateRelease = dates[0]
-            return self.string_into_date(DateRelease)
-        except:
-            return DateRelease
-
-    def print(self):
-        print(self.title, self.image_url, self.link_url,
-              self.time, self.DateRelease, self.score)
-
-    def to_string(self):
-        return str(self.title 
-                   + ' ' + self.image_url + ' ' + self.link_url
-                   + ' ' + self.time + ' ' 
-                   + ' ' + self.score + ' ' + self.DateRelease)
+        self.platforms = platforms
 
     def to_dict(self):
         return {
                 "title": self.title,
-                "image_url": self.image_url,
-                "link_url": self.link_url,
+                "game_type": self.game_type,
+                "developer": self.developer,
+                "description": self.description,
+                "external_id": self.external_id,
+                "platforms": self.platforms,
                 "time": self.time,
-                "date_release": self.DateRelease,
-                "score": self.score
+                "date_release": self.date_release,
+                "global_score": self.score,
+                "image_url": self.image_url
                 }

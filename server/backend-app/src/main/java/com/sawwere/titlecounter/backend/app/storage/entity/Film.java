@@ -1,10 +1,9 @@
 package com.sawwere.titlecounter.backend.app.storage.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,17 +24,28 @@ public class Film {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "alternative_title")
-    private String alternativeTitle;
+    @Column(name = "ru_title")
+    private String ruTitle;
 
-    @Column(name = "imdb_id", unique = true)
-    private String imdbIdd;
+    @Column(name = "en_title")
+    private String enTitle;
 
-    @Column(name = "kp_id", unique = true)
-    private String kpId;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="imdbIdd", column=@Column(name = "imdb_id", unique = true)),
+            @AttributeOverride(name="kpId", column=@Column(name = "kp_id", unique = true)),
+            @AttributeOverride(name="tmdbId", column=@Column(name = "tmdb_id", unique = true))
+    })
+    private FilmExternalId externalId;
+
+    @Column(name = "description", length = 2048)
+    private String description;
 
     @Column(name = "time")
-    private Long time;
+    private Integer time;
+
+    @Column(name = "year_release")
+    private Integer yearRelease;
 
     @Column(name = "date_release")
     private LocalDate dateRelease;

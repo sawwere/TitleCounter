@@ -3,7 +3,7 @@ import re
 import requests
 
 from bs4 import BeautifulSoup
-from howlongtobeatpy import HowLongToBeat
+from howlongtobeatpy import HowLongToBeat, SearchModifiers
 
 from models.Game import Game
 
@@ -15,27 +15,12 @@ class GameService:
             api_keys = json.loads(f.read())
         self.headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-
     
-    def choose_game(self, name):
-        searh_results = HowLongToBeat().search(game_name=name, similarity_case_sensitive=False)
-        if searh_results is not None and len(searh_results) > 0:
-            searh_results.sort(key= lambda x: x.similarity, reverse=True)
-            r = searh_results[0]
-            res = Game(title=r.game_name, 
-                    image_url=r.game_image_url,
-                    link_url=r.game_web_link, 
-                    time=r.main_story*60,
-                    Similarity=r.similarity, 
-                    date_release=str(r.release_world)+"-01-01",
-                    Score=r.review_score)
-            #res.date_release = find_date_release(res.link_url)
-            return res
-        else: 
-            return None
-
     def search(self, title: str) -> list:
-        searh_results = HowLongToBeat().search(game_name=title, similarity_case_sensitive=False)
+        """ 
+        OUTDATED
+        """
+        searh_results = HowLongToBeat().search(game_name=title, similarity_case_sensitive=False, search_modifiers=SearchModifiers.HIDE_DLC)
         if searh_results is None:
             return None
         searh_results.sort(key= lambda x: x.similarity, reverse=True)    
@@ -45,7 +30,8 @@ class GameService:
         for i in range(0, count):
             r = searh_results[i]
 
-            game = Game(title=r.game_name, 
+            game = Game(hltb_id=r.game_id,
+                        title=r.game_name, 
                     image_url=r.game_image_url,
                     link_url=r.game_web_link, 
                     time=r.main_story*60,
@@ -59,38 +45,102 @@ class GameService:
         res["contents"] = [x.to_dict() for x in arr]
         return res
     
-    def get_hltb_release_date(self, web_link):
-        DateRelease = "1900-01-01"
+    def search_by_id(self, id: str) -> list:
+        """ 
+        Function that searches the game with given hltb_id
+        """
+        searh_results = HowLongToBeat().search_from_id(id)
+        if searh_results is None:
+            return None
+        print("===================================")
+        print('\033[92m'+id + " " + searh_results.game_type+'\033[0m')
+        print("===================================")
+        r = requests.get(searh_results.game_web_link, headers=self.headers)
+        soup = BeautifulSoup(r.text.encode('utf-8'), features="html.parser")
+
+        date_release = self.get_hltb_release_date(soup)
+        steam_id = self.get_steam_id(soup)
+        if searh_results.profile_platforms != None and len(searh_results.profile_platforms) > 0:
+            platforms = searh_results.profile_platforms
+        else:
+            platforms = self.get_platforms(soup)
+
+        game = Game(platforms=platforms,
+                    title=searh_results.game_name,
+                    hltb_id=searh_results.game_id,
+                    steam_id=steam_id,
+                    game_type=searh_results.game_type,
+                    developer=searh_results.profile_dev,
+                    description=None,
+                    image_url=searh_results.game_image_url,
+                    time=searh_results.main_story*60,
+                    date_release=date_release,
+                    score=searh_results.review_score,
+                    similarity=searh_results.similarity
+        )
+        res = {}
+        res["total"] = 1
+        res["contents"] = [game.to_dict()]
+        return res
+    
+    def parse_hltb(self, web_link):
+        steam_id = None
+        date_release = None
+        platforms = []
         try:
             r = requests.get(web_link, headers=self.headers)
-            
             soup = BeautifulSoup(r.text.encode('utf-8'), features="html.parser")
-            # get text from html
-            text = soup.get_text()
-
-            na = text.find("NA:")
-            eu = text.find("EU:")
-            jp = text.find("JP:")
-            up = text.find("Updated:")
-
-            if jp == -1:
-                jp = up
-            if eu == -1:
-                eu = up
-            dates = []
-            if na != -1:
-                dates.append(text[na+4:eu])
-            if eu != up:
-                dates.append(text[eu+4:jp])
-            if jp != up:
-                dates.append(text[jp+4:up])
-
-            #dates = [na_date, eu_date, jp_date]
-            dates.sort()
-            DateRelease = dates[0]
-            return self.string_into_date(DateRelease)
+            date_release = self.get_hltb_release_date(soup)
+            steam_id = self.get_steam_id(soup)
+            platforms = self.get_platforms(soup)
         except:
-            return DateRelease
+            print("===================================")
+            print('\033[31m'+id + " " + web_link + '\033[0m')
+            print("===================================")
+        finally:
+            return (steam_id, date_release, platforms)
+
+    def get_steam_id(self, soup : BeautifulSoup):
+        #try:
+            # get text from html
+        divs = soup.find('a', {'class': 'StoreButton_steam__RJCCL StoreButton_store_botton__IrB3D'})
+        if divs != None:
+            steam_id = divs.attrs['href'][35:-1]
+            return steam_id
+        return None
+    
+    def get_platforms(self, soup : BeautifulSoup):
+        #try get text from html
+        string_platforms = ''
+        divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
+        for div in divs:
+            if div.contents[0].text.startswith('Platform'):
+                string_platforms = div.contents[3]
+        if string_platforms == '':
+            divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_large__TIGhL'})
+            for div in divs:
+                if div.contents[0].text.startswith('Platform'):
+                    string_platforms = div.contents[3]
+        if string_platforms == '':
+            print('NOT FOUND PLATFORMS')
+        return [p.strip() for p in string_platforms.split(', ')]
+    
+    def get_hltb_release_date(self, soup : BeautifulSoup):
+        try:
+            # get text from html
+            divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu'})
+            dates = []
+            for div in divs:
+                if len(div.attrs['class']) == 1:
+                    string_date = div.contents[3]
+                    extracted_date = self.string_into_date(string_date)
+                    if extracted_date is not None:
+                        dates.append(extracted_date)
+
+            dates.sort()
+            return dates[0]
+        except:
+            return None
 
 
     def month_to_num(self, string_month):
@@ -112,7 +162,7 @@ class GameService:
     def string_into_date(self, string):
         r = re.match(r"([A-Za-z]+) (\d{2}), (\d{4})", string)
         if r is None:
-            return "1900-01-01"
+            return None
         month = r.group(1)
         day = r.group(2)
         year = r.group(3)

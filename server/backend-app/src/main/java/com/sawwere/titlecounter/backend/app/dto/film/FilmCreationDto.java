@@ -1,6 +1,8 @@
 package com.sawwere.titlecounter.backend.app.dto.film;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sawwere.titlecounter.common.dto.film.FilmExternalIdDto;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,17 +19,23 @@ public class FilmCreationDto {
     @NotBlank
     private String title;
 
-    @JsonProperty(value = "alternative_title")
-    private String alternativeTitle;
+    @JsonProperty(value = "ru_title")
+    private String ruTitle;
 
-    @JsonProperty("imdb_id")
-    private String imdbIdd;
+    @JsonProperty(value = "en_title")
+    private String enTitle;
 
-    @JsonProperty("kp_id")
-    private String kpId;
+    @JsonProperty("external_id")
+    private FilmExternalIdDto externalId;
+
+    @JsonProperty("description")
+    private String description;
 
     @Min(0)
-    private Long time;
+    private Integer time;
+
+    @JsonProperty(value = "year_release")
+    private Integer yearRelease;
 
     @JsonProperty(value = "date_release")
     private LocalDate dateRelease;

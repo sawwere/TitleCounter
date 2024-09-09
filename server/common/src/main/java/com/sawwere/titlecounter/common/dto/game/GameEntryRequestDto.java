@@ -23,7 +23,7 @@ public class GameEntryRequestDto {
 
     @Min(1)
     @Max(10)
-    private Long score;
+    private Integer score;
 
     @NotBlank
     private String status;

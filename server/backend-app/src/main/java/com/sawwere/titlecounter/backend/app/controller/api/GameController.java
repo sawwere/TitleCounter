@@ -4,6 +4,7 @@ import com.sawwere.titlecounter.backend.app.dto.game.*;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.service.GameService;
 import com.sawwere.titlecounter.backend.app.service.ImageStorageService;
+import com.sawwere.titlecounter.common.dto.film.FilmDto;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryResponseDto;
@@ -108,5 +109,16 @@ public class GameController
     public void createGameEntry(@PathVariable(name="submission_id") Long gameEntryId,
                                 Authentication authentication) {
         gameService.deleteGameEntry(gameEntryId, authentication);
+    }
+
+    @GetMapping("/api/games-auto-create/title")
+    public void autoCreate(@RequestParam(value = "title", required = false) String title) {
+        gameService.autoCreateGame(title);
+    }
+
+    @GetMapping("/api/games-auto-create/page")
+    public void autoCreate(@RequestParam(value = "id", required = false) Integer id,
+                           @RequestParam(value = "limit", required = false) Integer limit) {
+        gameService.autoCreateGame(id, limit);
     }
 }

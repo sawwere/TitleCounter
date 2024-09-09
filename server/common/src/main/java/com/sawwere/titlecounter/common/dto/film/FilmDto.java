@@ -19,18 +19,24 @@ public class FilmDto {
     @NotBlank
     private String title;
 
-    @JsonProperty(value = "alternative_title")
-    private String alternativeTitle;
+    @JsonProperty(value = "ru_title")
+    private String ruTitle;
 
-    @JsonProperty("imdb_id")
-    private String imdbIdd;
+    @JsonProperty(value = "en_title")
+    private String enTitle;
 
-    @JsonProperty("kp_id")
-    private String kpId;
+    @JsonProperty("external_id")
+    private FilmExternalIdDto externalId;
+
+    @JsonProperty("description")
+    private String description;
 
     @Min(0)
     @JsonProperty(value = "time")
-    private Long time;
+    private Integer time;
+
+    @JsonProperty(value = "year_release")
+    private Integer yearRelease;
 
     @JsonProperty(value = "date_release")
     private LocalDate dateRelease;

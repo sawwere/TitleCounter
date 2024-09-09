@@ -1,13 +1,13 @@
 package com.sawwere.titlecounter.common.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,8 +20,22 @@ public class GameDto {
     @NotBlank
     private String title;
 
-    @JsonProperty("hltb_id")
-    private String hltbId;
+    @NotBlank
+    @JsonProperty("game_type")
+    private String gameType;
+
+    @JsonProperty("developer")
+    private String developer;
+
+    @JsonProperty("description")
+    private String description;
+
+    @NotNull
+    @JsonProperty("external_id")
+    private GameExternalIdDto externalId;
+
+    @NotNull
+    private List<GamePlatformDto> platforms;
 
     @Min(0)
     private Long time;

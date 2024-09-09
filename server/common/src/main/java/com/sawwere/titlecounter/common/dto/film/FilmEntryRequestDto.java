@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class FilmEntryRequestDto {
     private Long id;
 
+    @NotBlank
     @Size(min = 1, max = 64)
     @JsonProperty(value = "custom_title")
     private String customTitle;

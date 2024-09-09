@@ -36,20 +36,25 @@ class FilmService:
             m = response.json()
             if (m["isSeries"] == True):
                 continue
-            rus_title = m["name"]
+            alternative_title = m["name"]
             orig_title = m["alternativeName"]
+            if orig_title is None:
+                orig_title = alternative_title
             global_score = m["rating"]["kp"]
             time = m["movieLength"]
-            link_url = "https://www.kinopoisk.ru/film/"+str(m["id"])
+            kp_id = str(m["id"])
+            imdb_id = str(m["externalId"]["imdb"])
             image_url = m["poster"]["url"]
-
-
+            print("===================================")
+            print('\033[92m'+ kp_id + " " + orig_title+'\033[0m')
+            print("===================================")
             film = Film(movie = m, 
                     title = orig_title,
-                    rus_title = rus_title,
+                    alternative_title = alternative_title,
                     time = time,
                     global_score= global_score,
-                    link_url = link_url,
+                    kp_id=kp_id,
+                    imdb_id=imdb_id,
                     image_url = image_url,
                     date_release = self.get_kinopoisk_release_date(m)
                     )
@@ -59,12 +64,102 @@ class FilmService:
         res["contents"] = [x.to_dict() for x in arr]    
         return res
     
+    def search_by_page(self, page) -> list:
+        url = "https://api.kinopoisk.dev/v1.4/movie?page=" + str(page) +"&limit=20&selectFields=externalId&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=premiere&selectFields=poster&selectFields=isSeries&selectFields=rating&selectFields=movieLength&notNullFields=externalId.imdb&notNullFields=poster.url"
+
+        headers = {
+            "accept": "application/json",
+            "X-API-KEY": self.kinopoisk_token
+        }
+
+        response = requests.get(url, headers=headers)
+        if (response.status_code != 200):
+            return None
+        response = response.json()
+        print(response["total"])
+        contents = response["docs"]      
+        
+        count =  len(contents)
+        arr = []
+        for i in range(0, count):
+            m = contents[i]
+            if (m["isSeries"] == True):
+                continue
+            alternative_title = m["name"]
+            orig_title = m["alternativeName"]
+            if orig_title is None:
+                orig_title = alternative_title
+            global_score = m["rating"]["kp"]
+            time = m["movieLength"]
+            kp_id = str(m["id"])
+            imdb_id = str(m["externalId"]["imdb"])
+            image_url = m["poster"]["url"]
+            print("===================================")
+            print('\033[92m'+ kp_id + " " + orig_title+'\033[0m')
+            print("===================================")
+
+            film = Film(movie = m, 
+                    title = orig_title,
+                    alternative_title = alternative_title,
+                    time = time,
+                    global_score= global_score,
+                    kp_id=kp_id,
+                    imdb_id=imdb_id,
+                    image_url = image_url,
+                    date_release = self.get_kinopoisk_release_date(m)
+                    )
+            arr.append(film)
+        res = {}
+        res["total"] = len(arr)
+        res["contents"] = [x.to_dict() for x in arr]    
+        return res
+    
+    def search_by_id(self, id) -> list:
+        headers = {
+            "accept": "application/json",
+            "X-API-KEY": self.kinopoisk_token
+        }
+
+        url = "https://api.kinopoisk.dev/v1.4/movie/" + str(id)
+        response = requests.get(url, headers=headers)
+        if (response.status_code != 200):
+            return None
+        m = response.json()
+        if (m["isSeries"] == True):
+            return None
+        alternative_title = m["name"]
+        orig_title = m["alternativeName"]
+        global_score = m["rating"]["kp"]
+        time = m["movieLength"]
+        kp_id = str(m["id"])
+        imdb_id = str(m["externalId"]["imdb"])
+        image_url = m["poster"]["url"]
+
+
+        film = Film(movie = m, 
+                title = orig_title,
+                alternative_title = alternative_title,
+                time = time,
+                global_score= global_score,
+                kp_id=kp_id,
+                imdb_id=imdb_id,
+                image_url = image_url,
+                date_release = self.get_kinopoisk_release_date(m)
+                )
+        res = {}
+        res["total"] = 1
+        res["contents"] = [film.to_dict()]    
+        return res
+    
     def get_kinopoisk_release_date(self, film):
-        codes = ["world", "russia", "digital", "dvd", "bluray", "country"]
-        for code in codes:
-            if code in film["premiere"].keys() and film["premiere"][code] != None:
-                return film["premiere"][code][0:10]
-        return "1900-01-01"
+        try:
+            codes = ["world", "russia", "digital", "dvd", "bluray", "country"]
+            for code in codes:
+                if code in film["premiere"].keys() and film["premiere"][code] != None:
+                    return film["premiere"][code][0:10]
+            return None
+        except:
+            return None
 
 
     def month_to_num(self, string_month):

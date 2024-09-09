@@ -29,16 +29,26 @@ def service_unavailabl(error):
 @app.route('/find/games', methods=['GET'])
 def get_game():
     name = request.args.get('title', default = "None", type = str)
-    res = game_service.search(name)
+    id = request.args.get('id', type = str)
+    if id != None:
+        res = game_service.search_by_id(id)
+    else:
+        res = game_service.search(name)
     if res is None:
         abort(503)
     return jsonify(res)
 
 @app.route('/find/films', methods=['GET'])
 def get_film():
-    name = request.args.get('title', default = "None", type = str)
-    page = request.args.get('page', default = 1, type = int)
-    res = film_service.search(name, page)
+    name = request.args.get('title', default = None, type = str)
+    page = request.args.get('page', default=1, type = int)
+    id = request.args.get('id', type = str)
+    if id != None:
+        res = film_service.search_by_id(id)
+    elif name is None:
+        res = film_service.search_by_page(page)
+    else:
+        res = film_service.search(name, page)
     if res is None:
         abort(503)
     return jsonify(res)
