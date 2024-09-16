@@ -11,4 +11,6 @@ public interface FilmRepository extends JpaRepository<Film, Long>, JpaSpecificat
     Stream<Film> streamAllBy();
 
     Optional<Film> findByExternalId_KpId(String kpId);
+
+    Optional<Film> findByExternalId_TmdbId(String tmdbId);
 }

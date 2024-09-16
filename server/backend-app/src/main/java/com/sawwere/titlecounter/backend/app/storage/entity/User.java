@@ -44,17 +44,25 @@ public class User implements UserDetails {
 
     @Column(name = "is_enabled", nullable = false)
     @ColumnDefault("false")
+    @Builder.Default
     private Boolean isEnabled = Boolean.FALSE;
 
     @Column(name = "is_locked", nullable = false)
     @ColumnDefault("false")
+    @Builder.Default
     private Boolean isLocked = Boolean.FALSE;
 
     @Column(name = "is_remind_enabled", nullable = false)
     @ColumnDefault("true")
+    @Builder.Default
     private Boolean isRemindEnabled = Boolean.TRUE;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     @Cascade(CascadeType.REMOVE)
     private List<Role> roles;
 

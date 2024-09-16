@@ -57,7 +57,7 @@ public class FilmDtoFactory {
         return FilmExternalIdDto.builder()
                 .kpId(obj.getKpId())
                 .tmdbId(obj.getTmdbId())
-                .imdbIdd(obj.getImdbIdd())
+                .imdbId(obj.getImdbId())
                 .build();
     }
 
@@ -65,7 +65,7 @@ public class FilmDtoFactory {
         return FilmExternalId.builder()
                 .kpId(obj.getKpId())
                 .tmdbId(obj.getTmdbId())
-                .imdbIdd(obj.getImdbIdd())
+                .imdbId(obj.getImdbId())
                 .build();
     }
 }

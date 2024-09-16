@@ -36,6 +36,9 @@ public class GameCreationDto {
     @NotNull
     private List<String> platforms;
 
+    @NotNull
+    private List<String> genres;
+
     @Min(0)
     private Long time;
 

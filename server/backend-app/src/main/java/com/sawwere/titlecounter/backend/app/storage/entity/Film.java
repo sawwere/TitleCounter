@@ -32,7 +32,7 @@ public class Film {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="imdbIdd", column=@Column(name = "imdb_id", unique = true)),
+            @AttributeOverride(name="imdbId", column=@Column(name = "imdb_id", unique = true)),
             @AttributeOverride(name="kpId", column=@Column(name = "kp_id", unique = true)),
             @AttributeOverride(name="tmdbId", column=@Column(name = "tmdb_id", unique = true))
     })

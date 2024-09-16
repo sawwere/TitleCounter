@@ -50,7 +50,7 @@ class FilmService:
             print("===================================")
             film = Film(movie = m, 
                     title = orig_title,
-                    alternative_title = alternative_title,
+                    ru_title = alternative_title,
                     time = time,
                     global_score= global_score,
                     kp_id=kp_id,
@@ -65,7 +65,7 @@ class FilmService:
         return res
     
     def search_by_page(self, page) -> list:
-        url = "https://api.kinopoisk.dev/v1.4/movie?page=" + str(page) +"&limit=20&selectFields=externalId&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=premiere&selectFields=poster&selectFields=isSeries&selectFields=rating&selectFields=movieLength&notNullFields=externalId.imdb&notNullFields=poster.url"
+        url = "https://api.kinopoisk.dev/v1.4/movie?page=" + str(page) +"&limit=20&selectFields=externalId&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=enName&selectFields=premiere&selectFields=year&selectFields=poster&selectFields=isSeries&selectFields=rating&selectFields=movieLength&selectFields=description&notNullFields=externalId.imdb&notNullFields=poster.url"
 
         headers = {
             "accept": "application/json",
@@ -85,28 +85,43 @@ class FilmService:
             m = contents[i]
             if (m["isSeries"] == True):
                 continue
-            alternative_title = m["name"]
+            ru_title = m["name"]
             orig_title = m["alternativeName"]
-            if orig_title is None:
-                orig_title = alternative_title
+            if orig_title == None:
+                orig_title = ru_title
+            en_title = m["enName"]
+
             global_score = m["rating"]["kp"]
             time = m["movieLength"]
             kp_id = str(m["id"])
             imdb_id = str(m["externalId"]["imdb"])
+            if "tmdb" in m["externalId"].keys():
+                tmdb_id = str(m["externalId"]["tmdb"])
+            else:
+                tmdb_id = None
+
+            description = m["description"]
+            year = m['year']
+
             image_url = m["poster"]["url"]
             print("===================================")
-            print('\033[92m'+ kp_id + " " + orig_title+'\033[0m')
+            print('\033[92m'+ kp_id + ' ' + orig_title + '\033[0m')
+            print(en_title)
             print("===================================")
 
             film = Film(movie = m, 
                     title = orig_title,
-                    alternative_title = alternative_title,
+                    ru_title = ru_title,
+                    en_title=en_title,
                     time = time,
-                    global_score= global_score,
+                    description=description,
+                    global_score = global_score,
                     kp_id=kp_id,
                     imdb_id=imdb_id,
+                    tmdb_id=tmdb_id,
                     image_url = image_url,
-                    date_release = self.get_kinopoisk_release_date(m)
+                    date_release = self.get_kinopoisk_release_date(m),
+                    year_release=year
                     )
             arr.append(film)
         res = {}
@@ -138,7 +153,7 @@ class FilmService:
 
         film = Film(movie = m, 
                 title = orig_title,
-                alternative_title = alternative_title,
+                ru_title = alternative_title,
                 time = time,
                 global_score= global_score,
                 kp_id=kp_id,

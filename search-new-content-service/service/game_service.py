@@ -64,13 +64,17 @@ class GameService:
             platforms = searh_results.profile_platforms
         else:
             platforms = self.get_platforms(soup)
+        genres = self.get_genres(soup)
+
+        developer = self.get_developer(soup)
 
         game = Game(platforms=platforms,
+                    genres=genres,
                     title=searh_results.game_name,
                     hltb_id=searh_results.game_id,
                     steam_id=steam_id,
                     game_type=searh_results.game_type,
-                    developer=searh_results.profile_dev,
+                    developer=developer,
                     description=None,
                     image_url=searh_results.game_image_url,
                     time=searh_results.main_story*60,
@@ -114,17 +118,46 @@ class GameService:
         string_platforms = ''
         divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
         for div in divs:
-            if div.contents[0].text.startswith('Platform'):
+            if div.contents[0].text.startswith('Platform') and len(div.contents[0].text)<13:
                 string_platforms = div.contents[3]
         if string_platforms == '':
             divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_large__TIGhL'})
             for div in divs:
-                if div.contents[0].text.startswith('Platform'):
+                if div.contents[0].text.startswith('Platform') and len(div.contents[0].text)<13:
                     string_platforms = div.contents[3]
         if string_platforms == '':
             print('NOT FOUND PLATFORMS')
         return [p.strip() for p in string_platforms.split(', ')]
     
+    def get_genres(self, soup : BeautifulSoup):
+        #try get text from html
+        string_genres = ''
+        divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
+        for div in divs:
+            if div.contents[0].text.startswith('Genre'):
+                string_genres = div.contents[3]
+        if string_genres == '':
+            print('NOT FOUND GENRES')
+            return []
+        return [p.strip() for p in string_genres.split(', ')]
+    
+    def get_developer(self, soup : BeautifulSoup):
+        #try get text from html
+        string_developer = ''
+        divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
+        for div in divs:
+            if div.contents[0].text.startswith('Developer'):
+                string_developer = div.contents[3]
+        if string_developer == '':
+            divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_large__TIGhL'})
+            for div in divs:
+                if div.contents[0].text.startswith('Developer'):
+                    string_developer = div.contents[3]
+        if string_developer == '':
+            print('NOT FOUND DEVELOPER')
+            return None
+        return string_developer.strip()
+        
     def get_hltb_release_date(self, soup : BeautifulSoup):
         try:
             # get text from html

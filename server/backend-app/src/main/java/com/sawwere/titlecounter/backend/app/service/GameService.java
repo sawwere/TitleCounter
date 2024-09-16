@@ -3,14 +3,12 @@ package com.sawwere.titlecounter.backend.app.service;
 import com.sawwere.titlecounter.backend.app.dto.film.FilmCreationDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
 import com.sawwere.titlecounter.backend.app.storage.entity.*;
-import com.sawwere.titlecounter.backend.app.storage.repository.GamePlatformRepository;
-import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
+import com.sawwere.titlecounter.backend.app.storage.repository.*;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
 import com.sawwere.titlecounter.backend.app.dto.game.GameDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
-import com.sawwere.titlecounter.backend.app.storage.repository.GameEntryRepository;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import feign.FeignException;
@@ -25,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -36,6 +35,8 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final GamePlatformRepository gamePlatformRepository;
+    private final GameGenreRepository gameGenreRepository;
+    private final GameDeveloperRepository gameDeveloperRepository;
     private final GameEntryRepository gameEntryRepository;
 
     private final GameDtoFactory gameDtoFactory;
@@ -158,6 +159,7 @@ public class GameService {
         for (int i = startId; i < startId + limit; i++) {
             if (gameRepository.findByExternalId_HltbId(String.valueOf(i)).isEmpty())
                 try {
+                    TimeUnit.MILLISECONDS.sleep((int)(Math.random() * 1000));
                     var list = externalContentSearchService.findGames(null, String.valueOf(i));
                     if (list.getTotal() == 0)
                         throw new NotFoundException(String.valueOf(i));
@@ -166,8 +168,41 @@ public class GameService {
                         Game game = gameDtoFactory.creationDtoToEntity(dto);
                         for (String platform : dto.getPlatforms()) {
                             var searchRes = gamePlatformRepository.findByName(platform);
-                            searchRes.ifPresent(game.getPlatforms()::add);
+                            searchRes.ifPresentOrElse(
+                                    game.getPlatforms()::add,
+                                    () -> logger.severe("Not found platform '%s'".formatted(platform))
+                            );
                         }
+                        for (String genre : dto.getGenres()) {
+                            var searchRes = gameGenreRepository.findByNameIgnoreCase(genre);
+                            searchRes.ifPresentOrElse(
+                                    game.getGenres()::add,
+                                    () -> {
+                                        GameGenre gameGenreEntity = GameGenre.builder().name(genre).build();
+                                        gameGenreEntity = gameGenreRepository.save(gameGenreEntity);
+                                        logger.severe("Add new genre '%s'".formatted(genre));
+                                        game.getGenres().add(gameGenreEntity);
+                                    }
+                            );
+                        }
+                        if (dto.getDeveloper() != null) {
+                            for (String developer : dto.getDeveloper().split(",")) {
+                                String developerName = developer.trim();
+                                var searchRes = gameDeveloperRepository.findByNameIgnoreCase(developerName);
+                                searchRes.ifPresentOrElse(
+                                        game.getDevelopers()::add,
+                                        () -> {
+                                            GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
+                                                    .name(developerName)
+                                                    .build();
+                                            gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
+                                            logger.severe("Add new developer '%s'".formatted(developerName));
+                                            game.getDevelopers().add(gameDeveloperEntity);
+                                        }
+                                );
+                            }
+                        }
+
                         gameRepository.save(game);
                         System.out.println(dto.getImageUrl());
                         var image = externalContentSearchService.findImage(dto.getImageUrl());
@@ -177,9 +212,12 @@ public class GameService {
                         );
                     }
                 } catch (FeignException.FeignClientException ex) {
-                    logger.severe("NOT FOUND hltbId '%d'"
+                    logger.info("NOT FOUND hltbId '%d'"
                             .formatted(i)
                     );
+                } catch (InterruptedException ex) {
+                    logger.severe("Interrupted at id '%d'".formatted(i));
+                    break;
                 }
         }
     }

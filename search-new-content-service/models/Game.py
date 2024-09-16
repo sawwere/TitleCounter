@@ -9,6 +9,7 @@ headers = {
 class Game:
     def __init__(self, 
                  platforms,
+                 genres,
                  hltb_id = None,
                  steam_id = None,
                  title = "ERROR_MISSING_TITLE",
@@ -41,6 +42,7 @@ class Game:
         self.score = score
         self.similarity = similarity
         self.platforms = platforms
+        self.genres = genres
 
     def to_dict(self):
         return {
@@ -50,6 +52,7 @@ class Game:
                 "description": self.description,
                 "external_id": self.external_id,
                 "platforms": self.platforms,
+                "genres": self.genres,
                 "time": self.time,
                 "date_release": self.date_release,
                 "global_score": self.score,

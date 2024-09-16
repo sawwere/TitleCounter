@@ -2,9 +2,6 @@ package com.sawwere.titlecounter.backend.app.storage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -12,8 +9,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="game_platforms")
-public class GamePlatform {
+@Table(name="game_developers")
+public class GameDeveloper {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -21,9 +18,7 @@ public class GamePlatform {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "alias", unique = true)
-    private String alias;
-
-    @ManyToMany(mappedBy = "platforms", fetch = FetchType.LAZY)
-    private List<Game> games;
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private String status = "unknown";
 }

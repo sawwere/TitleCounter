@@ -3,22 +3,28 @@ import re
 class Film():
     def __init__(self,
                     movie, 
-                    title = "None",
-                    alternative_title = "Нету",
+                    title = "ERROR NOT FOUND",
+                    ru_title = None,
+                    en_title = None,
                     image_url="https://kitairu.net/images/noimage.png",
                     kp_id=None,   
                     imdb_id=None, 
-                    time = 0,                   
+                    tmdb_id=None,
+                    description=None,
+                    time = 0,   
+                    year_release = None,               
                     global_score = 0,
                     date_release = "1900-01-01"
                     ):
         self.movie = movie
         self.title = title
-        self.alternative_title = alternative_title
+        self.ru_title = ru_title
+        self.en_title = en_title
         self.image_url = image_url
-        self.kp_id = kp_id
-        self.imdb_id = imdb_id
+        self.external_id = {"kp_id": kp_id, "imdb_id": imdb_id, "tmdb_id": tmdb_id}
+        self.description = description
         self.time = time
+        self.year_release = year_release
         self.date_release = date_release
         self.global_score = global_score
     
@@ -29,11 +35,13 @@ class Film():
     
     def to_dict(self) -> dict:
         return {"title": self.title,
-                "alternative_title" : self.alternative_title,
+                "ru_title" : self.ru_title,
+                "en_title" : self.en_title,
                 "image_url": self.image_url,
-                "kp_id": self.kp_id,
-                "imdb_id": self.imdb_id,
+                "external_id": self.external_id,
+                "description": self.description,
                 "time": self.time,
+                "year_release": self.year_release,
                 "date_release": self.date_release,
                 "global_score": self.global_score
                 }

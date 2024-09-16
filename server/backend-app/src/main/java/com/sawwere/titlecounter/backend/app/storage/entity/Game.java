@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,7 +53,28 @@ public class Game {
     private GameExternalId externalId;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "games_game_platforms",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_platform_id")
+    )
     private List<GamePlatform> platforms;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "games_game_genres",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_genre_id")
+    )
+    private List<GameGenre> genres;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "games_game_developers",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_developer_id")
+    )
+    private List<GameDeveloper> developers;
 
     @OneToMany(orphanRemoval = true, mappedBy = "game")
     private List<GameEntry> gameEntries;

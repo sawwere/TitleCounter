@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class FilmExternalIdDto {
     @JsonProperty("imdb_id")
-    private String imdbIdd;
+    private String imdbId;
     @JsonProperty("kp_id")
     private String kpId;
     @JsonProperty("tmdb_id")

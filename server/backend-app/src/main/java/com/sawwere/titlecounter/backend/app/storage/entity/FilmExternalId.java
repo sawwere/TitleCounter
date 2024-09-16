@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Embeddable
 public class FilmExternalId {
-    private String imdbIdd;
+    private String imdbId;
 
     private String kpId;
 

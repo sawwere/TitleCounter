@@ -1,25 +1,25 @@
-CREATE TABLE roles (
+CREATE TABLE IF NOT EXISTS roles (
     id bigint NOT NULL,
     name character varying(255)
 );
 
-ALTER TABLE ONLY roles
-    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+ALTER TABLE roles DROP CONSTRAINT IF EXISTS roles_pkey CASCADE;
+ALTER TABLE roles ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
 
 --USERS
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id bigint NOT NULL,
     email character varying(255) NOT NULL UNIQUE,
     password character varying(255) NOT NULL,
     username character varying(255) NOT NULL UNIQUE,
     is_remind_enabled boolean DEFAULT true NOT NULL,
     is_enabled boolean DEFAULT false NOT NULL,
-    is_locked boolean DEFAULT false NOT NULL
+    is_locked boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
     updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
 
-CREATE SEQUENCE users_id_seq
+CREATE SEQUENCE IF NOT EXISTS users_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -28,26 +28,23 @@ CREATE SEQUENCE users_id_seq
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
-ALTER TABLE ONLY users
-    ADD CONSTRAINT unique_email_idx UNIQUE (email);
-ALTER TABLE ONLY users
-    ADD CONSTRAINT unique_username_idx UNIQUE (username);
-ALTER TABLE ONLY users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY users DROP CONSTRAINT IF EXISTS unique_email_idx;
+ALTER TABLE ONLY users ADD CONSTRAINT unique_email_idx UNIQUE (email);
+
+ALTER TABLE ONLY users DROP CONSTRAINT IF EXISTS unique_username_idx;
+ALTER TABLE ONLY users ADD CONSTRAINT unique_username_idx UNIQUE (username);
+
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_pkey CASCADE;
+ALTER TABLE users ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 --USER_ROLES
-CREATE TABLE users_roles (
-    roles_id bigint NOT NULL,
+CREATE TABLE IF NOT EXISTS users_roles (
+    role_id bigint NOT NULL,
     user_id bigint NOT NULL
 );
 
-ALTER TABLE ONLY users_roles
-    ADD CONSTRAINT user_roles_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE ONLY users_roles
-    ADD CONSTRAINT user_roles_role_id_fk FOREIGN KEY (roles_id) REFERENCES roles(id);
-
 --GAMES
-CREATE TABLE games (
+CREATE TABLE IF NOT EXISTS games (
     id bigint NOT NULL,
     date_release date,
     global_score real,
@@ -58,7 +55,7 @@ CREATE TABLE games (
     updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
 
-CREATE SEQUENCE games_id_seq
+CREATE SEQUENCE IF NOT EXISTS games_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -69,13 +66,14 @@ ALTER SEQUENCE games_id_seq OWNED BY games.id;
 
 ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
 
-ALTER TABLE ONLY games
-    ADD CONSTRAINT games_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY games
-    ADD CONSTRAINT unique_hltb_id_idx UNIQUE (hltb_id);
+ALTER TABLE games DROP CONSTRAINT IF EXISTS games_pkey CASCADE;
+ALTER TABLE ONLY games ADD CONSTRAINT games_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY games DROP CONSTRAINT IF EXISTS unique_hltb_id_idx;
+ALTER TABLE ONLY games ADD CONSTRAINT unique_hltb_id_idx UNIQUE (hltb_id);
 
 --GAME_ENTRIES
-CREATE TABLE game_entries (
+CREATE TABLE IF NOT EXISTS game_entries (
     id bigint NOT NULL,
     custom_title character varying(64),
     date_completed date,
@@ -92,7 +90,7 @@ CREATE TABLE game_entries (
     CONSTRAINT game_entries_time_check CHECK (("time" >= 0))
 );
 
-CREATE SEQUENCE game_entries_id_seq
+CREATE SEQUENCE IF NOT EXISTS game_entries_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -103,16 +101,11 @@ ALTER SEQUENCE game_entries_id_seq OWNED BY game_entries.id;
 
 ALTER TABLE ONLY game_entries ALTER COLUMN id SET DEFAULT nextval('game_entries_id_seq'::regclass);
 
-ALTER TABLE ONLY game_entries
-    ADD CONSTRAINT game_entries_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY game_entries
-    ADD CONSTRAINT game_entries_game_fk FOREIGN KEY (game_id) REFERENCES games(id);
-ALTER TABLE ONLY game_entries
-    ADD CONSTRAINT game_entries_user_fk FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE game_entries DROP CONSTRAINT IF EXISTS game_entries_pkey CASCADE;
+ALTER TABLE ONLY game_entries ADD CONSTRAINT game_entries_pkey PRIMARY KEY (id);
 
 --FILMS
-CREATE TABLE films (
+CREATE TABLE IF NOT EXISTS films (
     id bigint NOT NULL,
     date_release date,
     global_score real,
@@ -122,10 +115,10 @@ CREATE TABLE films (
     "time" bigint,
     title character varying(255) NOT NULL,
     created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
 
-CREATE SEQUENCE films_id_seq
+CREATE SEQUENCE IF NOT EXISTS films_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -136,15 +129,17 @@ ALTER SEQUENCE films_id_seq OWNED BY films.id;
 
 ALTER TABLE ONLY films ALTER COLUMN id SET DEFAULT nextval('films_id_seq'::regclass);
 
-ALTER TABLE ONLY films
-    ADD CONSTRAINT films_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY films
-    ADD CONSTRAINT unique_imdb_id_idx UNIQUE (imdb_id);
-ALTER TABLE ONLY films
-    ADD CONSTRAINT unique_kp_id_idx UNIQUE (kp_id);
+ALTER TABLE films DROP CONSTRAINT IF EXISTS films_pkey CASCADE;
+ALTER TABLE ONLY films ADD CONSTRAINT films_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY films DROP CONSTRAINT IF EXISTS unique_imdb_id_idx;
+ALTER TABLE ONLY films ADD CONSTRAINT unique_imdb_id_idx UNIQUE (imdb_id);
+
+ALTER TABLE ONLY films DROP CONSTRAINT IF EXISTS unique_kp_id_idx;
+ALTER TABLE ONLY films ADD CONSTRAINT unique_kp_id_idx UNIQUE (kp_id);
 
 --FILM_ENTRIES
-CREATE TABLE film_entries (
+CREATE TABLE IF NOT EXISTS film_entries (
     id bigint NOT NULL,
     custom_title character varying(64),
     date_completed date,
@@ -158,7 +153,7 @@ CREATE TABLE film_entries (
     CONSTRAINT film_entries_score_check CHECK (((score >= 1) AND (score <= 10)))
 );
 
-CREATE SEQUENCE film_entries_id_seq
+CREATE SEQUENCE IF NOT EXISTS film_entries_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -169,9 +164,5 @@ ALTER SEQUENCE film_entries_id_seq OWNED BY film_entries.id;
 
 ALTER TABLE ONLY film_entries ALTER COLUMN id SET DEFAULT nextval('film_entries_id_seq'::regclass);
 
-ALTER TABLE ONLY film_entries
-    ADD CONSTRAINT film_entries_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY film_entries
-    ADD CONSTRAINT film_entries_user_fk FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE ONLY film_entries
-    ADD CONSTRAINT film_entries_film_fk FOREIGN KEY (film_id) REFERENCES films(id);
+ALTER TABLE film_entries DROP CONSTRAINT IF EXISTS film_entries_pkey CASCADE;
+ALTER TABLE ONLY film_entries ADD CONSTRAINT film_entries_pkey PRIMARY KEY (id);

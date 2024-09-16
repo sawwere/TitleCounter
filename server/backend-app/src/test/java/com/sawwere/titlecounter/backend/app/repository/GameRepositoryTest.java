@@ -34,7 +34,6 @@ public class GameRepositoryTest extends BasicTestContainerTest {
                 .title("a")
                 .dateRelease(LocalDate.EPOCH)
                 .globalScore(5.5f)
-                .linkUrl("http://localhost/images/games/1.jpg")
                 .build();
         underTest.save(expected);
 

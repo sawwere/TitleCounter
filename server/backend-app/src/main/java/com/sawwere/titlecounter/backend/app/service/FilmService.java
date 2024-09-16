@@ -18,6 +18,7 @@ import com.sawwere.titlecounter.common.dto.film.FilmEntryRequestDto;
 import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -99,7 +101,15 @@ public class FilmService {
                     throw new NotFoundException(String.valueOf(page));
                 for (int ind = 0; ind < list.getTotal(); ind++) {
                     FilmCreationDto dto = list.getContents().get(ind);
-                    if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isEmpty()) {
+                    String tmdb_id = dto.getExternalId().getTmdbId();
+
+                    if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isPresent())
+                        logger.severe("NOT FOUND page '%d' kpId %s "
+                                .formatted(page, dto.getExternalId().getKpId()));
+                    else if (tmdb_id != null && filmRepository.findByExternalId_TmdbId(dto.getExternalId().getTmdbId()).isPresent())
+                        logger.severe("NOT FOUND page '%d' kpId %s tmdbId %s"
+                                .formatted(page, dto.getExternalId().getKpId(), dto.getExternalId().getTmdbId()));
+                    else {
                         Film film = filmDtoFactory.creationDtoToEntity(dto);
                         filmRepository.save(film);
                         System.out.println(dto.getImageUrl());

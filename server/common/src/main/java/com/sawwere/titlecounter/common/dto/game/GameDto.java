@@ -24,9 +24,6 @@ public class GameDto {
     @JsonProperty("game_type")
     private String gameType;
 
-    @JsonProperty("developer")
-    private String developer;
-
     @JsonProperty("description")
     private String description;
 
@@ -36,6 +33,9 @@ public class GameDto {
 
     @NotNull
     private List<GamePlatformDto> platforms;
+
+    @NotNull
+    private List<GameDeveloperDto> developers;
 
     @Min(0)
     private Long time;
