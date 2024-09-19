@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 import requests
 
 
@@ -12,12 +11,13 @@ path_to_data = '/'.join(os.path.abspath(os.curdir).split('/')
 """
 
 restricted_symbols = {':', '/', chr(92), '"', '*', '?', '|', '>', '<'}
-    
+
+
 # Remove prohibited symbols from the String
 def get_fixed_name(string):
     fixed_title = ""
     for s in string:
-        if not s in restricted_symbols:
+        if s not in restricted_symbols:
             fixed_title += s
     return fixed_title
 

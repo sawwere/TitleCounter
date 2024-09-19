@@ -1,18 +1,18 @@
 class Game:
-    def __init__(self, 
+    def __init__(self,
                  platforms,
                  genres,
-                 hltb_id = None,
-                 steam_id = None,
-                 title = "ERROR_MISSING_TITLE",
-                 game_type = "game",
-                 developer = None,
-                 description = None,
-                 image_url = None,
-                 time = None,
-                 date_release = None,
-                 score = 0,
-                 similarity = 0.0
+                 hltb_id=None,
+                 steam_id=None,
+                 title="ERROR_MISSING_TITLE",
+                 game_type="game",
+                 developer=None,
+                 description=None,
+                 image_url=None,
+                 time=None,
+                 date_release=None,
+                 score=0,
+                 similarity=0.0
                  ):
         self.external_id = {"hltb_id": hltb_id, "steam_id": steam_id}
         self.title = title
@@ -22,7 +22,7 @@ class Game:
         self.image_url = image_url       
 
         mt = str(time)
-        if (type(time) == str):
+        if (time is str):
             if ("\u00bd" in mt):
                 self.time = int(mt[:-1])+0.5
             else:

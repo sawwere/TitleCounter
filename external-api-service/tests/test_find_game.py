@@ -1,11 +1,8 @@
-import os
 import unittest
-import requests
 from flask import Flask, jsonify, request
 from flask import abort
-from flask import make_response
 from service.game_service import GameService
-from models.Game import Game
+
 
 class TestCase(unittest.TestCase):
     def setUp(self):
@@ -14,9 +11,9 @@ class TestCase(unittest.TestCase):
 
         @app.route('/find/games', methods=['GET'])
         def get_game():
-            name = request.args.get('title', default = "None", type = str)
-            id = request.args.get('id', type = str)
-            if id != None:
+            name = request.args.get('title', default="None", type=str)
+            id = request.args.get('id', type=str)
+            if id is not None:
                 res = self.service.search_by_id(id)
             else:
                 res = self.service.search(name)
@@ -28,7 +25,7 @@ class TestCase(unittest.TestCase):
 
     def test_got_response(self):
         with self.app as c:
-            rv = c.get('/find/games?title=a')
+            c.get('/find/games?title=a')
             assert request.args['title'] == 'a'
 
     def test_find_game(self):
@@ -53,7 +50,8 @@ class TestCase(unittest.TestCase):
             rv = c.get('/find/games?title=Replaced')
             obj = rv.json
             game = dict(**obj)["contents"][0]
-            assert game["date_release"] == None
+            assert game["date_release"] is None
+
 
 if __name__ == '__main__':
     unittest.main()

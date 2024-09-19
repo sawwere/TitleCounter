@@ -1,4 +1,3 @@
-import json
 import re
 import requests
 
@@ -8,6 +7,7 @@ from howlongtobeatpy import HowLongToBeat, SearchModifiers
 from models.Game import Game
 
 LIMIT = 5
+
 
 class GameService:
     def __init__(self, api_keys) -> None:
@@ -19,10 +19,14 @@ class GameService:
         """ 
         OUTDATED
         """
-        searh_results = HowLongToBeat().search(game_name=title, similarity_case_sensitive=False, search_modifiers=SearchModifiers.HIDE_DLC)
+        searh_results = HowLongToBeat().search(
+            game_name=title,
+            similarity_case_sensitive=False,
+            search_modifiers=SearchModifiers.HIDE_DLC
+        )
         if searh_results is None:
             return None
-        searh_results.sort(key= lambda x: x.similarity, reverse=True)    
+        searh_results.sort(key=lambda x: x.similarity, reverse=True)    
         
         count = min(LIMIT, len(searh_results))
         arr = []
@@ -30,10 +34,12 @@ class GameService:
             sr = searh_results[i]
             r = requests.get(sr.game_web_link, headers=self.headers)
 
-            soup = BeautifulSoup(r.text.encode('utf-8'), features="html.parser")
+            soup = BeautifulSoup(r.text.encode('utf-8'),
+                                 features="html.parser")
             date_release = self.get_hltb_release_date(soup)
             steam_id = self.get_steam_id(soup)
-            if sr.profile_platforms != None and len(sr.profile_platforms) > 0:
+            if (sr.profile_platforms is not None
+                    and len(sr.profile_platforms) > 0):
                 platforms = sr.profile_platforms
             else:
                 platforms = self.get_platforms(soup)
@@ -54,7 +60,7 @@ class GameService:
                         date_release=date_release,
                         score=sr.review_score,
                         similarity=sr.similarity
-            )
+                        )
             arr.append(game)
         res = {}
         res = {}
@@ -77,7 +83,8 @@ class GameService:
 
         date_release = self.get_hltb_release_date(soup)
         steam_id = self.get_steam_id(soup)
-        if searh_results.profile_platforms != None and len(searh_results.profile_platforms) > 0:
+        if (searh_results.profile_platforms is not None
+                and len(searh_results.profile_platforms) > 0):
             platforms = searh_results.profile_platforms
         else:
             platforms = self.get_platforms(soup)
@@ -98,7 +105,7 @@ class GameService:
                     date_release=date_release,
                     score=searh_results.review_score,
                     similarity=searh_results.similarity
-        )
+                    )
         res = {}
         res["total"] = 1
         res["contents"] = [game.to_dict()]
@@ -121,16 +128,14 @@ class GameService:
         finally:
             return (steam_id, date_release, platforms)
 
-    def get_steam_id(self, soup : BeautifulSoup):
-        #try:
-            # get text from html
+    def get_steam_id(self, soup: BeautifulSoup):
         divs = soup.find('a', {'class': 'StoreButton_steam__RJCCL StoreButton_store_botton__IrB3D'})
-        if divs != None:
+        if divs is not None:
             steam_id = divs.attrs['href'][35:-1]
             return steam_id
         return None
     
-    def get_platforms(self, soup : BeautifulSoup):
+    def get_platforms(self, soup: BeautifulSoup):
         #try get text from html
         string_platforms = ''
         divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
@@ -146,7 +151,7 @@ class GameService:
             print('NOT FOUND PLATFORMS')
         return [p.strip() for p in string_platforms.split(', ')]
     
-    def get_genres(self, soup : BeautifulSoup):
+    def get_genres(self, soup: BeautifulSoup):
         #try get text from html
         string_genres = ''
         divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
@@ -158,7 +163,7 @@ class GameService:
             return []
         return [p.strip() for p in string_genres.split(', ')]
     
-    def get_developer(self, soup : BeautifulSoup):
+    def get_developer(self, soup: BeautifulSoup):
         #try get text from html
         string_developer = ''
         divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
@@ -175,7 +180,7 @@ class GameService:
             return None
         return string_developer.strip()
         
-    def get_hltb_release_date(self, soup : BeautifulSoup):
+    def get_hltb_release_date(self, soup: BeautifulSoup):
         try:
             # get text from html
             divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu'})
