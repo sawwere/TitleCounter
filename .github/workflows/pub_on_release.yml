@@ -13,6 +13,7 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    environment: Test
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -41,6 +42,7 @@ jobs:
     # Если тесты были пройдены успешно
     needs: [build_and_test]
     runs-on: [ubuntu-latest]
+    environment: Test
     env:
       LOGIN: ${{ secrets.DOCKER_LOGIN }}
       NAME: ${{ secrets.DOCKER_NAME }}
