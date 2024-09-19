@@ -27,16 +27,34 @@ class GameService:
         count = min(LIMIT, len(searh_results))
         arr = []
         for i in range(0, count):
-            r = searh_results[i]
+            sr = searh_results[i]
+            r = requests.get(sr.game_web_link, headers=self.headers)
 
-            game = Game(hltb_id=r.game_id,
-                        title=r.game_name, 
-                    image_url=r.game_image_url,
-                    link_url=r.game_web_link, 
-                    time=r.main_story*60,
-                    similarity=r.similarity, 
-                    date_release=self.get_hltb_release_date(r.game_web_link),
-                    score=r.review_score)
+            soup = BeautifulSoup(r.text.encode('utf-8'), features="html.parser")
+            date_release = self.get_hltb_release_date(soup)
+            steam_id = self.get_steam_id(soup)
+            if sr.profile_platforms != None and len(sr.profile_platforms) > 0:
+                platforms = sr.profile_platforms
+            else:
+                platforms = self.get_platforms(soup)
+            genres = self.get_genres(soup)
+
+            developer = self.get_developer(soup)
+
+            game = Game(platforms=platforms,
+                        genres=genres,
+                        title=sr.game_name,
+                        hltb_id=sr.game_id,
+                        steam_id=steam_id,
+                        game_type=sr.game_type,
+                        developer=developer,
+                        description=None,
+                        image_url=sr.game_image_url,
+                        time=sr.main_story*60,
+                        date_release=date_release,
+                        score=sr.review_score,
+                        similarity=sr.similarity
+            )
             arr.append(game)
         res = {}
         res = {}
