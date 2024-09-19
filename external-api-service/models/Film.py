@@ -1,5 +1,3 @@
-import re
-
 class Film():
     def __init__(self,
                     movie, 

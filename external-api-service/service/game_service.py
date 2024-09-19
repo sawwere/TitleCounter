@@ -10,9 +10,8 @@ from models.Game import Game
 LIMIT = 5
 
 class GameService:
-    def __init__(self) -> None:
-        with open("token.json", 'r') as f:
-            api_keys = json.loads(f.read())
+    def __init__(self, api_keys) -> None:
+        self.api_keys = api_keys
         self.headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     

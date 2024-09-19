@@ -10,7 +10,7 @@ from models.Film import Film
 class TestCase(unittest.TestCase):
     def setUp(self):
         app = Flask(__name__)
-        self.service = FilmService()
+        self.service = FilmService({})
 
         @app.route('/find/films', methods=['GET'])
         def get_film():

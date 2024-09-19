@@ -1,9 +1,9 @@
+import os
 from flask import Flask, jsonify, request
 from flask import abort
 from flask import make_response, send_file, Response
 import py_eureka_client.eureka_client as eureca_client
 
-import base64
 from functions import *
 from service.film_service import FilmService
 from service.game_service import GameService
@@ -14,9 +14,13 @@ eureca_client.init(
     instance_host="localhost",
     instance_port=5000
 )
+
+api_keys = {}
+api_keys['KP_API_KEY'] = os.environ.get('KP_API_KEY')
+
 app = Flask(__name__)
-film_service = FilmService()
-game_service = GameService()
+film_service = FilmService(api_keys)
+game_service = GameService(api_keys)
 
 @app.errorhandler(404)
 def not_found(error):

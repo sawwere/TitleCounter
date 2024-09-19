@@ -6,10 +6,9 @@ from models.Film import Film
 LIMIT = 5
 
 class FilmService:
-    def __init__(self) -> None:
-        with open("token.json", 'r') as f:
-            api_keys = json.loads(f.read())
-        self.kinopoisk_token = api_keys["kinopoisk"]
+    def __init__(self, api_keys) -> None:
+        self.api_keys = api_keys
+        self.kinopoisk_token = api_keys["KP_API_KEY"]
 
     def search(self, title, page) -> list:
         url = "https://api.kinopoisk.dev/v1.4/movie/search?page="+str(page)+"&limit="+str(LIMIT)+"&query=" + title

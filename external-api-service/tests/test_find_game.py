@@ -10,7 +10,7 @@ from models.Game import Game
 class TestCase(unittest.TestCase):
     def setUp(self):
         app = Flask(__name__)
-        self.service = GameService()
+        self.service = GameService({})
 
         @app.route('/find/games', methods=['GET'])
         def get_game():

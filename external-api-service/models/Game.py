@@ -1,11 +1,3 @@
-import re
-import os
-import requests
-from bs4 import BeautifulSoup
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-
 class Game:
     def __init__(self, 
                  platforms,
