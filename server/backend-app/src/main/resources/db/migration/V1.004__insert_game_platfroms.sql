@@ -161,7 +161,8 @@ INSERT INTO game_platforms(id, name) VALUES
      (177, 'BBC Micro'),
      (178, 'PlayStation Mobile'),
      (179, 'Meta Quest'),
-     (180, 'Google Stadia')
+     (180, 'Google Stadia'),
+     (181, 'PlayStation VR')
 ON CONFLICT DO NOTHING;
 
-SELECT pg_catalog.setval('game_platforms_id_seq', 180, true);
+SELECT pg_catalog.setval('game_platforms_id_seq', 181, true);

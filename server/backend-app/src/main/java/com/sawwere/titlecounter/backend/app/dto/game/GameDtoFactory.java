@@ -1,5 +1,6 @@
 package com.sawwere.titlecounter.backend.app.dto.game;
 
+import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameDeveloper;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameExternalId;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class GameDtoFactory {
+public class GameDtoFactory implements GameMapper {
     public GameDto entityToDto(Game game) {
         return  GameDto.builder()
                 .id(game.getId())

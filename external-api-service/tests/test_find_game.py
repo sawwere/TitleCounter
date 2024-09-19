@@ -14,9 +14,15 @@ class TestCase(unittest.TestCase):
 
         @app.route('/find/games', methods=['GET'])
         def get_game():
-            title = request.args.get('title', default = "None", type = str)
-            games = self.service.search(title)
-            return jsonify(games)
+            name = request.args.get('title', default = "None", type = str)
+            id = request.args.get('id', type = str)
+            if id != None:
+                res = self.service.search_by_id(id)
+            else:
+                res = self.service.search(name)
+            if res is None:
+                abort(503)
+            return jsonify(res)
         
         self.app = app.test_client()
 
@@ -47,7 +53,7 @@ class TestCase(unittest.TestCase):
             rv = c.get('/find/games?title=Replaced')
             obj = rv.json
             game = dict(**obj)["contents"][0]
-            assert game["date_release"] == "1900-01-01"
+            assert game["date_release"] == None
 
 if __name__ == '__main__':
     unittest.main()

@@ -13,14 +13,14 @@ spring:
         format_sql: true
         jdbc.lob.non_contextual_creation: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9000/oauth2/jwks
   flyway:
-#    enabled: false
+    enabled: true
     baselineOnMigrate: true
   mvc.throw-exception-if-no-handler-found: true
   web.resources.add-mappings: false

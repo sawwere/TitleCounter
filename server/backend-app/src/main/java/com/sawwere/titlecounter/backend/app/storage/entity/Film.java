@@ -57,12 +57,12 @@ public class Film {
     private List<FilmEntry> filmEntries;
 
     @Column(name = "created_at", nullable = false)
-    @ColumnDefault("2024-08-04 10:23:54")
+    @ColumnDefault("'2024-08-04 10:23:54'::timestamp without time zone")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    @ColumnDefault("2024-08-04 10:23:54")
+    @ColumnDefault("'2024-08-04 10:23:54'::timestamp without time zone")
     @UpdateTimestamp
     private LocalDateTime  updatedAt;
 }

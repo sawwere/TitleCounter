@@ -57,6 +57,7 @@
      (56, 'Trivia'),
      (57, 'Moba'),
      (58, 'Management'),
-     (59, 'Vehicular Combat');
+     (59, 'Vehicular Combat')
+ON CONFLICT DO NOTHING;
 
 SELECT pg_catalog.setval('game_genres_id_seq', 59, true);

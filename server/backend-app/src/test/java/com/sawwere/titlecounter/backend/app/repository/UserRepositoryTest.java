@@ -22,7 +22,7 @@ import java.util.List;
 @ActiveProfiles("test")
 @TestPropertySource("/application-test.yml")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(value = {"/sql/create_roles.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+//@Sql(value = {"/sql/create_roles.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public class UserRepositoryTest extends BasicTestContainerTest {
     @Autowired
     private UserRepository underTest;

@@ -42,7 +42,7 @@ public class FilmEntryDtoFactory {
 
     public FilmEntryRequestDto makeDefault(Long filmId, Long userId) {
         return  FilmEntryRequestDto.builder()
-                .score(0L)
+                .score(0)
                 .status("completed")
                 .dateCompleted(LocalDate.now())
                 .filmId(filmId)

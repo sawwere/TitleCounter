@@ -24,7 +24,7 @@ def not_found(error):
 
 @app.errorhandler(503)
 def service_unavailabl(error):
-    return make_response(jsonify({'error': 'Cant get answer from api'}), 404)
+    return make_response(jsonify({'error': 'Cant get answer from api'}), 503)
 
 @app.route('/find/games', methods=['GET'])
 def get_game():

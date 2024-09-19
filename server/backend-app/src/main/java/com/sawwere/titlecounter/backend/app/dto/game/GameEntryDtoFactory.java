@@ -1,5 +1,6 @@
 package com.sawwere.titlecounter.backend.app.dto.game;
 
+import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Component
 public class GameEntryDtoFactory {
-    private final GameDtoFactory gameDtoFactory;
+    private final GameMapper gameMapper;
     public GameEntryResponseDto entityToDto(GameEntry gameEntry) {
         return  GameEntryResponseDto.builder()
                 .id(gameEntry.getId())
@@ -24,7 +25,7 @@ public class GameEntryDtoFactory {
                 .dateCompleted(gameEntry.getDateCompleted())
                 .time(gameEntry.getTime())
                 .platform(gameEntry.getPlatform())
-                .game(gameDtoFactory.entityToDto(gameEntry.getGame()))
+                .game(gameMapper.entityToDto(gameEntry.getGame()))
                 .userId(gameEntry.getUser().getId())
                 .build();
     }

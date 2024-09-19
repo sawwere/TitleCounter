@@ -535,7 +535,6 @@ README.html
 .idea
 .exercism
 
-WinFormsApplication/appsettings.json
-SpringClient/
 *.jpg
-search-new-content-service/token.json
+external-api-service/token.json
+/.env

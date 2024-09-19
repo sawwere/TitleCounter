@@ -4,8 +4,8 @@ services:
     container_name: 'postgres'
     environment:
       - 'POSTGRES_DB=TitleCounter'
-      - 'POSTGRES_PASSWORD=1234'
-      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+      - 'POSTGRES_USER=${POSTGRES_USER}'
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 30s
@@ -19,7 +19,7 @@ services:
     networks:
       net:
   eureka-server:
-    build: 'eureka-server/'
+    build: 'server/eureka-server'
     container_name: 'eureka-server'
     restart: 'always'
     ports:
@@ -27,24 +27,35 @@ services:
     networks:
       net:
   gateway-service:
-    build: 'gateway-service/'
+    build: 'server/gateway-service'
     container_name: 'gateway-service'
     restart: "always"
     ports:
       - '80:80'
     environment:
-      - spring.profiles.active=prod
+      SPRING_PROFILES_ACTIVE: prod
+      TOKEN_SIGNING: ${TOKEN_SIGNING}
     networks:
       net:
   title-counter-api:
-    build: 'backend-app/'
+    build: 'server/backend-app'
+    volumes:
+      - './resources:/resources'
     container_name: 'title-counter-api'
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/TitleCounter
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TOKEN_SIGNING: ${TOKEN_SIGNING}
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      net:
+  external-api:
+    build: 'external-api-service'
+    container_name: 'external-api-service'
     networks:
       net:
 networks:

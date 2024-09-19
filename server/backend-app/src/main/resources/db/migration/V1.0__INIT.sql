@@ -51,6 +51,10 @@ CREATE TABLE IF NOT EXISTS games (
     hltb_id character varying(255),
     "time" bigint NOT NULL,
     title character varying(255) NOT NULL,
+    game_type character varying(255),
+    steam_id character varying(255),
+    description character varying(2048),
+    developer character varying(255),
     created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
     updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
@@ -79,7 +83,7 @@ CREATE TABLE IF NOT EXISTS game_entries (
     date_completed date,
     note character varying(512),
     platform character varying(64),
-    score bigint,
+    score integer,
     status character varying(255),
     "time" bigint,
     game_id bigint NOT NULL,
@@ -107,13 +111,17 @@ ALTER TABLE ONLY game_entries ADD CONSTRAINT game_entries_pkey PRIMARY KEY (id);
 --FILMS
 CREATE TABLE IF NOT EXISTS films (
     id bigint NOT NULL,
-    date_release date,
-    global_score real,
+    title character varying(255) NOT NULL,
+    ru_title character varying(255),
+    en_title character varying(255),
     imdb_id character varying(255),
     kp_id character varying(255),
-    alternative_title character varying(255),
-    "time" bigint,
-    title character varying(255) NOT NULL,
+    tmdb_id character varying(255),
+    "time" integer,
+    date_release date,
+    year_release integer,
+    global_score real,
+    description character varying(2048) NOT NULL,
     created_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL,
     updated_at timestamp without time zone DEFAULT '2024-08-04 10:23:54'::timestamp without time zone NOT NULL
 );
@@ -144,7 +152,7 @@ CREATE TABLE IF NOT EXISTS film_entries (
     custom_title character varying(64),
     date_completed date,
     note character varying(512),
-    score bigint,
+    score integer,
     status character varying(255) NOT NULL,
     film_id bigint NOT NULL,
     user_id bigint NOT NULL,

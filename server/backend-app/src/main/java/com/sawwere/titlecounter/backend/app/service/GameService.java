@@ -1,14 +1,13 @@
 package com.sawwere.titlecounter.backend.app.service;
 
-import com.sawwere.titlecounter.backend.app.dto.film.FilmCreationDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
+import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
+import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
+import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
+import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.*;
 import com.sawwere.titlecounter.backend.app.storage.repository.*;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
-import com.sawwere.titlecounter.backend.app.dto.game.GameDtoFactory;
-import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
-import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
-import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import feign.FeignException;
@@ -19,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,7 +37,7 @@ public class GameService {
     private final GameDeveloperRepository gameDeveloperRepository;
     private final GameEntryRepository gameEntryRepository;
 
-    private final GameDtoFactory gameDtoFactory;
+    private final GameMapper gameDtoFactory;
     private final GameEntryDtoFactory gameEntryDtoFactory;
 
     private final ImageStorageService imageStorageService;

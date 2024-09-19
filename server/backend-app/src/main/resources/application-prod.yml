@@ -1,12 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/TitleCounter
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://postgres:5432/TitleCounter
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   flyway:
-    user: postgres
-    password: 1234
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     baselineOnMigrate: true
     enabled: true
   jpa:
@@ -20,3 +20,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-server:8761/eureka/
+token:
+  signing:
+    key: ${TOKEN_SIGNING}

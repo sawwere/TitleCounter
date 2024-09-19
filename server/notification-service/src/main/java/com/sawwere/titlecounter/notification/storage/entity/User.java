@@ -1,13 +1,13 @@
 package com.sawwere.titlecounter.notification.storage.entity;
 
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,32 +31,50 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
-    @Size(min = 1, message = "Не меньше 1 знаков")
+    @Size(min = 3, message = "Не меньше 3 знаков")
     private String username;
 
     @Column(name = "password", nullable = false)
-    @Size(min = 1, message = "Не меньше 1 знаков")
+    @Size(min = 10, message = "Не меньше 10 знаков")
     private String password;
-
 
     @Column(name = "email", unique = true, nullable = false)
     @Email
     private String email;
 
+    @Column(name = "is_enabled", nullable = false)
+    @ColumnDefault("false")
+    @Builder.Default
+    private Boolean isEnabled = Boolean.FALSE;
+
+    @Column(name = "is_locked", nullable = false)
+    @ColumnDefault("false")
+    @Builder.Default
+    private Boolean isLocked = Boolean.FALSE;
+
+    @Column(name = "is_remind_enabled", nullable = false)
+    @ColumnDefault("true")
+    @Builder.Default
+    private Boolean isRemindEnabled = Boolean.TRUE;
+
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     @Cascade(CascadeType.REMOVE)
     private List<Role> roles;
 
     @Column(name = "created_at", nullable = false)
+    @ColumnDefault("'2024-08-04 10:23:54'::timestamp without time zone")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @ColumnDefault("'2024-08-04 10:23:54'::timestamp without time zone")
     @UpdateTimestamp
     private LocalDateTime  updatedAt;
-
-    @Column(name = "is_remind_enabled", nullable = false)
-    private Boolean isNotificationEnabled = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,7 +88,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked;
     }
 
     @Override
@@ -80,7 +98,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 
     @Override

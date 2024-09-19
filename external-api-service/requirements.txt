@@ -1,4 +1,4 @@
-flask[async]
+flask
 howlongtobeatpy
 beautifulsoup4
 py_eureka_client

@@ -1,0 +1,57 @@
+name: Publish on Docker Hub and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: 
+    - '*'
+# on:
+#   release:
+#     types: [published]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f search-new-content-service/requirements.txt ]; then pip install -r search-new-content-service/requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Do test
+      run: |
+        cd search-new-content-service
+        python -u -m unittest tests/test_find_game.py
+        python -u -m unittest tests/test_find_film.py
+
+  build_and_pub:
+    # Если тесты были пройдены успешно
+    needs: [build_and_test]
+    runs-on: [ubuntu-latest]
+    env:
+      LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      NAME: ${{ secrets.DOCKER_NAME }}
+    steps:
+      - name: Login to docker.io
+        # Сначала мы логинимся в docker.io
+        run:  echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
+        # Чекаутим код
+      - uses: actions/checkout@master
+      - name: Build pythonimage
+        # Собираем image и называем его так как указано в hub.docker т.е. login/repository:version
+        run: docker build -t $LOGIN/$NAME:${GITHUB_REF:11} search-new-content-service
+      - name: Push image to docker.io
+        # Пушим образ в registry
+        run: docker push $LOGIN/$NAME:${GITHUB_REF:11}

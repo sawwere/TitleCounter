@@ -1,10 +1,10 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
 import com.sawwere.titlecounter.backend.app.dto.game.*;
+import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.service.GameService;
 import com.sawwere.titlecounter.backend.app.service.ImageStorageService;
-import com.sawwere.titlecounter.common.dto.film.FilmDto;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryResponseDto;
@@ -26,7 +26,7 @@ public class GameController
     private final ImageStorageService imageStorageService;
     private final GameService gameService;
 
-    private final GameDtoFactory gameDtoFactory;
+    private final GameMapper gameMapper;
     private final GameEntryDtoFactory gameEntryDtoFactory;
 
     public static final String CREATE_GAME = "/api/games";
@@ -52,18 +52,18 @@ public class GameController
         var gameEntity = gameService.createGame(gameDto);
         var id = gameEntity.getId();
         imageStorageService.store(image, "games/%d".formatted(id));
-        return gameDtoFactory.entityToDto(gameEntity);
+        return gameMapper.entityToDto(gameEntity);
     }
 
     @PutMapping(UPDATE_GAME)
     public  GameDto putGame(@PathVariable(value = "game_id") Long gameId,
                             @Valid @RequestBody GameDto gameDto) {
-        return gameDtoFactory.entityToDto(gameService.updateGame(gameId, gameDto));
+        return gameMapper.entityToDto(gameService.updateGame(gameId, gameDto));
     }
 
     @GetMapping(FIND_GAME)
     public GameDto findGame(@PathVariable(value = "game_id") Long gameId) {
-        return gameDtoFactory.entityToDto(gameService.findGameOrElseThrowException(gameId));
+        return gameMapper.entityToDto(gameService.findGameOrElseThrowException(gameId));
     }
 
     @DeleteMapping(DELETE_GAME)
@@ -74,7 +74,7 @@ public class GameController
 
     @GetMapping(FIND_ALL_GAMES)
     public List<GameDto> findAllGames(@RequestParam(value = "q", required = false) Optional<String> query) {
-        return gameService.search(query).stream().map(gameDtoFactory::entityToDto).toList();
+        return gameService.search(query).stream().map(gameMapper::entityToDto).toList();
     }
 
     @GetMapping(FIND_GAME_ENTRIES)
