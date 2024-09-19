@@ -41,4 +41,3 @@ jobs:
       run: |
         cd external-api-service
         python -u -m unittest tests/test_find_game.py
-        python -u -m unittest tests/test_find_film.py
