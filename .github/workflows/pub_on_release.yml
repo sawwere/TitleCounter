@@ -15,7 +15,7 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
-    environment: Test
+    environment: Deploy
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Build pythonimage
-        run: docker build -t $LOGIN/$NAME:external-api-service.${GITHUB_REF:11} external-api-service
+        run: docker build -t $LOGIN/$NAME:external-api-service external-api-service
 
       - name: Push image to docker.io
-        run: docker push $LOGIN/$NAME:external-api-service.${GITHUB_REF:11}
+        run: docker push $LOGIN/$NAME:external-api-service

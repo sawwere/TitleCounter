@@ -13,41 +13,63 @@ on:
       - '.github/workflows/backend-app.yml'
 
 
-env:
-  LOGIN: ${{ secrets.DOCKER_LOGIN }}
-  NAME: ${{ secrets.DOCKER_NAME }}
-
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     name: Build
-    environment: Test
+    environment: Deploy
+    env:
+      LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      NAME: ${{ secrets.DOCKER_NAME }}
     permissions:
       packages: write
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup java
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-      - name: change directory
-        run: cd server
 
       - name: maven build
+        working-directory: ./server
         run: mvn -pl backend-app -am package
 
+      - name: Get directory target
+        working-directory: ./server/backend-app/target
+        run: ls
+
+      - name: Get directory ba
+        working-directory: ./server/backend-app
+        run: ls
+
+      - name: Get directory server
+        working-directory: ./server
+        run: ls
+
       - name: Run tests
+        working-directory: ./server
         run: mvn -pl backend-app -am verify
 
       - name: Login to docker.io
+        #working-directory: ./server
         run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
-      - uses: actions/checkout@master
 
-      - name: Build image
-        run: docker build -t $LOGIN/$NAME:backend-app.${GITHUB_REF:11} backend-app
+      - name: Get directory target
+        working-directory: ./server/backend-app/target
+        run: ls
+
+      - name: Build backend-app image
+        #working-directory: ./server/backend-app
+        run:  |
+          cd server/backend-app
+          docker build -t $LOGIN/$NAME:latest -t $LOGIN/$NAME:backend-app .
 
       - name: Push image to docker.io
-        run: docker push $LOGIN/$NAME:backend-app.${GITHUB_REF:11}
+        #working-directory: ./server/backend-app
+        run: docker push $LOGIN/$NAME:backend-app
