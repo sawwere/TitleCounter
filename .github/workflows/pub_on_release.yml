@@ -3,12 +3,14 @@ name: Publish on Docker Hub and Deploy
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'external-api-service/**'
+      - '.github/workflows/python-app.yml'
   pull_request:
-    branches: 
-    - '*'
-# on:
-#   release:
-#     types: [published]
+    branches: [ "main" ]
+    paths:
+      - 'external-api-service/**'
+      - '.github/workflows/python-app.yml'
 
 jobs:
   build_and_test:
@@ -48,13 +50,11 @@ jobs:
       NAME: ${{ secrets.DOCKER_NAME }}
     steps:
       - name: Login to docker.io
-        # Сначала мы логинимся в docker.io
         run:  echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
-        # Чекаутим код
       - uses: actions/checkout@master
+
       - name: Build pythonimage
-        # Собираем image и называем его так как указано в hub.docker т.е. login/repository:version
-        run: docker build -t $LOGIN/$NAME:${GITHUB_REF:11} external-api-service
+        run: docker build -t $LOGIN/$NAME:external-api-service.${GITHUB_REF:11} external-api-service
+
       - name: Push image to docker.io
-        # Пушим образ в registry
-        run: docker push $LOGIN/$NAME:${GITHUB_REF:11}
+        run: docker push $LOGIN/$NAME:external-api-service.${GITHUB_REF:11}

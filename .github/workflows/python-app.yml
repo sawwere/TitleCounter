@@ -4,11 +4,18 @@
 name: Python application
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: 
-    - '*'
+    branches: [ "main" ]
+    paths:
+      - 'external-api-service/**'
+      - '.github/workflows/python-app.yml'
+  push:
+    branches:
+      - '*'
+    paths:
+      - 'external-api-service/**'
+      - '.github/workflows/python-app.yml'
+
 
 permissions:
   contents: read
