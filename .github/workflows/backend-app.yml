@@ -72,4 +72,4 @@ jobs:
 
       - name: Push image to docker.io
         #working-directory: ./server/backend-app
-        run: docker push $LOGIN/$NAME/backend-app:latest
+        run: docker push $LOGIN/$NAME:latest
