@@ -40,6 +40,14 @@ jobs:
         working-directory: ./server
         run: mvn -pl backend-app -am package
 
+      - name: Get directory
+        working-directory: ./server/backend-app
+        run: ls
+
+      - name: Get directory
+        working-directory: ./server/
+        run: ls
+
       - name: Run tests
         working-directory: ./server
         run: mvn -pl backend-app -am verify
