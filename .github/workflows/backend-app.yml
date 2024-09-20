@@ -27,27 +27,33 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup java
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-      - name: change directory
-        run: cd server
 
       - name: maven build
+        working-directory: ./server
         run: mvn -pl backend-app -am package
 
       - name: Run tests
+        working-directory: ./server
         run: mvn -pl backend-app -am verify
 
       - name: Login to docker.io
+        working-directory: ./server
         run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
       - uses: actions/checkout@master
 
-      - name: Build image
+      - name: Build backend-app image
+        working-directory: ./server
         run: docker build -t $LOGIN/$NAME:backend-app.${GITHUB_REF:11} backend-app
 
       - name: Push image to docker.io
+        working-directory: ./server
         run: docker push $LOGIN/$NAME:backend-app.${GITHUB_REF:11}
