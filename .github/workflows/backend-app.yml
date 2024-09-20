@@ -50,9 +50,9 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Build backend-app image
-        working-directory: ./server
-        run: docker build -t $LOGIN/$NAME:backend-app.latest backend-app
+        working-directory: ./server/backend-app
+        run: docker build -t $LOGIN/$NAME:backend-app.latest .
 
       - name: Push image to docker.io
-        working-directory: ./server
+        working-directory: ./server/backend-app
         run: docker push $LOGIN/$NAME:backend-app.latest
