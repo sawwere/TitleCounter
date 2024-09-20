@@ -1,4 +1,4 @@
-name: Build Backend app
+name: Build and push Backend app
 
 on:
   pull_request:
