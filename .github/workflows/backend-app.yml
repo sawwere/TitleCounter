@@ -13,15 +13,14 @@ on:
       - '.github/workflows/backend-app.yml'
 
 
-env:
-  LOGIN: ${{ secrets.DOCKER_LOGIN }}
-  NAME: ${{ secrets.DOCKER_NAME }}
-
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     name: Build
     environment: Test
+    env:
+      LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      NAME: ${{ secrets.DOCKER_NAME }}
     permissions:
       packages: write
       pull-requests: write
