@@ -59,12 +59,17 @@ jobs:
       - name: Login to docker.io
         #working-directory: ./server
         run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
-      - uses: actions/checkout@master
+
+      - name: Get directory target
+        working-directory: ./server/backend-app/target
+        run: ls
 
       - name: Build backend-app image
         #working-directory: ./server/backend-app
-        run: docker build -t $LOGIN/$NAME:backend-app.latest ./server/backend-app
+        run:  |
+          cd server/backend-app
+          docker build -t $LOGIN/$NAME/backend-app:latest .
 
       - name: Push image to docker.io
         #working-directory: ./server/backend-app
-        run: docker push $LOGIN/$NAME:backend-app.latest
+        run: docker push $LOGIN/$NAME/backend-app:latest .
