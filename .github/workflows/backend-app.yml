@@ -49,7 +49,7 @@ jobs:
         run: ls
 
       - name: Get directory server
-        working-directory: ./server/
+        working-directory: ./server
         run: ls
 
       - name: Run tests
@@ -63,7 +63,7 @@ jobs:
 
       - name: Build backend-app image
         #working-directory: ./server/backend-app
-        run: docker build -t $LOGIN/$NAME:backend-app.latest server/backend-app
+        run: docker build -t $LOGIN/$NAME:backend-app.latest ./server/backend-app
 
       - name: Push image to docker.io
         #working-directory: ./server/backend-app
