@@ -68,8 +68,8 @@ jobs:
         #working-directory: ./server/backend-app
         run:  |
           cd server/backend-app
-          docker build -t $LOGIN/$NAME/backend-app:latest .
+          docker build -t $LOGIN/$NAME:latest -t $LOGIN/$NAME:backend-app .
 
       - name: Push image to docker.io
         #working-directory: ./server/backend-app
-        run: docker push $LOGIN/$NAME:latest
+        run: docker push $LOGIN/$NAME:backend-app
