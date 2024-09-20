@@ -51,8 +51,8 @@ jobs:
 
       - name: Build backend-app image
         working-directory: ./server
-        run: docker build -t $LOGIN/$NAME:backend-app.${GITHUB_REF:11} backend-app
+        run: docker build -t $LOGIN/$NAME:backend-app.latest backend-app
 
       - name: Push image to docker.io
         working-directory: ./server
-        run: docker push $LOGIN/$NAME:backend-app.${GITHUB_REF:11}
+        run: docker push $LOGIN/$NAME:backend-app.latest
