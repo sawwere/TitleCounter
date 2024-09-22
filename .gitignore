@@ -538,3 +538,4 @@ README.html
 *.jpg
 external-api-service/token.json
 /.env
+/external-api-service/.env

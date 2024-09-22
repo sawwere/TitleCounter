@@ -4,10 +4,15 @@
     <parent>
         <groupId>com.sawwere.titlecounter</groupId>
         <artifactId>title-counter</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>common</artifactId>
     <name>common</name>
+
+    <properties>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -18,7 +23,5 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
     </dependencies>
-    <properties>
-        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-    </properties>
+
 </project>
