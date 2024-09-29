@@ -17,13 +17,14 @@ spring:
           uri: lb://notification-service
           predicates:
             - Path=/notification/**
-        - id: title-counter-front
-          uri: lb://title-counter-front
-          predicates:
-            - Path=/**
+#        - id: title-counter-front
+#          uri: lb://title-counter-front
+#          predicates:
+#            - Path=/**
       default-filters:
         - RemoveRequestHeader=authorities
         - RemoveRequestHeader=username
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       discovery:
         locator:
           enabled: true
@@ -42,4 +43,13 @@ token:
     key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
   accessExpirationTimeout: 15 # minutes
   refreshExpirationTimeout: 24 # hours
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      -   name: title-counter-api
+          url: lb://title-counter-api/v3/api-docs
 

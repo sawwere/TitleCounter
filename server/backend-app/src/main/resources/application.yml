@@ -39,6 +39,7 @@ token:
   accessExpirationTimeout: 15 # minutes
   refreshExpirationTimeout: 24 # hours
 app:
+  publicUrl: localhost
   rabbitmq:
     queue:
       name: greetings.notifications
@@ -46,10 +47,17 @@ app:
       name: title-counter.direct
     routing:
       key: register.complete
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        security: DEBUG
+springdoc:
+  api-docs:
+    enabled: true
+
+  swagger-ui:
+    enabled: true
+    disable-swagger-default-url: true
+    path: /myproject
+#    config-url: /v3/api-docs/swagger-config
+#    urls:
+#      -   name: title-counter-api
+#          url: lb://title-counter-api/v3/api-docs
 
 #http://localhost:9000/oauth2/authorize?response_type=code&client_id=title_counter_client&redirect_uri=http://127.0.0.1:9090/login/oauth2/code/title_counter_client&scope=addTitles+deleteTitles
