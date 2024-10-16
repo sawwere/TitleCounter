@@ -140,12 +140,14 @@ class GameService:
         string_platforms = ''
         divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_medium___r_ia'})
         for div in divs:
-            if div.contents[0].text.startswith('Platform') and len(div.contents[0].text)<13:
+            if (div.contents[0].text.startswith('Platform')
+                    and len(div.contents[0].text) < 13):
                 string_platforms = div.contents[3]
         if string_platforms == '':
             divs = soup.find_all('div', {'class': 'GameSummary_profile_info__HZFQu GameSummary_large__TIGhL'})
             for div in divs:
-                if div.contents[0].text.startswith('Platform') and len(div.contents[0].text)<13:
+                if (div.contents[0].text.startswith('Platform')
+                        and len(div.contents[0].text) < 13):
                     string_platforms = div.contents[3]
         if string_platforms == '':
             print('NOT FOUND PLATFORMS')
@@ -196,7 +198,6 @@ class GameService:
             return dates[0]
         except:
             return None
-
 
     def month_to_num(self, string_month):
         return {

@@ -16,13 +16,12 @@ import com.sawwere.titlecounter.backend.app.storage.repository.GameGenreReposito
 import com.sawwere.titlecounter.backend.app.storage.repository.GamePlatformRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
-import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import feign.FeignException;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,19 +74,104 @@ public class GameService {
     }
 
     @Transactional
-    public Game createGame(@Valid GameDto gameDto) {
-        Game game = gameDtoFactory.dtoToEntity(gameDto);
+    public Game createGame(@Valid GameCreationDto dto) {
+        Game game = gameDtoFactory.creationDtoToEntity(dto);
+        for (String platform : dto.getPlatforms()) {
+            var platforms = gamePlatformRepository.findByName(platform);
+            platforms.ifPresentOrElse(
+                    game.getPlatforms()::add,
+                    () -> LOGGER.severe("Not found platform '%s'".formatted(platform))
+            );
+        }
+        for (String genre : dto.getGenres()) {
+            var genres = gameGenreRepository.findByNameIgnoreCase(genre);
+            genres.ifPresentOrElse(
+                    game.getGenres()::add,
+                    () -> {
+                        GameGenre gameGenreEntity = GameGenre.builder().name(genre).build();
+                        gameGenreEntity = gameGenreRepository.save(gameGenreEntity);
+                        LOGGER.severe("Add new genre '%s'".formatted(genre));
+                        game.getGenres().add(gameGenreEntity);
+                    }
+            );
+        }
+        if (dto.getDeveloper() != null) {
+            for (String developer : dto.getDeveloper().split(",")) {
+                String developerName = developer.trim();
+                var developers = gameDeveloperRepository.findByNameIgnoreCase(developerName);
+                developers.ifPresentOrElse(
+                        game.getDevelopers()::add,
+                        () -> {
+                            GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
+                                    .name(developerName)
+                                    .build();
+                            gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
+                            LOGGER.severe("Add new developer '%s'".formatted(developerName));
+                            game.getDevelopers().add(gameDeveloperEntity);
+                        }
+                );
+            }
+        }
+        var image = externalContentSearchService.findImage(dto.getImageUrl());
+        imageStorageService.store(image, "games/%d".formatted(game.getId()));
         gameRepository.save(game);
-        LOGGER.info("Created game '%s' with id '%d'".formatted(game.getTitle(), game.getId()));
+        LOGGER.info("Created game '%s' with id '%d' hltbId '%s'"
+                .formatted(game.getTitle(), game.getId(), game.getExternalId().getHltbId())
+        );
         return game;
     }
 
-    //TODO
     @Transactional
-    public Game updateGame(Long gameId, @Valid GameDto gameDto) {
+    public Game updateGame(Long gameId, @Valid GameCreationDto gameDto) {
         gameDto.setId(gameId);
+        Game game = findGameOrElseThrowException(gameId);
+        game.setTitle(gameDto.getTitle());
+        game.setGameType(gameDto.getGameType());
+        game.setTime(gameDto.getTime());
+        game.setDateRelease(gameDto.getDateRelease());
+        game.setGlobalScore(gameDto.getGlobalScore());
+        game.setDeveloper(game.getDeveloper());
+        game.setDescription(gameDto.getDescription());
+        game.getExternalId().setHltbId(gameDto.getExternalId().getHltbId());
+        game.getExternalId().setSteamId(gameDto.getExternalId().getSteamId());
+        game.setPlatforms(new ArrayList<>());
+        for (String platform : gameDto.getPlatforms()) {
+            var platforms = gamePlatformRepository.findByName(platform);
+            platforms.ifPresentOrElse(
+                    game.getPlatforms()::add,
+                    () -> LOGGER.severe("Not found platform '%s'".formatted(platform))
+            );
+        }
+        game.setGenres(new ArrayList<>());
+        for (String genre : gameDto.getGenres()) {
+            var genres = gameGenreRepository.findByNameIgnoreCase(genre);
+            genres.ifPresentOrElse(
+                    game.getGenres()::add,
+                    () -> LOGGER.severe("Not found genre '%s'".formatted(genre))
+            );
+        }
+        game.setDevelopers(new ArrayList<>());
+        if (gameDto.getDeveloper() != null) {
+            for (String developer : gameDto.getDeveloper().split(",")) {
+                String developerName = developer.trim();
+                var developers = gameDeveloperRepository.findByNameIgnoreCase(developerName);
+                developers.ifPresentOrElse(
+                        game.getDevelopers()::add,
+                        () -> {
+                            GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
+                                    .name(developerName)
+                                    .build();
+                            gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
+                            LOGGER.severe("Add new developer '%s'".formatted(developerName));
+                            game.getDevelopers().add(gameDeveloperEntity);
+                        }
+                );
+            }
+        }
+
+        gameRepository.save(game);
         LOGGER.info("Updated game '%s' with id '%d'".formatted(gameDto.getTitle(), gameDto.getId()));
-        return gameRepository.save(gameDtoFactory.dtoToEntity(gameDto));
+        return game;
     }
 
     @Transactional
@@ -195,23 +279,35 @@ public class GameService {
         return gameEntries.toList();
     }
 
-    public void autoCreateGame(int startId, int limit) {
-        for (int i = startId; i < startId + limit; i++) {
-            if (gameRepository.findByExternalId_HltbId(String.valueOf(i)).isEmpty()) {
-                try {
-                    var list = externalContentSearchService.findGames(null, String.valueOf(i));
-                    if (list.getTotal() == 0) {
-                        throw new NotFoundException(String.valueOf(i));
-                    }
-                    GameCreationDto dto = list.getContents().get(0);
-                    autoCreateHelper(dto);
-                } catch (FeignException.FeignClientException ex) {
-                    LOGGER.info("NOT FOUND hltbId '%d'"
-                            .formatted(i)
-                    );
-                }
-            }
+
+    public void autoUpdateGame(long startId, int limit) {
+        for (long i = startId; i < startId + limit; i++) {
+            gameRepository.findById(i).ifPresent(game -> {
+                    var list = externalContentSearchService.findGames(null, game.getExternalId().getHltbId());
+                    GameCreationDto dto = list.getContents().getFirst();
+                    updateGame(game.getId(), dto);
+                });
         }
+    }
+
+    public void autoCreateGame(int startId, int limit) {
+        autoUpdateGame(startId, limit);
+//        for (int i = startId; i < startId + limit; i++) {
+//            if (gameRepository.findByExternalId_HltbId(String.valueOf(i)).isEmpty()) {
+//                try {
+//                    var list = externalContentSearchService.findGames(null, String.valueOf(i));
+//                    if (list.getTotal() == 0) {
+//                        throw new NotFoundException(String.valueOf(i));
+//                    }
+//                    GameCreationDto dto = list.getContents().get(0);
+//                    autoCreateHelper(dto);
+//                } catch (FeignException.FeignClientException ex) {
+//                    LOGGER.info("NOT FOUND hltbId '%d'"
+//                            .formatted(i)
+//                    );
+//                }
+//            }
+//        }
     }
 
     @Transactional
@@ -227,51 +323,7 @@ public class GameService {
     private void autoCreateHelper(GameCreationDto dto) {
         Optional<Game> existing = gameRepository.findByExternalId_HltbId(dto.getExternalId().getHltbId());
         if (existing.isEmpty()) {
-            Game game = gameDtoFactory.creationDtoToEntity(dto);
-            for (String platform : dto.getPlatforms()) {
-                var searchRes = gamePlatformRepository.findByName(platform);
-                searchRes.ifPresentOrElse(
-                        game.getPlatforms()::add,
-                        () -> LOGGER.severe("Not found platform '%s'".formatted(platform))
-                );
-            }
-            for (String genre : dto.getGenres()) {
-                var searchRes = gameGenreRepository.findByNameIgnoreCase(genre);
-                searchRes.ifPresentOrElse(
-                        game.getGenres()::add,
-                        () -> {
-                            GameGenre gameGenreEntity = GameGenre.builder().name(genre).build();
-                            gameGenreEntity = gameGenreRepository.save(gameGenreEntity);
-                            LOGGER.severe("Add new genre '%s'".formatted(genre));
-                            game.getGenres().add(gameGenreEntity);
-                        }
-                );
-            }
-            if (dto.getDeveloper() != null) {
-                for (String developer : dto.getDeveloper().split(",")) {
-                    String developerName = developer.trim();
-                    var searchRes = gameDeveloperRepository.findByNameIgnoreCase(developerName);
-                    searchRes.ifPresentOrElse(
-                            game.getDevelopers()::add,
-                            () -> {
-                                GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
-                                        .name(developerName)
-                                        .build();
-                                gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
-                                LOGGER.severe("Add new developer '%s'".formatted(developerName));
-                                game.getDevelopers().add(gameDeveloperEntity);
-                            }
-                    );
-                }
-            }
-
-            gameRepository.save(game);
-            LOGGER.info(dto.getImageUrl());
-            var image = externalContentSearchService.findImage(dto.getImageUrl());
-            imageStorageService.store(image, "games/%d".formatted(game.getId()));
-            LOGGER.info("Created game '%s' with id '%d' hltbId '%s'"
-                    .formatted(game.getTitle(), game.getId(), game.getExternalId().getHltbId())
-            );
+            createGame(dto);
         } else {
             LOGGER.info("Game '%s' already exists with id '%d' "
                     .formatted(dto.getTitle(), existing.get().getId())

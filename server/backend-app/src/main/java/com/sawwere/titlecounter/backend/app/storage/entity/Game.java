@@ -47,8 +47,8 @@ public class Game {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="hltbId", column=@Column(name = "hltb_id", unique = true)),
-            @AttributeOverride(name="steamId", column=@Column(name = "steam_id", unique = true))
+            @AttributeOverride(name = "hltbId", column = @Column(name = "hltb_id", unique = true)),
+            @AttributeOverride(name = "steamId", column = @Column(name = "steam_id", unique = true))
     })
     private GameExternalId externalId;
 

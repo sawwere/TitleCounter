@@ -64,7 +64,7 @@ class FilmService:
         return res
     
     def search_by_page(self, page) -> list:
-        url = "https://api.kinopoisk.dev/v1.4/movie?page=" + str(page) + "&limit=20&selectFields=externalId&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=enName&selectFields=premiere&selectFields=year&selectFields=poster&selectFields=isSeries&selectFields=rating&selectFields=movieLength&selectFields=description&notNullFields=externalId.imdb&notNullFields=poster.url"
+        url = "https://api.kinopoisk.dev/v1.4/movie?page=" + str(page) + "&limit=40&selectFields=externalId&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=enName&selectFields=premiere&selectFields=year&selectFields=poster&selectFields=isSeries&selectFields=rating&selectFields=movieLength&selectFields=description&selectFields=names&notNullFields=externalId.imdb&notNullFields=poster.url"
 
         headers = {
             "accept": "application/json",
@@ -88,7 +88,15 @@ class FilmService:
             orig_title = m["alternativeName"]
             if orig_title is None:
                 orig_title = ru_title
-            en_title = m["enName"]
+            en_title = None
+            for name in m["names"]:
+                if ("language" in name.keys()
+                        and "type" in name.keys()
+                        and name["language"] == "US"
+                        and name["type"] == "Extended Edition"):
+                    en_title = name["name"]
+                    print("FOUND EN TITLE " + en_title)
+                    break
 
             global_score = m["rating"]["kp"]
             time = m["movieLength"]
@@ -96,9 +104,12 @@ class FilmService:
             imdb_id = str(m["externalId"]["imdb"])
             if "tmdb" in m["externalId"].keys():
                 tmdb_id = str(m["externalId"]["tmdb"])
+                print(tmdb_id)
+                if tmdb_id == "None":
+                    tmdb_id = None
             else:
                 tmdb_id = None
-
+            print(tmdb_id)
             description = m["description"]
             year = m['year']
 

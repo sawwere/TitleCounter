@@ -8,16 +8,18 @@ from functions import download_image
 from service.film_service import FilmService
 from service.game_service import GameService
 
+SERVER_PORT = 5000
+
 eureca_client.init(
     eureka_server="http://localhost:8761/eureka",
     app_name="external-content-search-service",
     instance_host="localhost",
-    instance_port=5000
+    instance_port=SERVER_PORT
 )
 
 api_keys = {}
 api_keys['KP_API_KEY'] = os.environ.get('KP_API_KEY')
-
+print(api_keys)
 app = Flask(__name__)
 film_service = FilmService(api_keys)
 game_service = GameService(api_keys)
@@ -30,7 +32,7 @@ def not_found(error):
 
 @app.errorhandler(503)
 def service_unavailabl(error):
-    return make_response(jsonify({'error': 'Cant get answer from api'}), 503)
+    return make_response(jsonify({'error': 'Cant get answer from api'}), 404)
 
 
 @app.route('/find/games', methods=['GET'])
@@ -76,4 +78,4 @@ def get_image():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=SERVER_PORT)

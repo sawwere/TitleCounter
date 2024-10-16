@@ -5,11 +5,15 @@ import com.sawwere.titlecounter.common.dto.game.GameExternalIdDto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Getter
 @Setter
@@ -17,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameCreationDto {
+    private long id;
+
     @NotBlank
     private String title;
 

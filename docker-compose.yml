@@ -31,10 +31,11 @@ services:
     container_name: 'gateway-service'
     restart: "always"
     ports:
-      - '80:80'
+      - '443:443'
     environment:
       SPRING_PROFILES_ACTIVE: prod
       TOKEN_SIGNING: ${TOKEN_SIGNING}
+      KEY_STORE_PASSWORD: ${KEY_STORE_PASSWORD}
     networks:
       net:
   title-counter-api:

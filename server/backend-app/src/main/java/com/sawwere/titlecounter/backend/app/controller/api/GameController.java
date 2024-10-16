@@ -1,8 +1,9 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
 
+import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
-import com.sawwere.titlecounter.backend.app.dto.game.GameSearchResultDto;
+import com.sawwere.titlecounter.common.dto.game.GameSearchResultDto;
 import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
@@ -79,8 +80,8 @@ public class GameController {
     )
     @PostMapping(CREATE_GAME)
     @ResponseStatus(HttpStatus.CREATED)
-    public GameDto createGame(@Valid @RequestPart("game") GameDto gameDto,
-                              @RequestPart("image") MultipartFile image) {
+    public GameDto createGame(@Valid @RequestPart("game") GameCreationDto gameDto,
+                              @RequestPart(value = "image", required = false) MultipartFile image) {
         var gameEntity = gameService.createGame(gameDto);
         var id = gameEntity.getId();
         imageStorageService.store(image, "games/%d".formatted(id));
@@ -99,7 +100,7 @@ public class GameController {
     )
     @PutMapping(UPDATE_GAME)
     public  GameDto putGame(@PathVariable(value = "game_id") Long gameId,
-                            @Valid @RequestBody GameDto gameDto) {
+                            @Valid @RequestBody GameCreationDto gameDto) {
         return gameMapper.entityToDto(gameService.updateGame(gameId, gameDto));
     }
 

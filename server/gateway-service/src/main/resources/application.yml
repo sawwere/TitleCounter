@@ -10,15 +10,15 @@ spring:
           useInsecureTrustManager: true
       routes:
         - id: title-counter-api
-          uri: lb://title-counter-api
+          uri: lb:http://title-counter-api
           predicates:
             - Path=/api/**
         - id: notifications-api
-          uri: lb://notification-service
+          uri: lb:http://notification-service
           predicates:
             - Path=/notification/**
 #        - id: title-counter-front
-#          uri: lb://title-counter-front
+#          uri: lb:http://title-counter-front
 #          predicates:
 #            - Path=/**
       default-filters:
@@ -51,5 +51,5 @@ springdoc:
     config-url: /v3/api-docs/swagger-config
     urls:
       -   name: title-counter-api
-          url: lb://title-counter-api/v3/api-docs
+          url: lb:http://title-counter-api/v3/api-docs
 
