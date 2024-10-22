@@ -9,6 +9,7 @@ import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameDeveloper;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameGenre;
+import com.sawwere.titlecounter.backend.app.storage.entity.GameStatisticsAggregationResult;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameDeveloperRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameEntryRepository;
@@ -16,8 +17,8 @@ import com.sawwere.titlecounter.backend.app.storage.repository.GameGenreReposito
 import com.sawwere.titlecounter.backend.app.storage.repository.GamePlatformRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
+import com.sawwere.titlecounter.common.dto.game.GameDeveloperDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
-import feign.FeignException;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -73,6 +74,15 @@ public class GameService {
                 );
     }
 
+    public GameDeveloper createGameDeveloper(GameDeveloperDto dto) {
+        GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
+                .name(dto.getName())
+                .build();
+        gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
+        LOGGER.severe("Add new developer '%s'".formatted(dto.getName()));
+        return gameDeveloperEntity;
+    }
+
     @Transactional
     public Game createGame(@Valid GameCreationDto dto) {
         Game game = gameDtoFactory.creationDtoToEntity(dto);
@@ -102,12 +112,11 @@ public class GameService {
                 developers.ifPresentOrElse(
                         game.getDevelopers()::add,
                         () -> {
-                            GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
-                                    .name(developerName)
-                                    .build();
-                            gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
-                            LOGGER.severe("Add new developer '%s'".formatted(developerName));
-                            game.getDevelopers().add(gameDeveloperEntity);
+                            game.getDevelopers().add(createGameDeveloper(
+                                    GameDeveloperDto.builder()
+                                            .name(developerName)
+                                            .build())
+                            );
                         }
                 );
             }
@@ -158,12 +167,11 @@ public class GameService {
                 developers.ifPresentOrElse(
                         game.getDevelopers()::add,
                         () -> {
-                            GameDeveloper gameDeveloperEntity = GameDeveloper.builder()
-                                    .name(developerName)
-                                    .build();
-                            gameDeveloperEntity = gameDeveloperRepository.save(gameDeveloperEntity);
-                            LOGGER.severe("Add new developer '%s'".formatted(developerName));
-                            game.getDevelopers().add(gameDeveloperEntity);
+                            game.getDevelopers().add(createGameDeveloper(
+                                    GameDeveloperDto.builder()
+                                            .name(developerName)
+                                            .build())
+                            );
                         }
                 );
             }
@@ -181,6 +189,7 @@ public class GameService {
         LOGGER.info("Deleted game '%s' with id '%d'".formatted(game.getTitle(), gameId));
     }
 
+    @SuppressWarnings("checkstyle:ParameterNumber")
     @Transactional(readOnly = true)
     public Page<Game> search(@Nullable String title,
                              @Nullable Long timeFrom,
@@ -279,6 +288,18 @@ public class GameService {
         return gameEntries.toList();
     }
 
+    public List<GameStatisticsAggregationResult> getStatistics() {
+        return gameRepository.getStatistics();
+    }
+
+    public void updateStatistics() {
+        for (GameStatisticsAggregationResult ar : getStatistics()) {
+            Game game = findGameOrElseThrowException(ar.getGameId());
+            game.setTime(ar.getTime());
+            game.setGlobalScore(ar.getGlobalScore());
+            gameRepository.save(game);
+        }
+    }
 
     public void autoUpdateGame(long startId, int limit) {
         for (long i = startId; i < startId + limit; i++) {
@@ -316,7 +337,7 @@ public class GameService {
         if (list.getTotal() == 0) {
             throw new NotFoundException(title);
         }
-        GameCreationDto dto = list.getContents().get(0);
+        GameCreationDto dto = list.getContents().getFirst();
         autoCreateHelper(dto);
     }
 

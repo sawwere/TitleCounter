@@ -1,5 +1,7 @@
 package com.sawwere.titlecounter.backend.app.service;
 
+import com.sawwere.titlecounter.backend.app.config.FileStorageConfig;
+import com.sawwere.titlecounter.backend.app.exception.StorageException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -8,9 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
-
-import com.sawwere.titlecounter.backend.app.config.FileStorageConfig;
-import com.sawwere.titlecounter.backend.app.exception.StorageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,8 +23,7 @@ public class DefaultFileStorageService implements StorageService {
 
     @Autowired
     public DefaultFileStorageService(FileStorageConfig properties) {
-
-        if(properties.getBaseLocation().trim().isEmpty()){
+        if (properties.getBaseLocation().trim().isEmpty()) {
             throw new StorageException("File upload location can not be Empty.");
         }
         this.rootLocation = Paths.get(properties.getBaseLocation());
@@ -35,8 +33,7 @@ public class DefaultFileStorageService implements StorageService {
     public void init() {
         try {
             Files.createDirectories(rootLocation);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }
     }
@@ -58,8 +55,7 @@ public class DefaultFileStorageService implements StorageService {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
     }
@@ -70,8 +66,7 @@ public class DefaultFileStorageService implements StorageService {
             return Files.walk(this.rootLocation, 1)
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(this.rootLocation::relativize);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Failed to read stored files", e);
         }
     }
@@ -83,20 +78,18 @@ public class DefaultFileStorageService implements StorageService {
 
     @Override
     public Resource loadAsResource(String filename) {
+        String exceptionMessage = "Could not read file: %s";
         try {
             Path file = load(filename);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
-            }
-            else {
-                throw new RuntimeException(
-                        "Could not read file: " + filename);
+            } else {
+                throw new RuntimeException();
 
             }
-        }
-        catch (MalformedURLException e) {
-            throw new RuntimeException("Could not read file: " + filename, e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(exceptionMessage.formatted(filename), e);
         }
     }
 

@@ -1,25 +1,29 @@
 package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.dto.JwtAuthenticationResponse;
-import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
-import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.exception.ApiBadCredentialsException;
+import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
+import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-
 import static com.sawwere.titlecounter.backend.app.controller.api.AuthController.API_LOGIN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private static final Logger LOGGER =
+            Logger.getLogger(AuthService.class.getName());
+    private static final String AUTH_HEADER_PREFIX = "Bearer ";
+
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
@@ -27,6 +31,7 @@ public class AuthService {
     @Value("${token.accessExpirationTimeout}")
     private int accessExpirationTimeout;
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public JwtAuthenticationResponse login(UserLoginDto userLoginDto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userLoginDto.getUsername(),
@@ -39,8 +44,7 @@ public class AuthService {
             String accessToken = jwtService.createAccessToken(user, API_LOGIN);
             String refreshToken = jwtService.createRefreshToken(user.getUsername());
             return new JwtAuthenticationResponse(accessToken, refreshToken, accessExpirationTimeout * 60);
-        }
-        catch (NotFoundException ex) {
+        } catch (NotFoundException ex) {
             throw new ApiBadCredentialsException("Invalid credentials given");
         }
     }
@@ -51,11 +55,11 @@ public class AuthService {
 
     public JwtAuthenticationResponse refreshToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(AUTH_HEADER_PREFIX)) {
             throw new RuntimeException("Token is missing");
         }
 
-        String refreshToken = request.getHeader(AUTHORIZATION).substring("Bearer ".length());
+        String refreshToken = request.getHeader(AUTHORIZATION).substring(AUTH_HEADER_PREFIX.length());
         try {
             UsernamePasswordAuthenticationToken authenticationToken = jwtService.parseToken(refreshToken);
             User user = userService.findUserByUsername(authenticationToken.getName());
@@ -64,8 +68,7 @@ public class AuthService {
                     request.getRequestURL().toString()
             );
             return new JwtAuthenticationResponse(accessToken, refreshToken, accessExpirationTimeout);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ApiBadCredentialsException("Invalid jwt was given");
         }
 

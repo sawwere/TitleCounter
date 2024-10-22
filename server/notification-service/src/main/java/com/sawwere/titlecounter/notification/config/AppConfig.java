@@ -1,11 +1,6 @@
 package com.sawwere.titlecounter.notification.config;
 
-import com.sawwere.titlecounter.notification.service.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Configuration
 public class AppConfig {

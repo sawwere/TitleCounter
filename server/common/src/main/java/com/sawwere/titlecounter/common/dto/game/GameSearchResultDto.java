@@ -1,7 +1,6 @@
 package com.sawwere.titlecounter.common.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sawwere.titlecounter.common.dto.game.GameDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,5 @@
 package com.sawwere.titlecounter.backend.app.service;
 
-import com.sawwere.titlecounter.common.dto.notification.NotificationDto;
-import com.sawwere.titlecounter.common.dto.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
 import org.springframework.amqp.core.Message;

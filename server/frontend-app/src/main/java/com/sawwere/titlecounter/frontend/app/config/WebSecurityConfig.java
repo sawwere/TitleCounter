@@ -27,8 +27,10 @@ public class WebSecurityConfig {
     private final AuthenticationFilter authenticationFilter;
     private final ApiClient apiClient;
 
+    @SuppressWarnings("checkstyle:NoWhitespaceBefore")
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           AuthenticationManager authenticationManager) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
@@ -38,7 +40,7 @@ public class WebSecurityConfig {
                                 HttpMethod.GET, GameController.GET_ALL_GAMES, GameController.GET_GAME,
                                 GameController.GET_USER_GAME_ENTRIES,
                                 UserController.GET_USER).permitAll()
-                        .requestMatchers("/", "/error","/users",
+                        .requestMatchers("/", "/error", "/users",
                                 "/css/**", "/images/**").permitAll()
                         .requestMatchers("/games/*/submit").authenticated()
                         .anyRequest().permitAll()
@@ -53,7 +55,9 @@ public class WebSecurityConfig {
 //                        .invalidateHttpSession(true)
 //                        .deleteCookies("JSESSIONID", "SESSION")
 //                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()))
-                //.exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                //.exceptionHandling(ex ->
+        //          ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+        //          )
                 ;
         return http.build();
     }

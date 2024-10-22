@@ -22,3 +22,7 @@ spring:
     host: localhost
     username: guest
     password: guest
+app:
+  scheduler:
+    enabled: false
+    interval: PT12H

@@ -40,7 +40,6 @@ public class OpenApiConfig {
     @Bean
     public OpenApiCustomizer openApiCustomizer() {
         return openApi -> {
-            //Получаем схему ошибки
             var sharedErrorSchema = ModelConverters.getInstance()
                     .read(ErrorInfo.class).get(ErrorInfo.class.getSimpleName());
             if (sharedErrorSchema == null) {
@@ -48,7 +47,6 @@ public class OpenApiConfig {
                         "Can't generate response for 4xx and 5xx errors");
             }
 
-            //Добавляем тело ответа ко всем ответам с кодами 4xx и 5xx
             openApi.getPaths().values().forEach(pathItem -> pathItem.readOperations().forEach(operation ->
                     operation.getResponses().forEach((status, response) -> {
                         if (status.startsWith("4") || status.startsWith("5")) {

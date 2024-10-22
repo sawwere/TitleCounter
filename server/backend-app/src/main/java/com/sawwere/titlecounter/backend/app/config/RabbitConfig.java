@@ -1,6 +1,9 @@
 package com.sawwere.titlecounter.backend.app.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +33,8 @@ public class RabbitConfig {
 
     @Bean
     Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).
-                to(exchange).with(routingKey);
+        return BindingBuilder.bind(queue)
+                .to(exchange).with(routingKey);
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.sawwere.titlecounter.frontend.app.controller;
 
 import com.sawwere.titlecounter.common.exception.ErrorInfo;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpStatus;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -30,7 +31,7 @@ public class CustomErrorController implements ErrorController {
                 ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.MESSAGE)
         );
         return ResponseEntity
-                .status(400)
+                .status(HttpStatus.SC_BAD_REQUEST)
                 .body(ErrorInfo.builder()
                         .error((String) attributes.get("error"))
                         .description((String) attributes.get("message"))

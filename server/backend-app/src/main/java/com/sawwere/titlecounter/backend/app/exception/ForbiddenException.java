@@ -10,6 +10,6 @@ public class ForbiddenException extends RuntimeException {
     }
 
     public ForbiddenException() {
-        super("Access to requested resource denied");
+        super("Access to the requested resource denied");
     }
 }

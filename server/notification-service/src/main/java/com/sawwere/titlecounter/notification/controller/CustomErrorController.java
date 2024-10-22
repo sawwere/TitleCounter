@@ -1,6 +1,7 @@
 package com.sawwere.titlecounter.notification.controller;
 
 import com.sawwere.titlecounter.common.exception.ErrorInfo;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -30,7 +31,7 @@ public class CustomErrorController implements ErrorController {
                 ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.MESSAGE)
         );
         return ResponseEntity
-                .status(400)
+                .status(HttpServletResponse.SC_BAD_REQUEST)
                 .body(ErrorInfo.builder()
                         .error((String) attributes.get("error"))
                         .description((String) attributes.get("message"))

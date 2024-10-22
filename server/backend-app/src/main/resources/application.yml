@@ -39,6 +39,9 @@ token:
   accessExpirationTimeout: 15 # minutes
   refreshExpirationTimeout: 24 # hours
 app:
+  scheduler:
+    enabled: true
+    interval: PT12H
   publicUrl: localhost
   rabbitmq:
     queue:

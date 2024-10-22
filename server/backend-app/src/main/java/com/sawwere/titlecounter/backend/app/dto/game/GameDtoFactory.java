@@ -1,20 +1,22 @@
 package com.sawwere.titlecounter.backend.app.dto.game;
 
 import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
+import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameDeveloper;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameExternalId;
-import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GamePlatform;
 import com.sawwere.titlecounter.common.dto.game.GameDeveloperDto;
 import com.sawwere.titlecounter.common.dto.game.GameDto;
 import com.sawwere.titlecounter.common.dto.game.GameExternalIdDto;
 import com.sawwere.titlecounter.common.dto.game.GamePlatformDto;
+import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 
 @Component
 public class GameDtoFactory implements GameMapper {
+    private static final int DEFAULT_PLATFORMS_CAPACITY = 4;
+
     public GameDto entityToDto(Game game) {
         return  GameDto.builder()
                 .id(game.getId())
@@ -88,6 +90,7 @@ public class GameDtoFactory implements GameMapper {
     }
 
     /**
+     * Map creationDto to entity object
      * @param gameDto Dto to be mapped into entity
      * @return mapped object
      * @implNote WARN: Does not map list fields
@@ -98,7 +101,7 @@ public class GameDtoFactory implements GameMapper {
                 .gameType(gameDto.getGameType())
                 .developer(gameDto.getDeveloper())
                 .description(gameDto.getDescription())
-                .platforms(new ArrayList<>(4))
+                .platforms(new ArrayList<>(DEFAULT_PLATFORMS_CAPACITY))
                 .genres(new ArrayList<>())
                 .developers(new ArrayList<>())
                 .externalId(map(gameDto.getExternalId()))

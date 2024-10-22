@@ -2,6 +2,8 @@ package com.sawwere.titlecounter.notification.config;
 
 import com.sawwere.titlecounter.notification.storage.entity.User;
 import com.sawwere.titlecounter.notification.storage.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.List;
-import java.util.Optional;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -30,15 +29,17 @@ public class WebSecurityConfig {
     public UserDetailsService userDetailsService(UserRepository userRepo) {
         return username -> {
             Optional<User> user = userRepo.findByUsername(username);
-            if (user.isPresent())
+            if (user.isPresent()) {
                 return user.get();
-            else
+            } else {
                 throw new UsernameNotFoundException("User ‘" + username + "’ not found");
+            }
         };
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           AuthenticationManager authenticationManager) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
@@ -52,8 +53,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .anyRequest().permitAll()
                 )
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                ;
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 

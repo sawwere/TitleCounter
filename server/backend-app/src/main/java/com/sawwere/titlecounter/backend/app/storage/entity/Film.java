@@ -1,13 +1,28 @@
 package com.sawwere.titlecounter.backend.app.storage.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.*;
-import org.hibernate.annotations.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+
 
 @Entity
 @Getter
@@ -15,7 +30,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="films")
+@Table(name = "films")
 public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +47,9 @@ public class Film {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="imdbId", column=@Column(name = "imdb_id", unique = true)),
-            @AttributeOverride(name="kpId", column=@Column(name = "kp_id", unique = true)),
-            @AttributeOverride(name="tmdbId", column=@Column(name = "tmdb_id", unique = true))
+            @AttributeOverride(name = "imdbId", column = @Column(name = "imdb_id", unique = true)),
+            @AttributeOverride(name = "kpId", column = @Column(name = "kp_id", unique = true)),
+            @AttributeOverride(name = "tmdbId", column = @Column(name = "tmdb_id", unique = true))
     })
     private FilmExternalId externalId;
 

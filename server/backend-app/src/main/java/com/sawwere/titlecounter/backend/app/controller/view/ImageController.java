@@ -15,10 +15,11 @@ public class ImageController {
     public static final String GET = "/api/images/{subDirectory}/{filename}";
 
     private final ImageStorageService imageStorageService;
+
     @GetMapping(value = GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody Resource get(
             @PathVariable(value = "subDirectory") String subDirectory,
             @PathVariable(value = "filename") String filename) {
-        return imageStorageService.loadAsResource(subDirectory+"/"+filename);
+        return imageStorageService.loadAsResource(subDirectory + "/" + filename);
     }
 }

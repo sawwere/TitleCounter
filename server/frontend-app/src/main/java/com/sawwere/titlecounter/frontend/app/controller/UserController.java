@@ -27,6 +27,7 @@ public class UserController {
 
     private final ApiClient apiClient;
 
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     @GetMapping(REGISTRATION)
     public String getRegistration(WebRequest request, Model model) {
         UserRegistrationDto userDto = new UserRegistrationDto();

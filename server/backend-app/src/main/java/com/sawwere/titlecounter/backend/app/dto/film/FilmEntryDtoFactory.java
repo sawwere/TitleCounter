@@ -5,15 +5,16 @@ import com.sawwere.titlecounter.backend.app.storage.entity.FilmEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.common.dto.film.FilmEntryRequestDto;
 import com.sawwere.titlecounter.common.dto.film.FilmEntryResponseDto;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Component
 public class FilmEntryDtoFactory {
     private final FilmDtoFactory filmDtoFactory;
+
     public FilmEntryResponseDto entityToDto(FilmEntry filmEntry) {
         return  FilmEntryResponseDto.builder()
                 .id(filmEntry.getId())

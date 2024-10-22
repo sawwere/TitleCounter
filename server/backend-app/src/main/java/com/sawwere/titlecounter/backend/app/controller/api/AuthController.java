@@ -1,16 +1,19 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
 import com.sawwere.titlecounter.backend.app.dto.JwtAuthenticationResponse;
-import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
 import com.sawwere.titlecounter.backend.app.service.AuthService;
+import com.sawwere.titlecounter.common.dto.user.UserLoginDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController()

@@ -1,10 +1,19 @@
 package com.sawwere.titlecounter.backend.app.storage.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Cascade;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -12,7 +21,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="game_platforms")
+@Table(name = "game_platforms")
 public class GamePlatform {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

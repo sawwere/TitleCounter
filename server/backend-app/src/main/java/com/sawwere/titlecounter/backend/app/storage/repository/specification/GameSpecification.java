@@ -3,8 +3,6 @@ package com.sawwere.titlecounter.backend.app.storage.repository.specification;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import java.time.LocalDate;
 import java.util.Locale;
-
-import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
 
 @SuppressWarnings("checkstyle:MultipleStringLiterals")

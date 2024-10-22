@@ -24,15 +24,16 @@ public class GameController {
 
     private final ApiClient apiClient;
 
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     @GetMapping(GET_ALL_GAMES)
     private ModelAndView getAllGames() {
         ModelAndView mav = new ModelAndView("games");
-        System.out.println(666);
         var games = apiClient.findAllGames(null);
         mav.addObject("games", games);
         return mav;
     }
 
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     @GetMapping(GET_GAME)
     private ModelAndView getGame(@PathVariable(value = "game_id") Long gameId) {
         ModelAndView mav = new ModelAndView("game");

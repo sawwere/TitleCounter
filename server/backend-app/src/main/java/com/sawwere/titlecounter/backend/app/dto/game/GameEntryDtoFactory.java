@@ -6,15 +6,16 @@ import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryResponseDto;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Component
 public class GameEntryDtoFactory {
     private final GameMapper gameMapper;
+
     public GameEntryResponseDto entityToDto(GameEntry gameEntry) {
         return  GameEntryResponseDto.builder()
                 .id(gameEntry.getId())

@@ -12,15 +12,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("ALL")
 @SpringBootApplication
 @RestController
 public class AuthorizationServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AuthorizationServerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AuthorizationServerApplication.class, args);
+    }
 
 	public static final String API_LOGIN = "/api/login";
+
+	@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 	@PostMapping(API_LOGIN)
 	public UserDto login(@Valid @RequestBody UserLoginDto userLoginDto, HttpServletRequest request) {
 		try {

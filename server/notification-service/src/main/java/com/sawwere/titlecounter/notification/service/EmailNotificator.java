@@ -2,6 +2,9 @@ package com.sawwere.titlecounter.notification.service;
 
 import com.sawwere.titlecounter.common.dto.user.UserDto;
 import jakarta.mail.MessagingException;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.MailException;
@@ -11,20 +14,17 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @RequiredArgsConstructor
 @Component
-@ConditionalOnProperty(name="app.notification.email.enabled")
+@ConditionalOnProperty(name = "app.notification.email.enabled")
 public class EmailNotificator implements NotificationService {
-    private static final Logger logger =
+    private static final Logger LOGGER =
             Logger.getLogger(EmailNotificator.class.getName());
 
     private final JavaMailSender emailSender;
 
     private final SpringTemplateEngine templateEngine;
+
     @Override
     public void sendGreeting(UserDto dto) {
         try {
@@ -37,9 +37,9 @@ public class EmailNotificator implements NotificationService {
             messageHelper.setSubject("Finishing registration");
             messageHelper.setText(text, true);
             emailSender.send(message);
-            logger.log(Level.INFO, String.format("Sent email to %s: %s", dto.getEmail(), dto.getUsername()));
+            LOGGER.log(Level.INFO, String.format("Sent email to %s: %s", dto.getEmail(), dto.getUsername()));
         } catch (MailException | MessagingException mailException) {
-            logger.log(Level.SEVERE, String.format("Error while sending email %s", mailException.getMessage()));
+            LOGGER.log(Level.SEVERE, String.format("Error while sending email %s", mailException.getMessage()));
         }
     }
 }

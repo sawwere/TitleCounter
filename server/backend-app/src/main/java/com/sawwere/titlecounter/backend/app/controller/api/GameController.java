@@ -1,9 +1,9 @@
 package com.sawwere.titlecounter.backend.app.controller.api;
 
 
+import com.sawwere.titlecounter.backend.app.dto.SearchResponseDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
 import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
-import com.sawwere.titlecounter.common.dto.game.GameSearchResultDto;
 import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
@@ -83,20 +83,22 @@ public class GameController {
     public GameDto createGame(@Valid @RequestPart("game") GameCreationDto gameDto,
                               @RequestPart(value = "image", required = false) MultipartFile image) {
         var gameEntity = gameService.createGame(gameDto);
-        var id = gameEntity.getId();
-        imageStorageService.store(image, "games/%d".formatted(id));
+        if (image != null) {
+            var id = gameEntity.getId();
+            imageStorageService.store(image, "games/%d".formatted(id));
+        }
         return gameMapper.entityToDto(gameEntity);
     }
 
     /**
-     * Game update/create
+     * Game update
      * @param gameId Game id
      * @param gameDto Dto, from which data for update will be taken
      * @return updated or created game
      */
     @Operation(
-            summary = "Update/create game",
-            description = "Use to update existing or create new game"
+            summary = "Update game",
+            description = "Use to update existing game"
     )
     @PutMapping(UPDATE_GAME)
     public  GameDto putGame(@PathVariable(value = "game_id") Long gameId,
@@ -146,7 +148,7 @@ public class GameController {
             description = "Use to search games with specific properties"
     )
     @GetMapping(SEARCH_GAMES)
-    public GameSearchResultDto searchGames(
+    public SearchResponseDto<GameDto> searchGames(
             @RequestParam(value = "title", required = false)
             @Parameter(description = "Title of the game") String title,
 
@@ -184,9 +186,10 @@ public class GameController {
                 releaseAfter, releaseBefore,
                 gameType,
                 page, pageSize);
-        return new GameSearchResultDto(
-                searchResult.stream().map(gameMapper::entityToDto).toList(),
-                searchResult.getTotalPages());
+        return new SearchResponseDto<>(
+                searchResult.getTotalPages(),
+                searchResult.stream().map(gameMapper::entityToDto).toList()
+        );
     }
 
     @Operation(

@@ -3,12 +3,11 @@ package com.sawwere.titlecounter.backend.app.service;
 import com.sawwere.titlecounter.backend.app.dto.film.FilmCreationDto;
 import com.sawwere.titlecounter.backend.app.dto.film.FilmDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.film.FilmEntryDtoFactory;
-import com.sawwere.titlecounter.backend.app.dto.game.GameCreationDto;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Film;
 import com.sawwere.titlecounter.backend.app.storage.entity.FilmEntry;
-import com.sawwere.titlecounter.backend.app.storage.entity.Game;
+import com.sawwere.titlecounter.backend.app.storage.entity.FilmStatisticsAggregationResult;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
 import com.sawwere.titlecounter.backend.app.storage.repository.FilmEntryRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.FilmRepository;
@@ -17,26 +16,25 @@ import com.sawwere.titlecounter.common.dto.film.FilmDto;
 import com.sawwere.titlecounter.common.dto.film.FilmEntryRequestDto;
 import feign.FeignException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-    private static final Logger logger =
+    private static final Logger LOGGER =
             Logger.getLogger(FilmService.class.getName());
 
     private final FilmRepository filmRepository;
@@ -48,6 +46,7 @@ public class FilmService {
     private final ImageStorageService imageStorageService;
     private final ExternalContentSearchService externalContentSearchService;
     private final UserService userService;
+
     public Optional<Film> findFilm(Long filmId) {
         return filmRepository.findById(filmId);
     }
@@ -66,29 +65,28 @@ public class FilmService {
     }
 
     @Transactional
-    public Film createFilm(@Valid FilmDto filmDto, MultipartFile image) {
-        Film film = filmDtoFactory.dtoToEntity(filmDto);
+    public Film createFilm(@Valid FilmCreationDto filmDto) {
+        Film film = filmDtoFactory.creationDtoToEntity(filmDto);
         filmRepository.save(film);
+        LOGGER.info(filmDto.getImageUrl());
+
+        var image = externalContentSearchService.findImage(filmDto.getImageUrl());
         imageStorageService.store(image, "films/%d".formatted(film.getId()));
-        logger.info("Created film '%s' with id '%d'".formatted(film.getTitle(), film.getId()));
+        LOGGER.info("Created film '%s' with id '%d' kpId '%s'"
+                .formatted(film.getTitle(), film.getId(), film.getExternalId().getKpId())
+        );
         return film;
     }
 
     @Transactional
     public void autoCreateFilm(String title) {
         var list = externalContentSearchService.findFilms(title, null);
-        if (list.getTotal() == 0)
+        if (list.getTotal() == 0) {
             throw new NotFoundException(title);
-        FilmCreationDto dto = list.getContents().get(0);
+        }
+        FilmCreationDto dto = list.getContents().getFirst();
         if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isEmpty()) {
-            Film film = filmDtoFactory.creationDtoToEntity(dto);
-            filmRepository.save(film);
-            System.out.println(dto.getImageUrl());
-            var image = externalContentSearchService.findImage(dto.getImageUrl());
-            imageStorageService.store(image, "films/%d".formatted(film.getId()));
-            logger.info("Created film '%s' with id '%d' kpId '%s'"
-                    .formatted(film.getTitle(), film.getId(), film.getExternalId().getKpId())
-            );
+            createFilm(dto);
         }
     }
 
@@ -97,34 +95,33 @@ public class FilmService {
         for (int page = pageLimit; page < pageLimit + limit; page++) {
             try {
                 var list = externalContentSearchService.findFilms(null, String.valueOf(page));
-                if (list.getTotal() == 0)
+                if (list.getTotal() == 0) {
                     throw new NotFoundException(String.valueOf(page));
+                }
                 for (int ind = 0; ind < list.getTotal(); ind++) {
                     FilmCreationDto dto = list.getContents().get(ind);
-                    String tmdb_id = dto.getExternalId().getTmdbId();
+                    String tmdbId = dto.getExternalId().getTmdbId();
 
-                    if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isPresent())
-                        logger.severe("NOT FOUND page '%d' kpId %s "
+                    if (filmRepository.findByExternalId_KpId(dto.getExternalId().getKpId()).isPresent()) {
+                        LOGGER.severe("Already exists at page '%d' kpId %s "
                                 .formatted(page, dto.getExternalId().getKpId()));
-                    else if (tmdb_id != null && filmRepository.findByExternalId_TmdbId(dto.getExternalId().getTmdbId()).isPresent())
-                        logger.severe("NOT FOUND page '%d' kpId %s tmdbId %s"
+                    } else if (tmdbId != null
+                            && filmRepository.findByExternalId_TmdbId(dto.getExternalId().getTmdbId()).isPresent()) {
+                        LOGGER.severe("Already exists at page '%d' kpId %s tmdbId %s"
                                 .formatted(page, dto.getExternalId().getKpId(), dto.getExternalId().getTmdbId()));
-                    else {
-                        Film film = filmDtoFactory.creationDtoToEntity(dto);
-                        filmRepository.save(film);
-                        System.out.println(dto.getImageUrl());
-                        var image = externalContentSearchService.findImage(dto.getImageUrl());
-                        imageStorageService.store(image, "films/%d".formatted(film.getId()));
-                        logger.info("Created film '%s' with id '%d' kpId '%s' on page %d"
-                                .formatted(film.getTitle(), film.getId(), film.getExternalId().getKpId(), page)
-                        );
+                    } else {
+                        createFilm(dto);
                     }
                 }
 
             } catch (FeignException.FeignClientException ex) {
-                logger.severe("NOT FOUND page '%d'"
+                LOGGER.severe("NOT FOUND page '%d'"
                         .formatted(page));
                 break;
+            } catch (RuntimeException ex) {
+                LOGGER.severe("Error at page '%d'"
+                        .formatted(page));
+                throw new RuntimeException(ex.getMessage());
             }
         }
     }
@@ -133,7 +130,7 @@ public class FilmService {
     @Transactional
     public Film updateFilm(Long filmId, @Valid FilmDto filmDto) {
         filmDto.setId(filmId);
-        logger.info("Updated film '%s' with id '%d'".formatted(filmDto.getTitle(), filmDto.getId()));
+        LOGGER.info("Updated film '%s' with id '%d'".formatted(filmDto.getTitle(), filmDto.getId()));
         return filmRepository.save(filmDtoFactory.dtoToEntity(filmDto));
     }
 
@@ -141,21 +138,23 @@ public class FilmService {
     public void deleteFilm(Long filmId) {
         Film film = findOrElseThrowException(filmId);
         filmRepository.deleteById(filmId);
-        logger.info("Deleted film '%s' with id '%d'".formatted(film.getTitle(), filmId));
+        LOGGER.info("Deleted film '%s' with id '%d'".formatted(film.getTitle(), filmId));
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<Film> findAll() {
         return filmRepository.streamAllBy().toList();
     }
 
-    @Transactional(readOnly=true)
-    public List<Film> search(Optional<String> query) {
+    @Transactional(readOnly = true)
+    public Page<Film> search(String title,
+                             int page, int pageSize) {
         Specification<Film> filter = Specification.where(null);
-        if (query.isPresent()) {
-            filter = filter.and(FilmSpecification.titleContains(query.get()));
+        if (title != null) {
+            filter = filter.and(FilmSpecification.titleContains(title));
         }
-        return filmRepository.findAll(filter, Pageable.ofSize(10)).getContent();
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return filmRepository.findAll(filter, pageable);
     }
 
     @Transactional
@@ -168,17 +167,21 @@ public class FilmService {
         User user = userService.findUserByUsername(username);
         filmEntry.setUser(user);
         filmEntryRepository.save(filmEntry);
-        logger.info("Created FilmEntry %d for user %s".formatted(filmEntry.getId(), username));
+        LOGGER.info("Created FilmEntry %d for user %s".formatted(filmEntry.getId(), username));
         return filmEntry;
     }
 
     @Transactional
-    public void updateFilmEntry(Long filmEntryId, @Valid FilmEntryRequestDto filmEntryDto, Authentication authentication) {
+    public void updateFilmEntry(Long filmEntryId,
+                                @Valid FilmEntryRequestDto filmEntryDto,
+                                Authentication authentication) {
         User user = userService.findUserByUsername(authentication.getName());
-        if (!user.getId().equals(filmEntryDto.getUserId()))
-            throw new ForbiddenException("You don't have access to requested resource");
-        if (!Objects.equals(filmEntryId, filmEntryDto.getId()))
+        if (!user.getId().equals(filmEntryDto.getUserId())) {
+            throw new ForbiddenException();
+        }
+        if (!Objects.equals(filmEntryId, filmEntryDto.getId())) {
             throw new IllegalArgumentException("Invalid id passed");
+        }
         FilmEntry filmEntry = findEntryOrElseThrowException(filmEntryId);
         filmEntry.setCustomTitle(filmEntryDto.getCustomTitle());
         filmEntry.setNote(filmEntryDto.getNote());
@@ -186,31 +189,44 @@ public class FilmService {
         filmEntry.setStatus(filmEntryDto.getStatus());
         filmEntry.setDateCompleted(filmEntryDto.getDateCompleted());
         filmEntryRepository.save(filmEntry);
-        logger.info("Updated FilmEntry %d for user %s".formatted(filmEntry.getId(), user.getUsername()));
+        LOGGER.info("Updated FilmEntry %d for user %s".formatted(filmEntry.getId(), user.getUsername()));
     }
 
     @Transactional
     public void deleteFilmEntry(Long filmEntryId, Authentication authentication) {
         FilmEntry filmEntry = findEntryOrElseThrowException(filmEntryId);
         User user = userService.findUserByUsername(authentication.getName());
-        if (!user.getId().equals(filmEntry.getUser().getId()))
-            throw new ForbiddenException("You don't have access to requested resource");
+        if (!user.getId().equals(filmEntry.getUser().getId())) {
+            throw new ForbiddenException();
+        }
         filmEntryRepository.delete(filmEntry);
-        logger.info("Deleted FilmEntry %d for user %s".formatted(filmEntry.getId(), user.getUsername()));
+        LOGGER.info("Deleted FilmEntry %d for user %s".formatted(filmEntry.getId(), user.getUsername()));
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<FilmEntry> findFilmEntriesByUser(String username) {
         User user = userService.findUserByUsername(username);
         Stream<FilmEntry> filmEntries = filmEntryRepository.streamAllByUserId(user.getId());
         return filmEntries.toList();
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<Film> findFilmsByUser(String username) {
         User user = userService.findUserByUsername(username);
         List<FilmEntry> filmEntries = findFilmEntriesByUser(username);
 
-        return filmEntries.stream().map(x->x.getFilm()).toList();
+        return filmEntries.stream().map(FilmEntry::getFilm).toList();
+    }
+
+    public List<FilmStatisticsAggregationResult> getStatistics() {
+        return filmRepository.getStatistics();
+    }
+
+    public void updateStatistics() {
+        for (var ar : getStatistics()) {
+            Film film = findOrElseThrowException(ar.getFilmId());
+            film.setGlobalScore(ar.getGlobalScore());
+            filmRepository.save(film);
+        }
     }
 }

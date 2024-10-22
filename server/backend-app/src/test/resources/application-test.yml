@@ -47,6 +47,9 @@ token:
   accessExpirationTimeout: 15 # minutes
   refreshExpirationTimeout: 24 # hours
 app:
+  scheduler:
+    enabled: false
+    interval: PT12H
   rabbitmq:
     queue:
       name: greetings.notifications

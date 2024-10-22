@@ -1,7 +1,11 @@
 package com.sawwere.titlecounter.common.dto.notification;
 
 import com.sawwere.titlecounter.common.dto.user.UserDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
