@@ -61,6 +61,11 @@ public class Game {
     @Column(name = "description", length = 2048)
     private String description;
 
+    @Column(name = "has_image")
+    @ColumnDefault("true")
+    @Builder.Default
+    private boolean hasImage = true;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "hltbId", column = @Column(name = "hltb_id", unique = true)),

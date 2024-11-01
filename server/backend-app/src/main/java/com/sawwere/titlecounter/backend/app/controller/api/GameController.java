@@ -227,7 +227,7 @@ public class GameController {
     public void putGameEntry(@PathVariable(name = "submission_id") Long gameEntryId,
                              @RequestBody GameEntryRequestDto gameEntryDto,
                              Authentication authentication) {
-        gameService.updateGameEntry(gameEntryId, gameEntryDto, authentication);
+        gameService.updateGameEntry(gameEntryId, gameEntryDto, authentication.getName());
     }
 
     @Operation(
@@ -238,7 +238,7 @@ public class GameController {
     @DeleteMapping(DELETE_GAME_ENTRY)
     public void deleteGameEntry(@PathVariable(name = "submission_id") Long gameEntryId,
                                 Authentication authentication) throws NotFoundException {
-        gameService.deleteGameEntry(gameEntryId, authentication);
+        gameService.deleteGameEntry(gameEntryId, authentication.getName());
     }
 
     @Hidden

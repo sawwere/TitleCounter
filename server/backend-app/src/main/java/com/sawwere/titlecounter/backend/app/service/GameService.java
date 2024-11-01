@@ -5,6 +5,7 @@ import com.sawwere.titlecounter.backend.app.dto.game.GameEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
+import com.sawwere.titlecounter.backend.app.exception.StorageException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameDeveloper;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;
@@ -19,8 +20,10 @@ import com.sawwere.titlecounter.backend.app.storage.repository.GameRepository;
 import com.sawwere.titlecounter.backend.app.storage.repository.specification.GameSpecification;
 import com.sawwere.titlecounter.common.dto.game.GameDeveloperDto;
 import com.sawwere.titlecounter.common.dto.game.GameEntryRequestDto;
+import feign.FeignException;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GameService {
     private static final Logger LOGGER =
             Logger.getLogger(GameService.class.getName());
+    private static final String IMAGE_STORE_PATH = "games/%d";
 
     private final GameRepository gameRepository;
     private final GamePlatformRepository gamePlatformRepository;
@@ -121,9 +124,12 @@ public class GameService {
                 );
             }
         }
-        var image = externalContentSearchService.findImage(dto.getImageUrl());
-        imageStorageService.store(image, "games/%d".formatted(game.getId()));
         gameRepository.save(game);
+        if (!trySaveImage(game.getId(), dto)) {
+            game.setHasImage(false);
+            gameRepository.save(game);
+        }
+
         LOGGER.info("Created game '%s' with id '%d' hltbId '%s'"
                 .formatted(game.getTitle(), game.getId(), game.getExternalId().getHltbId())
         );
@@ -241,10 +247,10 @@ public class GameService {
     }
 
     @Transactional
-    public void updateGameEntry(Long gameEntryId,
+    public GameEntry updateGameEntry(long gameEntryId,
                                 @Valid GameEntryRequestDto gameEntryDto,
-                                Authentication authentication) {
-        User user = userService.findUserByUsername(authentication.getName());
+                                @NotNull String authenticationName) {
+        User user = userService.findUserByUsername(authenticationName);
         if (!user.getId().equals(gameEntryDto.getUserId())) {
             throw new ForbiddenException();
         }
@@ -261,12 +267,13 @@ public class GameService {
         gameEntry.setDateCompleted(gameEntryDto.getDateCompleted());
         gameEntryRepository.save(gameEntry);
         LOGGER.info("Updated GameEntry %d for user %s".formatted(gameEntry.getId(), user.getUsername()));
+        return gameEntry;
     }
 
     @Transactional
-    public void deleteGameEntry(Long gameEntryId, Authentication authentication) throws NotFoundException {
+    public void deleteGameEntry(Long gameEntryId, String authenticationName) throws NotFoundException {
         GameEntry gameEntry = findGameEntryOrElseThrowException(gameEntryId);
-        User user = userService.findUserByUsername(authentication.getName());
+        User user = userService.findUserByUsername(authenticationName);
         if (!user.getId().equals(gameEntry.getUser().getId())) {
             throw new ForbiddenException();
         }
@@ -312,23 +319,22 @@ public class GameService {
     }
 
     public void autoCreateGame(int startId, int limit) {
-        autoUpdateGame(startId, limit);
-//        for (int i = startId; i < startId + limit; i++) {
-//            if (gameRepository.findByExternalId_HltbId(String.valueOf(i)).isEmpty()) {
-//                try {
-//                    var list = externalContentSearchService.findGames(null, String.valueOf(i));
-//                    if (list.getTotal() == 0) {
-//                        throw new NotFoundException(String.valueOf(i));
-//                    }
-//                    GameCreationDto dto = list.getContents().get(0);
-//                    autoCreateHelper(dto);
-//                } catch (FeignException.FeignClientException ex) {
-//                    LOGGER.info("NOT FOUND hltbId '%d'"
-//                            .formatted(i)
-//                    );
-//                }
-//            }
-//        }
+        for (int i = startId; i < startId + limit; i++) {
+            if (gameRepository.findByExternalId_HltbId(String.valueOf(i)).isEmpty()) {
+                try {
+                    var list = externalContentSearchService.findGames(null, String.valueOf(i));
+                    if (list.getTotal() == 0) {
+                        throw new NotFoundException(String.valueOf(i));
+                    }
+                    GameCreationDto dto = list.getContents().getFirst();
+                    autoCreateHelper(dto);
+                } catch (FeignException.FeignClientException ex) {
+                    LOGGER.info("NOT FOUND hltbId '%d'"
+                            .formatted(i)
+                    );
+                }
+            }
+        }
     }
 
     @Transactional
@@ -350,5 +356,26 @@ public class GameService {
                     .formatted(dto.getTitle(), existing.get().getId())
             );
         }
+    }
+
+    private boolean trySaveImage(long gameId, GameCreationDto dto) {
+        try {
+            if (dto.getImage() != null) {
+                imageStorageService.store(dto.getImage(), IMAGE_STORE_PATH.formatted(gameId));
+            } else {
+                var image = externalContentSearchService.findImage(dto.getImageUrl());
+                imageStorageService.store(image, IMAGE_STORE_PATH.formatted(gameId));
+            }
+            return true;
+        } catch (StorageException storageException) {
+            LOGGER.info("Couldn't save image for game '%s' with id '%d'. Check image file."
+                    .formatted(dto.getTitle(), gameId)
+            );
+        } catch (Exception ex) {
+            LOGGER.info("Couldn't load image for game '%s' with id '%d'"
+                    .formatted(dto.getTitle(), gameId)
+            );
+        }
+        return false;
     }
 }

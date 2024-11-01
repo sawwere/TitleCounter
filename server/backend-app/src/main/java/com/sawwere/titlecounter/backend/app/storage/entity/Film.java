@@ -56,6 +56,11 @@ public class Film {
     @Column(name = "description", length = 2048)
     private String description;
 
+    @Column(name = "has_image")
+    @ColumnDefault("true")
+    @Builder.Default
+    private boolean hasImage = true;
+
     @Column(name = "time")
     private Integer time;
 

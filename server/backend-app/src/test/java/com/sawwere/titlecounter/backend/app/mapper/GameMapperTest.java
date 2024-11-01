@@ -21,7 +21,7 @@ public class GameMapperTest extends BasicTestContainerTest {
     @Autowired
     private GameMapper gameMapper;
     @Test
-    public void shouldMapFilmToDto() {
+    public void shouldMapGameToDto() {
         //given
         Game game = Game.builder()
                 .id(1L)

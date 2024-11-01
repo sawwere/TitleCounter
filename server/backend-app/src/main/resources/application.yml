@@ -22,11 +22,11 @@ spring:
     host: localhost
     username: guest
     password: guest
-server:
-  port: 8080
-  servlet:
-    session:
-      timeout: 15m
+  server:
+    port: 8012
+    servlet:
+      session:
+        timeout: 15m
 eureka:
   instance:
     preferIpAddress: true
@@ -44,6 +44,7 @@ app:
     interval: PT12H
   publicUrl: localhost
   rabbitmq:
+    enabled: false
     queue:
       name: greetings.notifications
     exchange:

@@ -2,6 +2,7 @@ package com.sawwere.titlecounter.backend.app.service;
 
 import com.sawwere.titlecounter.backend.app.dto.user.UserDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.user.UserRegistrationDto;
+import com.sawwere.titlecounter.backend.app.exception.AlreadyExistsException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.storage.entity.Role;
 import com.sawwere.titlecounter.backend.app.storage.entity.User;
@@ -11,6 +12,7 @@ import com.sawwere.titlecounter.common.dto.role.RoleDto;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final RabbitProducerService rabbitProducerService;
+
+    @Autowired(required = false)
+    private RabbitProducerService rabbitProducerService;
 
     private final UserDtoFactory userDtoFactory;
 
@@ -41,7 +45,7 @@ public class UserService implements UserDetailsService {
     public User createUser(UserRegistrationDto userRegistrationDto) {
         Optional<User> optionalUser = userRepository.findByUsername(userRegistrationDto.getUsername());
         if (optionalUser.isPresent()) {
-            throw new RuntimeException("User already exists");
+            throw new AlreadyExistsException("User already exists");
         }
 //        optionalUser = userRepository.findByEmail(userRegistrationDto.getEmail());
 //        if (optionalUser.isPresent())
@@ -55,7 +59,9 @@ public class UserService implements UserDetailsService {
         user.setRoles(List.of(roleRepository.findByName("USER").orElseThrow()));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
-        rabbitProducerService.send(userDtoFactory.entityToDto(user));
+        if (rabbitProducerService != null) {
+            rabbitProducerService.send(userDtoFactory.entityToDto(user));
+        }
         return user;
     }
 
