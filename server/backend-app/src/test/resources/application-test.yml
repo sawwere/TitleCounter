@@ -14,11 +14,6 @@ spring:
         jdbc.lob.non_contextual_creation: true
     hibernate:
       ddl-auto: validate
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:9000/oauth2/jwks
   flyway:
     enabled: true
     baselineOnMigrate: true
@@ -51,6 +46,7 @@ app:
     enabled: false
     interval: PT12H
   rabbitmq:
+    enabled: false
     queue:
       name: greetings.notifications
     exchange:
