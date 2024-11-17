@@ -23,6 +23,7 @@ spring:
     username: guest
     password: guest
 app:
+  publicUrl: http://localhost:8080
   scheduler:
     enabled: false
     interval: PT12H

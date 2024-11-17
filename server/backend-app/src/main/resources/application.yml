@@ -40,9 +40,9 @@ token:
   refreshExpirationTimeout: 24 # hours
 app:
   scheduler:
-    enabled: true
+    enabled: false
     interval: PT12H
-  publicUrl: localhost
+  publicUrl: http://localhost:80
   rabbitmq:
     enabled: false
     queue:

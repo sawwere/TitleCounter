@@ -7,8 +7,8 @@
 </head>
 <body>
 <h1>Hello, <span th:text="${username}">user</span></h1>
-<p>Welcome to our resource, visit us any time at <a href='http://localhost:8080'>Visit</a>
-<img src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"/>
+<p>Welcome to our resource, finish registration using following link
+    <a th:href='${link}'>Visit</a>
 
 </body>
 </html>

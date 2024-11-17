@@ -1,6 +1,6 @@
 package com.sawwere.titlecounter.notification.service;
 
-import com.sawwere.titlecounter.common.dto.user.UserDto;
+import com.sawwere.titlecounter.common.dto.event.UserRegisteredEventDto;
 import jakarta.mail.MessagingException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
@@ -26,18 +26,21 @@ public class EmailNotificator implements NotificationService {
     private final SpringTemplateEngine templateEngine;
 
     @Override
-    public void sendGreeting(UserDto dto) {
+    public void sendGreeting(UserRegisteredEventDto dto) {
         try {
             var message = emailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, StandardCharsets.UTF_8.name());
             Context context = new Context();
-            context.setVariable("username", dto.getUsername());
+            context.setVariable("username", dto.getUser().getUsername());
+            context.setVariable("link", dto.getConfirmationLink());
             String text = templateEngine.process("registration-complete", context);
-            messageHelper.setTo(dto.getEmail());
+            messageHelper.setTo(dto.getUser().getEmail());
             messageHelper.setSubject("Finishing registration");
             messageHelper.setText(text, true);
             emailSender.send(message);
-            LOGGER.log(Level.INFO, String.format("Sent email to %s: %s", dto.getEmail(), dto.getUsername()));
+            LOGGER.log(Level.INFO, String.format("Sent email to %s: %s",
+                    dto.getUser().getEmail(),
+                    dto.getUser().getUsername()));
         } catch (MailException | MessagingException mailException) {
             LOGGER.log(Level.SEVERE, String.format("Error while sending email %s", mailException.getMessage()));
         }

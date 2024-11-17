@@ -1,5 +1,6 @@
 package com.sawwere.titlecounter.backend.app.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sawwere.titlecounter.backend.app.util.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +26,9 @@ public class UserRegistrationDto {
     @NotBlank
     private String password;
 
+    @NotNull
+    @NotBlank
+    @JsonProperty(value = "password_confirm")
     private String passwordConfirm;
 
     @NotNull

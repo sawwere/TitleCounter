@@ -38,9 +38,9 @@ eureka:
 app:
   notification:
     email:
-      enabled: false
-    logger:
       enabled: true
+    logger:
+      enabled: false
   rabbitmq:
     queue:
       name: greetings.notifications

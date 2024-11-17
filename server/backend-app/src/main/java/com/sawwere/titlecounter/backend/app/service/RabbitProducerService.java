@@ -33,6 +33,5 @@ public class RabbitProducerService {
         MessageProperties messageProperties = new MessageProperties();
         Message message = messageConverter.toMessage(dto, messageProperties);
         rabbitTemplate.send(exchange, routingKey, message);
-        logger.info("send greeting to kafka");
     }
 }

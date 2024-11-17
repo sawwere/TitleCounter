@@ -78,7 +78,11 @@ public class WebSecurityConfig {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(AuthController.API_LOGIN, AuthController.API_REGISTER).anonymous()
+                        .requestMatchers(AuthController.API_LOGIN,
+                                AuthController.API_REGISTER,
+                                AuthController.API_CONFIRM_REGISTER,
+                                AuthController.API_REGISTER_RESEND_LINK
+                        ).anonymous()
                         .requestMatchers(AuthController.API_LOGOUT).authenticated()
                         .requestMatchers(
                                 HttpMethod.GET, ImageController.GET,
@@ -115,7 +119,9 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilter(customAuthenticationFilter(authenticationManager))
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                );
         return http.build();
     }
 

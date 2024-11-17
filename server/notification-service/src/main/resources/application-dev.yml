@@ -2,6 +2,7 @@ server:
   port: 8081
 spring:
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/TitleCounter
     username: postgres
     password: 1234
@@ -9,7 +10,6 @@ spring:
     user: postgres
     password: 1234
     schemas: dev
-    url: jdbc:postgresql://localhost:5432/TitleCounter
     baselineOnMigrate: true
     enabled: false
   rabbitmq:
