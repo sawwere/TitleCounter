@@ -19,7 +19,7 @@ eureca_client.init(
 
 api_keys = {}
 api_keys['KP_API_KEY'] = os.environ.get('KP_API_KEY')
-print(api_keys)
+print(api_keys['KP_API_KEY'] is None)
 app = Flask(__name__)
 film_service = FilmService(api_keys)
 game_service = GameService(api_keys)

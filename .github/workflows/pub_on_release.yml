@@ -44,7 +44,7 @@ jobs:
     # Если тесты были пройдены успешно
     needs: [build_and_test]
     runs-on: [ubuntu-latest]
-    environment: Test
+    environment: Deploy
     env:
       LOGIN: ${{ secrets.DOCKER_LOGIN }}
       NAME: ${{ secrets.DOCKER_NAME }}

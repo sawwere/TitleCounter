@@ -17,13 +17,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
+@SpringBootTest(classes = TitleCounterBackendApplication.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
+@TestPropertySource("/application-test.yml")
 @Sql(value = {"/sql/create_user.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/delete_user.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@SpringBootTest(classes = TitleCounterBackendApplication.class)
 class UserServiceTest extends BasicTestContainerTest {
     @Autowired
     private UserService userService;
