@@ -36,6 +36,7 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @TestPropertySource("/application-test.yml")
+@Sql(value = {"/sql/create_user.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(value = {"/sql/create_games.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class GameServiceTest extends BasicTestContainerTest {
     @Autowired
