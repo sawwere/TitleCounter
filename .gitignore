@@ -539,3 +539,4 @@ README.html
 external-api-service/token.json
 /.env
 /external-api-service/.env
+.gigaide/gigaide.properties
