@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(classes = TitleCounterBackendApplication.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -111,6 +112,7 @@ class UserServiceTest extends BasicTestContainerTest {
     }
 
     @Test
+    @Transactional
     void deleteUser() {
         long expected = userRepository.count() - 1;
         User adminUser = getAdminUser();
@@ -123,6 +125,7 @@ class UserServiceTest extends BasicTestContainerTest {
     }
 
     @Test
+    @Transactional
     void deleteUserInvalidId() {
 
         Assertions.assertThrows(
