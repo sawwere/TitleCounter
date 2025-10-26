@@ -21,7 +21,7 @@ eureka:
     serviceUrl:
       defaultZone: http://eureka-server:8761/eureka/
 app:
-  publicUrl: ${PUBLIC_URL}
+  publicUrl: titlecounter.ru
   scheduler:
     enabled: true
     interval: PT12H

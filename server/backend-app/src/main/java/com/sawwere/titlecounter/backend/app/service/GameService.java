@@ -6,6 +6,7 @@ import com.sawwere.titlecounter.backend.app.dto.mapper.GameMapper;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.exception.StorageException;
+import com.sawwere.titlecounter.backend.app.service.storage.ImageStorageService;
 import com.sawwere.titlecounter.backend.app.storage.entity.Game;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameDeveloper;
 import com.sawwere.titlecounter.backend.app.storage.entity.GameEntry;

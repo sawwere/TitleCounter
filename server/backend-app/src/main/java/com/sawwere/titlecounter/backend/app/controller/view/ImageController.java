@@ -1,6 +1,6 @@
 package com.sawwere.titlecounter.backend.app.controller.view;
 
-import com.sawwere.titlecounter.backend.app.service.ImageStorageService;
+import com.sawwere.titlecounter.backend.app.service.storage.ImageStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;

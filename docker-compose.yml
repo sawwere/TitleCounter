@@ -49,6 +49,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       TOKEN_SIGNING: ${TOKEN_SIGNING}
+      PUBLIC_URL: ${PUBLIC_URL}
     depends_on:
       postgres:
         condition: service_healthy

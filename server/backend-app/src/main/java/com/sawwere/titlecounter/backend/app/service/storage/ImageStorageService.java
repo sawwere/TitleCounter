@@ -1,8 +1,9 @@
-package com.sawwere.titlecounter.backend.app.service;
+package com.sawwere.titlecounter.backend.app.service.storage;
 
 import com.sawwere.titlecounter.backend.app.config.FileStorageConfig;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
 import com.sawwere.titlecounter.backend.app.exception.StorageException;
+import com.sawwere.titlecounter.backend.app.service.StorageService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;

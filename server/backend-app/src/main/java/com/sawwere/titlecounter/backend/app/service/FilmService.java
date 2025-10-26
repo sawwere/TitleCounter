@@ -5,6 +5,7 @@ import com.sawwere.titlecounter.backend.app.dto.film.FilmDtoFactory;
 import com.sawwere.titlecounter.backend.app.dto.film.FilmEntryDtoFactory;
 import com.sawwere.titlecounter.backend.app.exception.ForbiddenException;
 import com.sawwere.titlecounter.backend.app.exception.NotFoundException;
+import com.sawwere.titlecounter.backend.app.service.storage.ImageStorageService;
 import com.sawwere.titlecounter.backend.app.storage.entity.Film;
 import com.sawwere.titlecounter.backend.app.storage.entity.FilmEntry;
 import com.sawwere.titlecounter.backend.app.storage.entity.FilmStatisticsAggregationResult;
